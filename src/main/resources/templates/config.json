@@ -1,0 +1,50 @@
+{
+  "basic":{
+    "name": "${name}",
+    "version": "1.0",
+    "dataDir": "${name}",
+    "address": "0.0.0.0:8027",
+    "coinbase": "${coinbase}"
+  },
+  "p2p": {
+    "privateKey": "${privateKey}",
+    "staticNodes": [
+      "${node}"
+    ],
+    "address": "0.0.0.0:8057",
+    "networkID": 1
+  },
+  "log": {
+    "isDebug": false,
+    "printLog": true
+  },
+  "httpServer": {
+    "address": "0.0.0.0:8037",
+    "crosssorgins": [
+      "*"
+    ],
+    "whiteHost": [
+      "*"
+    ]
+  },
+  "wsserver": {
+    "address": "0.0.0.0:8077",
+    "pattern": "/ws"
+  },
+  "metrics": {
+    "address": "0.0.0.0:8097",
+    "duration": 10,
+    "database": "influxdb",
+    "username": "test",
+    "password": "test123"
+  },
+  "genesis": {
+    "difficult":1,
+    "shard":1,
+    "blockInterval": 500,
+    "slotCheckInterval": 20,
+    "validators": [
+      ${validators}
+    ]
+  }
+}
