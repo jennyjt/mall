@@ -30,7 +30,7 @@ public class Swagger2Configuration {
     public Docket buildDocket() {
         Docket docket = new Docket(DocumentationType.SWAGGER_2).apiInfo(buildApiInfo()).useDefaultResponseMessages(false);
         docket
-                .groupName("baas-deploy-manager")
+                .groupName("baas-kettle-manager")
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("com.zsbatech"))
                 .paths(PathSelectors.any())
@@ -41,8 +41,8 @@ public class Swagger2Configuration {
 
     private ApiInfo buildApiInfo() {
         return new ApiInfoBuilder()
-                .title("baas-deploy-manager API")
-                .description("spring boot for baas-deploy-manager API")
+                .title("baas-kettle-manager API")
+                .description("spring boot for baas-kettle-manager API")
                 .version("1.0.0")
                 .build();
     }
