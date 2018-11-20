@@ -30,4 +30,12 @@
         where step_name = #{stepName,jdbcType=VARCHAR}
         limit 1
     </select>
+
+    <select id="selectTableOutputMetaVOByTransMetaId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from tableoutput_step
+        where trans_meta_id = #{transMetaId,jdbcType=INTEGER}
+        limit 1
+    </select>
 </mapper>

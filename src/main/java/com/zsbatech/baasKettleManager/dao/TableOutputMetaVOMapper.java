@@ -14,4 +14,6 @@ public interface TableOutputMetaVOMapper {
     int insert(TableOutputMetaVO tableOutputMetaVO);
 
     TableOutputMetaVO selectTableOutputMetaVO(String stepName);
+
+    TableOutputMetaVO selectTableOutputMetaVOByTransMetaId(int transMetaId);
 }
