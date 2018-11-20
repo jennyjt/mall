@@ -17,4 +17,6 @@ public interface TableInputStepVOMapper {
     int insert(List<TableInputStepVO> tableInputStepVOList);
 
     List<TableInputStepVO> selectTableInputStepVO(List<String> stepNameList);
+
+    List<TableInputStepVO> selectTableInputStepVOS(int transMetaId);
 }

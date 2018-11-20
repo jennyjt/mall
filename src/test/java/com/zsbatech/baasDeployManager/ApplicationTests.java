@@ -42,7 +42,7 @@ public class ApplicationTests {
     @Test
     public void test() throws  Exception{
         KettleEnvironment.init();
-        TransMeta transMeta = new TransMeta("C:\\Users\\zhang\\Desktop\\jdbc.ktr");
+        TransMeta transMeta = new TransMeta("C:\\Users\\zhang\\Desktop\\jdee.ktr");
         Trans trans = new Trans(transMeta);
         trans.prepareExecution(null);
         trans.startThreads();
@@ -97,5 +97,10 @@ public class ApplicationTests {
     @Test
     public void testmaet(){
         saveTransMetaService.saveTransData("C:\\Users\\zhang\\Desktop\\jdbc.ktr");
+    }
+
+    @Test
+    public void testSaveByDB(){
+        saveTransMetaService.saveByDB("jdbc",new String[]{"id","name"});
     }
 }

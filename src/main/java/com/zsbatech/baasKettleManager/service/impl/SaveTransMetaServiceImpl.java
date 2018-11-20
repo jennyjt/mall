@@ -12,9 +12,14 @@ import com.zsbatech.baasKettleManager.vo.TransMetaVO;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.KettleEnvironment;
+import org.pentaho.di.core.RowMetaAndData;
+import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.exception.KettleMissingPluginsException;
 import org.pentaho.di.core.exception.KettleXMLException;
+import org.pentaho.di.core.plugins.PluginRegistry;
+import org.pentaho.di.core.plugins.StepPluginType;
+import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.util.Utils;
 import org.pentaho.di.core.vfs.KettleVFS;
 import org.pentaho.di.core.xml.XMLHandler;
@@ -22,6 +27,7 @@ import org.pentaho.di.trans.TransHopMeta;
 import org.pentaho.di.trans.TransMeta;
 import org.pentaho.di.trans.step.StepMeta;
 import org.pentaho.di.trans.step.StepMetaInterface;
+import org.pentaho.di.trans.steps.fieldsplitter.FieldSplitterData;
 import org.pentaho.di.trans.steps.insertupdate.InsertUpdateMeta;
 import org.pentaho.di.trans.steps.tableinput.TableInputMeta;
 import org.pentaho.di.trans.steps.tableoutput.TableOutputMeta;
@@ -112,6 +118,7 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
         } else if (transMetaVOMapper.insert(getTransMetaVO(transMeta)) > 0) {
             TransMetaVO transMetaVO = transMetaVOMapper.selectTransMetaVO(transMeta.getName());
             TableOutputMetaVO tableOutputMetaVO = getTableOutputMetaVO(transMeta);
+            tableOutputMetaVO.setTransMetaId(transMetaVO.getId());
             List<TableInputStepVO> tableInputStepVOList = getTableInputStepVO(transMeta);
             List<String> stepNameList = new ArrayList<>();
             for (TableInputStepVO tableInputStepVO : tableInputStepVOList) {
@@ -229,4 +236,60 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
         }
         return transHopMetas;
     }
+
+    /**
+     * 还原转换的.ktr文件
+     * @param fields 字段数组
+     * @param name 文件名
+     * @return
+     */
+    public boolean saveByDB(String name , String[] fields) {
+        try {
+            KettleEnvironment.init();
+        } catch (KettleException e) {
+            e.printStackTrace();
+        }
+        TransMetaVO transMetaVO = transMetaVOMapper.selectTransMetaVO(name);
+        TableOutputMetaVO tableOutputMetaVO = tableOutputMetaVOMapper.selectTableOutputMetaVOByTransMetaId(transMetaVO.getId());
+        List<TableInputStepVO> tableInputStepVOList = tableInputStepVOMapper.selectTableInputStepVOS(transMetaVO.getId());
+        TransMeta transMeta = new TransMeta();
+        DatabaseMeta databaseMeta = new DatabaseMeta();
+        databaseMeta.setDatabaseType("MySQL");
+        databaseMeta.setDBName("kettle");
+        databaseMeta.setHostname("localhost");
+        databaseMeta.setDBPort("3306");
+        databaseMeta.setUsername("root");
+        databaseMeta.setPassword("root");
+        databaseMeta.setName("sample");
+        transMeta.addDatabase(databaseMeta);
+        transMeta.setName(transMetaVO.getName());
+        TableOutputMeta tableOutputMeta = new TableOutputMeta();
+        tableOutputMeta.setTableName(tableOutputMetaVO.getTargetTable());
+        String[] fieldsStream = fields;
+        tableOutputMeta.setTableNameInTable(true);
+        tableOutputMeta.setFieldDatabase(fields);
+        tableOutputMeta.setFieldStream(fieldsStream);
+        PluginRegistry registry = PluginRegistry.getInstance();
+        if (tableOutputMetaVO.getIsBatchInsert() == 1) {
+            tableOutputMeta.setUseBatchUpdate(true);
+        } else {
+            tableOutputMeta.setUseBatchUpdate(false);
+        }
+        tableOutputMeta.setDatabaseMeta(transMeta.findDatabase("sample"));
+        String tableOutputPluginId = registry.getPluginId(StepPluginType.class, tableOutputMeta);
+        StepMeta tableOutputStepMeta = new StepMeta(tableOutputPluginId, tableOutputMetaVO.getStepName(), tableOutputMeta);
+        transMeta.addStep(tableOutputStepMeta);
+        for (TableInputStepVO tableInputStepVO : tableInputStepVOList) {
+            TableInputMeta tableInputMeta = new TableInputMeta();
+            tableInputMeta.setSQL(tableInputStepVO.getExcSql());
+            tableInputMeta.setDatabaseMeta(transMeta.findDatabase("sample"));
+            String tableInputPluginId = registry.getPluginId(StepPluginType.class, tableInputMeta);
+            StepMeta tableInputStepMeta = new StepMeta(tableInputPluginId, tableInputStepVO.getStepName(), tableInputMeta);
+            transMeta.addStep(tableInputStepMeta);
+            transMeta.addTransHop(new TransHopMeta(tableInputStepMeta,tableOutputStepMeta));
+        }
+        save(transMeta, "C:\\Users\\zhang\\Desktop\\jdee.ktr", true);
+        return true;
+    }
+
 }

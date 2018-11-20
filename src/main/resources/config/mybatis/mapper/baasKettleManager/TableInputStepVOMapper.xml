@@ -35,4 +35,11 @@
             </foreach>
         </where>
     </select>
+
+    <select id="selectTableInputStepVOS" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from tableinput_step
+        where trans_meta_id = #{transMetaId,jdbcType=INTEGER}
+    </select>
 </mapper>

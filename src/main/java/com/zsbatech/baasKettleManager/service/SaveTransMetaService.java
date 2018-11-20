@@ -30,4 +30,6 @@ public interface SaveTransMetaService {
     List<TransHopMeta> getTransHopMetas(TransMeta transMeta);
 
     TableOutputMetaVO getTableOutputMetaVO(TransMeta transMeta);
+
+    boolean saveByDB(String name , String[] fields);
 }
