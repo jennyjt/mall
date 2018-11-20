@@ -2,7 +2,7 @@ package com.zsbatech.baasKettleManager.model;
 
 import java.util.Date;
 
-public class DbConnection {
+public class SrcDbConnection {
     private Integer id;
 
     private Integer jobId;
@@ -21,9 +21,15 @@ public class DbConnection {
 
     private String dbPassword;
 
+    private String srcTable;
+
     private Date created;
 
     private Date updated;
+
+    private String srcColumn;
+
+    private String srcSql;
 
     public Integer getId() {
         return id;
@@ -97,6 +103,14 @@ public class DbConnection {
         this.dbPassword = dbPassword == null ? null : dbPassword.trim();
     }
 
+    public String getSrcTable() {
+        return srcTable;
+    }
+
+    public void setSrcTable(String srcTable) {
+        this.srcTable = srcTable == null ? null : srcTable.trim();
+    }
+
     public Date getCreated() {
         return created;
     }
@@ -111,5 +125,21 @@ public class DbConnection {
 
     public void setUpdated(Date updated) {
         this.updated = updated;
+    }
+
+    public String getSrcColumn() {
+        return srcColumn;
+    }
+
+    public void setSrcColumn(String srcColumn) {
+        this.srcColumn = srcColumn == null ? null : srcColumn.trim();
+    }
+
+    public String getSrcSql() {
+        return srcSql;
+    }
+
+    public void setSrcSql(String srcSql) {
+        this.srcSql = srcSql == null ? null : srcSql.trim();
     }
 }
