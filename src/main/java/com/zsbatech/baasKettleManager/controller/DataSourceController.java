@@ -9,6 +9,7 @@ import com.zsbatech.base.constants.Response;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,6 +26,7 @@ public class DataSourceController {
 
     private static Logger logger = LoggerFactory.getLogger(DataSourceController.class);
 
+    @Autowired
     private DataSouceManageService dbManage;
 
     @ApiOperation(value = "输入数据源新增", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -88,7 +90,7 @@ public class DataSourceController {
     @ResponseBody
     public ResponseData<List<SrcDbConnection>> getSrcDataSourceList(HttpServletRequest request,
                                                           @RequestParam(name = "job_id", required = true) Integer jobId,
-                                                          @RequestParam(name = "step_id", required = true) Integer stepId) {
+                                                          @RequestParam(name = "step_id", required = false) Integer stepId) {
         ResponseData<List<SrcDbConnection>> responseData = new ResponseData<>();
 
         //UniToken uniToken = JWTUtils.validateToken(request);
@@ -163,7 +165,7 @@ public class DataSourceController {
     @ResponseBody
     public ResponseData<List<DstDbConnection>> getDstDataSourceList(HttpServletRequest request,
                                                              @RequestParam(name = "job_id", required = true) Integer jobId,
-                                                             @RequestParam(name = "step_id", required = true) Integer stepId) {
+                                                             @RequestParam(name = "step_id", required = false) Integer stepId) {
         ResponseData<List<DstDbConnection>> responseData = new ResponseData<>();
 
         //UniToken uniToken = JWTUtils.validateToken(request);
