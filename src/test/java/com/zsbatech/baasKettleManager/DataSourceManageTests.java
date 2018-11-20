@@ -1,5 +1,6 @@
 package com.zsbatech.baasKettleManager;
 
+import com.zsbatech.baasKettleManager.model.SrcDbConnection;
 import com.zsbatech.baasKettleManager.service.DataSouceManageService;
 import com.zsbatech.base.utils.DateUtils;
 import org.junit.Test;
@@ -22,7 +23,7 @@ public class DataSourceManageTests {
 
     @Test
     public void testSaveConnection(){
-        DbConnection conn = new DbConnection();
+        SrcDbConnection conn = new SrcDbConnection();
         conn.setJobId(11);
         conn.setStepId(1);
         conn.setLinkName("my_test");
@@ -33,13 +34,13 @@ public class DataSourceManageTests {
         conn.setDbPassword("123456");
         conn.setCreated(DateUtils.currentDateTime());
         conn.setUpdated(DateUtils.currentDateTime());
-        boolean result = dbService.createDataSource(conn);
+        boolean result = dbService.createSrcDataSource(conn);
         assertSame(true, result);
     }
 
     @Test
     public void testUpdateConnection(){
-        DbConnection conn = new DbConnection();
+        SrcDbConnection conn = new SrcDbConnection();
         conn.setId(6);
         conn.setJobId(11);
         conn.setStepId(1);
@@ -50,13 +51,13 @@ public class DataSourceManageTests {
         conn.setDbUser("test");
         conn.setDbPassword("123456");
         conn.setUpdated(DateUtils.currentDateTime());
-        boolean result = dbService.updateDataSource(conn);
+        boolean result = dbService.updateSrcDataSource(conn);
         assertSame(true, result);
     }
 
     @Test
     public void testGetConnections(){
-        List<DbConnection> conns = dbService.getDataSources(11, null);
+        List<SrcDbConnection> conns = dbService.getSrcDataSources(11, null);
         assertNotNull(conns);
     }
 }
