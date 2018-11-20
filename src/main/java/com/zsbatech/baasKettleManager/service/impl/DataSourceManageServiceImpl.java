@@ -1,7 +1,9 @@
 package com.zsbatech.baasKettleManager.service.impl;
 
-import com.zsbatech.baasKettleManager.dao.DbConnectionMapper;
-import com.zsbatech.baasKettleManager.model.DbConnection;
+import com.zsbatech.baasKettleManager.dao.DstDbConnectionMapper;
+import com.zsbatech.baasKettleManager.dao.SrcDbConnectionMapper;
+import com.zsbatech.baasKettleManager.model.DstDbConnection;
+import com.zsbatech.baasKettleManager.model.SrcDbConnection;
 import com.zsbatech.baasKettleManager.service.DataSouceManageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,11 +16,14 @@ import java.util.List;
 @Service
 public class DataSourceManageServiceImpl implements DataSouceManageService {
     @Autowired
-    private DbConnectionMapper dbConnectionMapper;
+    private SrcDbConnectionMapper srcDbMapper;
+
+    @Autowired
+    private DstDbConnectionMapper dstDbMapper;
 
     @Override
-    public boolean createDataSource(DbConnection dbConnection) {
-        int result = dbConnectionMapper.insert(dbConnection);
+    public boolean createSrcDataSource(SrcDbConnection dbConnection) {
+        int result = srcDbMapper.insert(dbConnection);
 
         if(result <= 0){
             return false;
@@ -28,8 +33,13 @@ public class DataSourceManageServiceImpl implements DataSouceManageService {
     }
 
     @Override
-    public boolean updateDataSource(DbConnection dbConnection) {
-        int result = dbConnectionMapper.updateByPrimaryKeySelective(dbConnection);
+    public boolean createSrcDataSourceList(List<SrcDbConnection> dbConnectionList) {
+        return false;
+    }
+
+    @Override
+    public boolean createDstDataSource(DstDbConnection dbConnection) {
+        int result = dstDbMapper.insert(dbConnection);
 
         if(result <= 0){
             return false;
@@ -39,7 +49,34 @@ public class DataSourceManageServiceImpl implements DataSouceManageService {
     }
 
     @Override
-    public List<DbConnection> getDataSources(Integer jobId, Integer stepId) {
-        return dbConnectionMapper.getConnectionList(jobId, stepId);
+    public boolean updateSrcDataSource(SrcDbConnection dbConnection) {
+        int result = srcDbMapper.updateByPrimaryKeySelective(dbConnection);
+
+        if(result <= 0){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    @Override
+    public boolean updateDstDataSource(DstDbConnection dbConnection) {
+        int result = dstDbMapper.updateByPrimaryKeySelective(dbConnection);
+
+        if(result <= 0){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    @Override
+    public List<SrcDbConnection> getSrcDataSources(Integer jobId, Integer stepId) {
+        return srcDbMapper.getConnectionList(jobId, stepId);
+    }
+
+    @Override
+    public List<DstDbConnection> getDstDataSources(Integer jobId, Integer stepId) {
+        return dstDbMapper.getConnectionList(jobId, stepId);
     }
 }
