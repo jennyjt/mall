@@ -34,7 +34,13 @@ public class DataSourceManageServiceImpl implements DataSouceManageService {
 
     @Override
     public boolean createSrcDataSourceList(List<SrcDbConnection> dbConnectionList) {
-        return false;
+        int result = srcDbMapper.insertSrcDbConnList(dbConnectionList);
+
+        if(result <= 0){
+            return false;
+        }else{
+            return true;
+        }
     }
 
     @Override

@@ -19,7 +19,7 @@ public interface DataSouceManageService {
 
     /**
      * 创建输入数据源
-     * @param dbConnection
+     * @param dbConnectionList
      * @return
      */
     boolean createSrcDataSourceList(List<SrcDbConnection> dbConnectionList);
