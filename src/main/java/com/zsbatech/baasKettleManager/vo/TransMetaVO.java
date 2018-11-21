@@ -15,8 +15,8 @@ public class TransMetaVO {
         this.id = id;
     }
 
-    public void setName(String name) {
-        this.transName = name;
+    public void setTransName(String transName) {
+        this.transName = transName;
     }
 
     public void setFileName(String fileName) {
@@ -35,7 +35,7 @@ public class TransMetaVO {
         return id;
     }
 
-    public String getName() {
+    public String getTransName() {
         return transName;
     }
 
