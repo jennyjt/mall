@@ -166,7 +166,7 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
      */
     public TransMetaVO getTransMetaVO(TransMeta transMeta) {
         TransMetaVO transMetaVO = new TransMetaVO();
-        transMetaVO.setName(transMeta.getName());
+        transMetaVO.setTransName(transMeta.getName());
         transMetaVO.setFileName(transMeta.getName() + ".ktr");
         transMetaVO.setCreateTime(new Date());
         transMetaVO.setUpdateTime(new Date());
@@ -262,7 +262,7 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
         databaseMeta.setPassword("root");
         databaseMeta.setName("sample");
         transMeta.addDatabase(databaseMeta);
-        transMeta.setName(transMetaVO.getName());
+        transMeta.setName(transMetaVO.getTransName());
         TableOutputMeta tableOutputMeta = new TableOutputMeta();
         tableOutputMeta.setTableName(tableOutputMetaVO.getTargetTable());
         String[] fieldsStream = fields;
