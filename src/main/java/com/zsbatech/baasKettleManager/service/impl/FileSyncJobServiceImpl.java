@@ -26,9 +26,20 @@ import org.springframework.stereotype.Service;
 public class FileSyncJobServiceImpl implements FileSyncJobService {
 
     @Autowired
+    private String ftpJobUrl;
+
+    @Autowired
     private SaveJobMetaService saveJobMetaService;
 
-    public boolean createDownloadJobMeta(JobStartStepVO jobStartStepVO, FTPDownLoadStepVO ftpDownLoadStepVO) {
+    /**
+     * 创建ftp下载的job
+     *
+     * @param jobStartStepVO
+     * @param ftpDownLoadStepVO
+     * @param fileName
+     * @return
+     */
+    public boolean createDownloadJobMeta(JobStartStepVO jobStartStepVO, FTPDownLoadStepVO ftpDownLoadStepVO,String fileName) {
         try {
             KettleEnvironment.init();
         } catch (KettleException e) {
@@ -83,11 +94,19 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         JobHopMeta jobHopMeta = new JobHopMeta(jobEntrySpecialCopy, jobEntryFTPCopy);
         jobHopMeta.setUnconditional(true);
         jobMeta.addJobHop(jobHopMeta);
-        saveJobMetaService.save(jobMeta, "C:\\Users\\zhang\\Desktop\\ftp.kjb", true);
+        saveJobMetaService.save(jobMeta, ftpJobUrl+fileName, true);
         return true;
     }
 
-    public boolean createPutJobMeta(JobStartStepVO jobStartStepVO, FTPPutStepVO ftpPutStepVO) {
+    /**
+     * 创建ftp上传的job
+     *
+     * @param jobStartStepVO
+     * @param ftpPutStepVO
+     * @param fileName
+     * @return
+     */
+    public boolean createPutJobMeta(JobStartStepVO jobStartStepVO, FTPPutStepVO ftpPutStepVO,String fileName) {
         try {
             KettleEnvironment.init();
         } catch (KettleException e) {
@@ -142,7 +161,7 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         JobHopMeta jobHopMeta = new JobHopMeta(jobEntrySpecialCopy, jobEntryFTPCopy);
         jobHopMeta.setUnconditional(true);
         jobMeta.addJobHop(jobHopMeta);
-        saveJobMetaService.save(jobMeta, "C:\\Users\\zhang\\Desktop\\ftp.kjb", true);
+        saveJobMetaService.save(jobMeta, ftpJobUrl+fileName, true);
         return true;
     }
 }
