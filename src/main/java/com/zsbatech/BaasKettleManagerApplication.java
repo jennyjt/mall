@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-@MapperScan(value = {"com.zsbatech.*.dao"})
+@MapperScan(value = {"com.zsbatech.*.dao","com.zsbatech.*.mapper"})
 @EnableTransactionManagement
 @SpringBootApplication(exclude = {DataSourceAutoConfiguration.class})
 @EnableAsync
