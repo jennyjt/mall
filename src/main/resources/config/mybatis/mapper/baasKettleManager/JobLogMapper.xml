@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zsbatech.baasKettleManager.dao.JobLogMapper" >
+  <resultMap id="BaseResultMap" type="com.zsbatech.baasKettleManager.model.JobLog" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="job_id" property="jobId" jdbcType="INTEGER" />
+    <result column="job_name" property="jobName" jdbcType="VARCHAR" />
+    <result column="status" property="status" jdbcType="TINYINT" />
+    <result column="lines_rejected" property="linesRejected" jdbcType="INTEGER" />
+    <result column="errors" property="errors" jdbcType="INTEGER" />
+    <result column="executing_user" property="executingUser" jdbcType="VARCHAR" />
+    <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
+    <result column="end_time" property="endTime" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.zsbatech.baasKettleManager.model.JobLog" extends="BaseResultMap" >
+    <result column="log_field" property="logField" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, job_id, job_name, status, lines_rejected, errors, executing_user, start_time, 
+    end_time
+  </sql>
+  <sql id="Blob_Column_List" >
+    log_field
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.zsbatech.baasKettleManager.model.JobLogExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from job_log
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.zsbatech.baasKettleManager.model.JobLogExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from job_log
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from job_log
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from job_log
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.zsbatech.baasKettleManager.model.JobLogExample" >
+    delete from job_log
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zsbatech.baasKettleManager.model.JobLog" >
+    <selectKey resultType="int" keyProperty="id" order="AFTER">
+      select LAST_INSERT_ID()
+    </selectKey>
+    insert into job_log (id, job_id, job_name, 
+      status, lines_rejected, errors, 
+      executing_user, start_time, end_time, 
+      log_field)
+    values (#{id,jdbcType=INTEGER}, #{jobId,jdbcType=INTEGER}, #{jobName,jdbcType=VARCHAR}, 
+      #{status,jdbcType=TINYINT}, #{linesRejected,jdbcType=INTEGER}, #{errors,jdbcType=INTEGER}, 
+      #{executingUser,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
+      #{logField,jdbcType=LONGVARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zsbatech.baasKettleManager.model.JobLog" >
+    insert into job_log
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="jobId != null" >
+        job_id,
+      </if>
+      <if test="jobName != null" >
+        job_name,
+      </if>
+      <if test="status != null" >
+        status,
+      </if>
+      <if test="linesRejected != null" >
+        lines_rejected,
+      </if>
+      <if test="errors != null" >
+        errors,
+      </if>
+      <if test="executingUser != null" >
+        executing_user,
+      </if>
+      <if test="startTime != null" >
+        start_time,
+      </if>
+      <if test="endTime != null" >
+        end_time,
+      </if>
+      <if test="logField != null" >
+        log_field,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="jobId != null" >
+        #{jobId,jdbcType=INTEGER},
+      </if>
+      <if test="jobName != null" >
+        #{jobName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=TINYINT},
+      </if>
+      <if test="linesRejected != null" >
+        #{linesRejected,jdbcType=INTEGER},
+      </if>
+      <if test="errors != null" >
+        #{errors,jdbcType=INTEGER},
+      </if>
+      <if test="executingUser != null" >
+        #{executingUser,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null" >
+        #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="logField != null" >
+        #{logField,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.zsbatech.baasKettleManager.model.JobLogExample" resultType="java.lang.Integer" >
+    select count(*) from job_log
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update job_log
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.jobId != null" >
+        job_id = #{record.jobId,jdbcType=INTEGER},
+      </if>
+      <if test="record.jobName != null" >
+        job_name = #{record.jobName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.status != null" >
+        status = #{record.status,jdbcType=TINYINT},
+      </if>
+      <if test="record.linesRejected != null" >
+        lines_rejected = #{record.linesRejected,jdbcType=INTEGER},
+      </if>
+      <if test="record.errors != null" >
+        errors = #{record.errors,jdbcType=INTEGER},
+      </if>
+      <if test="record.executingUser != null" >
+        executing_user = #{record.executingUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.startTime != null" >
+        start_time = #{record.startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.endTime != null" >
+        end_time = #{record.endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.logField != null" >
+        log_field = #{record.logField,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update job_log
+    set id = #{record.id,jdbcType=INTEGER},
+      job_id = #{record.jobId,jdbcType=INTEGER},
+      job_name = #{record.jobName,jdbcType=VARCHAR},
+      status = #{record.status,jdbcType=TINYINT},
+      lines_rejected = #{record.linesRejected,jdbcType=INTEGER},
+      errors = #{record.errors,jdbcType=INTEGER},
+      executing_user = #{record.executingUser,jdbcType=VARCHAR},
+      start_time = #{record.startTime,jdbcType=TIMESTAMP},
+      end_time = #{record.endTime,jdbcType=TIMESTAMP},
+      log_field = #{record.logField,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update job_log
+    set id = #{record.id,jdbcType=INTEGER},
+      job_id = #{record.jobId,jdbcType=INTEGER},
+      job_name = #{record.jobName,jdbcType=VARCHAR},
+      status = #{record.status,jdbcType=TINYINT},
+      lines_rejected = #{record.linesRejected,jdbcType=INTEGER},
+      errors = #{record.errors,jdbcType=INTEGER},
+      executing_user = #{record.executingUser,jdbcType=VARCHAR},
+      start_time = #{record.startTime,jdbcType=TIMESTAMP},
+      end_time = #{record.endTime,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zsbatech.baasKettleManager.model.JobLog" >
+    update job_log
+    <set >
+      <if test="jobId != null" >
+        job_id = #{jobId,jdbcType=INTEGER},
+      </if>
+      <if test="jobName != null" >
+        job_name = #{jobName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null" >
+        status = #{status,jdbcType=TINYINT},
+      </if>
+      <if test="linesRejected != null" >
+        lines_rejected = #{linesRejected,jdbcType=INTEGER},
+      </if>
+      <if test="errors != null" >
+        errors = #{errors,jdbcType=INTEGER},
+      </if>
+      <if test="executingUser != null" >
+        executing_user = #{executingUser,jdbcType=VARCHAR},
+      </if>
+      <if test="startTime != null" >
+        start_time = #{startTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="endTime != null" >
+        end_time = #{endTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="logField != null" >
+        log_field = #{logField,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.zsbatech.baasKettleManager.model.JobLog" >
+    update job_log
+    set job_id = #{jobId,jdbcType=INTEGER},
+      job_name = #{jobName,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      lines_rejected = #{linesRejected,jdbcType=INTEGER},
+      errors = #{errors,jdbcType=INTEGER},
+      executing_user = #{executingUser,jdbcType=VARCHAR},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP},
+      log_field = #{logField,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zsbatech.baasKettleManager.model.JobLog" >
+    update job_log
+    set job_id = #{jobId,jdbcType=INTEGER},
+      job_name = #{jobName,jdbcType=VARCHAR},
+      status = #{status,jdbcType=TINYINT},
+      lines_rejected = #{linesRejected,jdbcType=INTEGER},
+      errors = #{errors,jdbcType=INTEGER},
+      executing_user = #{executingUser,jdbcType=VARCHAR},
+      start_time = #{startTime,jdbcType=TIMESTAMP},
+      end_time = #{endTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
