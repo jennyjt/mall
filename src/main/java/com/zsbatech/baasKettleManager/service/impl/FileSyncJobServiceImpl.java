@@ -25,8 +25,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class FileSyncJobServiceImpl implements FileSyncJobService {
 
-    @Autowired
-    private String ftpJobUrl;
+//    @Autowired
+    private String ftpJobUrl="C:\\Users\\zhang\\Desktop\\";
 
     @Autowired
     private SaveJobMetaService saveJobMetaService;
