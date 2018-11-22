@@ -1,8 +1,10 @@
 package com.zsbatech.baasDeployManager;
 
+import com.zsbatech.baasKettleManager.service.FileSyncJobService;
 import com.zsbatech.baasKettleManager.service.SaveTransMetaService;
-import com.zsbatech.baasKettleManager.service.impl.SaveJobMetaServiceImpl;
 import com.zsbatech.baasKettleManager.service.impl.SaveTransMetaServiceImpl;
+import com.zsbatech.baasKettleManager.vo.FTPDownLoadStepVO;
+import com.zsbatech.baasKettleManager.vo.JobStartStepVO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.pentaho.di.core.KettleEnvironment;
@@ -22,6 +24,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ApplicationTests {
+
+    @Autowired
+    private FileSyncJobService fileSyncJobService;
 
     @Autowired
     private SaveTransMetaService saveTransMetaService;
@@ -77,13 +82,13 @@ public class ApplicationTests {
         JobHopMeta jobHopMeta = new JobHopMeta(specialCopy, deleteFileCopy);
         jobHopMeta.setUnconditional(true);
         jobMeta.addJobHop(jobHopMeta);
-        new SaveJobMetaServiceImpl().save(jobMeta, "C:\\Users\\zhang\\Desktop\\cads.kjb", true);
+        new SaveTransMetaServiceImpl().save(jobMeta, "C:\\Users\\zhang\\Desktop\\cads.kjb", true);
     }
     @Test
     public void testJob() throws Exception{
         KettleEnvironment.init();
         //filename为作业的文件路径
-        JobMeta jobMeta = new JobMeta("C:\\Users\\zhang\\Desktop\\cads.kjb",null);
+        JobMeta jobMeta = new JobMeta("C:\\Users\\zhang\\Desktop\\ftp.kjb",null);
         Job job = new Job(null,jobMeta);
 //    启动一个作业
         job.start();
@@ -102,5 +107,21 @@ public class ApplicationTests {
     @Test
     public void testSaveByDB(){
         saveTransMetaService.saveByDB("jdbc",new String[]{"id","name"});
+    }
+    @Test
+    public void testCreateDownloadJobMeta(){
+        JobStartStepVO jobStartStepVO = new JobStartStepVO();
+        jobStartStepVO.setTimingType((short)0);
+        jobStartStepVO.setIsRepeat((short)0);
+        FTPDownLoadStepVO ftpDownLoadStepVO = new  FTPDownLoadStepVO();
+        ftpDownLoadStepVO.setServerName("106.75.17.46");
+        ftpDownLoadStepVO.setPort("21");
+        ftpDownLoadStepVO.setUserName("kettletest");
+        ftpDownLoadStepVO.setPassword("test123456");
+        ftpDownLoadStepVO.setBinaryMode((short)1);
+        ftpDownLoadStepVO.setControlEncoding("UTF-8");
+        ftpDownLoadStepVO.setFtpDirectory("");
+        ftpDownLoadStepVO.setTargetDirectory("C:\\Users\\zhang\\Desktop\\新建文件夹");
+        fileSyncJobService.createDownloadJobMeta(jobStartStepVO,ftpDownLoadStepVO);
     }
 }

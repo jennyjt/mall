@@ -54,7 +54,7 @@ public class FTPTransController {
 //        jobEntryDeleteFile.setFilename("要删除的删除的文件");
 //        JobEntryCopy deleteFileCopy = new JobEntryCopy(jobEntryDeleteFile);
 //        jobMeta.addJobEntry(deleteFileCopy);
-//        jobMeta.addJobHop(new JobHopMeta(specialCopy, deleteFileCopy));
+//        jobMeta.addJobHop(new JobHopMetaVO(specialCopy, deleteFileCopy));
 //        ResponseData<Boolean> responseData = new ResponseData<>();
 //        responseData.setResult(saveTransMetaService.save(jobMeta, "C:\\Users\\zhang\\Desktop", true));
 //        return responseData;

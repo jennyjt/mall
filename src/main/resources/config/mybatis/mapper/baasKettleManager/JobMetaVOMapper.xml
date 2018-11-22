@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zsbatech.baasKettleManager.dao.JobMetaVOMapper" >
+  <resultMap id="BaseResultMap" type="com.zsbatech.baasKettleManager.vo.JobMetaVO" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="job_name" property="jobName" jdbcType="VARCHAR" />
+    <result column="file_name" property="fileName" jdbcType="VARCHAR" />
+    <result column="createtime" property="createTime" jdbcType="VARCHAR" />
+    <result column="updatetime" property="updateTime" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, job_name, file_name, createtime, updatetime
+  </sql>
+
+  <insert id="insert" parameterType="com.zsbatech.baasKettleManager.vo.JobMetaVO" >
+    insert into job_meta (id, job_name, file_name,
+      createtime, updatetime)
+    values (#{id,jdbcType=INTEGER}, #{jobName,jdbcType=VARCHAR},#{fileName,jdbcType=VARCHAR},#{createTime,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR})
+  </insert>
+
+  <select id="selectTransMetaVO" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select
+    <include refid="Base_Column_List" />
+    from job_meta
+    where job_name = #{transName,jdbcType=VARCHAR}
+    limit 1
+  </select>
+</mapper>
