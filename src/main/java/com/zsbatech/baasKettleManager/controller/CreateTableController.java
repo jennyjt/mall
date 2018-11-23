@@ -1,6 +1,6 @@
 package com.zsbatech.baasKettleManager.controller;
 
-import com.zsbatech.baasKettleManager.model.CreateTable;
+import com.zsbatech.baasKettleManager.model.DataMig;
 import com.zsbatech.baasKettleManager.model.DbResponse;
 
 import com.zsbatech.baasKettleManager.service.CreateTableService;
@@ -19,10 +19,10 @@ public class CreateTableController {
 
     @RequestMapping(value = "/createtable", method = RequestMethod.POST)
     @ResponseBody
-    public  ResponseData<String> createTable(@RequestBody CreateTable createTable) {
+    public  ResponseData<String> createTable(@RequestBody DataMig dataMig) {
 
 
-        ResponseData responseData = createTableService.createTable(createTable);
+        ResponseData responseData = createTableService.createTable(dataMig);
 
             return responseData;
         }
