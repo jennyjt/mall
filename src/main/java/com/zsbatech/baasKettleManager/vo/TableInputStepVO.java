@@ -23,6 +23,9 @@ public class TableInputStepVO {
     private Date updateTime;
 
     private int transMetaId;
+
+    private int DbManagerMentId;
+
     public int getId() {
         return id;
     }
@@ -51,6 +54,10 @@ public class TableInputStepVO {
         return transMetaId;
     }
 
+    public int getDbManagerMentId() {
+        return DbManagerMentId;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -77,5 +84,13 @@ public class TableInputStepVO {
 
     public void setTransMetaId(int transMetaId) {
         this.transMetaId = transMetaId;
+    }
+
+    public void setExcSql(String excSql) {
+        this.excSql = excSql;
+    }
+
+    public void setDbManagerMentId(int DbManagerMentId) {
+        DbManagerMentId = DbManagerMentId;
     }
 }

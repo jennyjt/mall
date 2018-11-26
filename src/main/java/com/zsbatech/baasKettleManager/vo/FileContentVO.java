@@ -1,37 +1,32 @@
 package com.zsbatech.baasKettleManager.vo;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
  * Description:
  * User: Zhangys
- * Date: 2018/11/21
+ * Date: 2018/11/22
  */
-public class JobMetaVO {
+public class FileContentVO {
 
     private int id;
 
-    private String jobName;
-
-    private String fileName;
+    private String sourceContent;
 
     private Date createTime;
 
-    private  Date updateTime;
+    private Date updateTime;
 
-    private int transMetaId;
+    private List<FilesVO> filesVOList;
 
     public int getId() {
         return id;
     }
 
-    public String getJobName() {
-        return jobName;
-    }
-
-    public String getFileName() {
-        return fileName;
+    public String getSourceContent() {
+        return sourceContent;
     }
 
     public Date getCreateTime() {
@@ -42,20 +37,16 @@ public class JobMetaVO {
         return updateTime;
     }
 
-    public int getTransMetaId() {
-        return transMetaId;
+    public List<FilesVO> getFilesVOList() {
+        return filesVOList;
     }
 
     public void setId(int id) {
         this.id = id;
     }
 
-    public void setJobName(String jobName) {
-        this.jobName = jobName;
-    }
-
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
+    public void setSourceContent(String sourceContent) {
+        this.sourceContent = sourceContent;
     }
 
     public void setCreateTime(Date createTime) {
@@ -66,7 +57,7 @@ public class JobMetaVO {
         this.updateTime = updateTime;
     }
 
-    public void setTransMetaId(int transMetaId) {
-        this.transMetaId = transMetaId;
+    public void setFilesVOList(List<FilesVO> filesVOList) {
+        this.filesVOList = filesVOList;
     }
 }

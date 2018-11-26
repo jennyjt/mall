@@ -11,10 +11,12 @@ import java.util.Map;
  */
 public interface ContentManageService {
 
-    Map<String, List<String>> createContent(String[] files);
+    Map<String, List<String>> createContent(List<String> files);
 
-    Map<String, List<String>> deleteFiles(String[] files);
+    Map<String, List<String>> deleteFiles(List<String> files);
 
-    Map<String, List<String>> deleteContents(String[] fileContents);
+    Map<String, List<String>> deleteContents(List<String> fileContents);
+
+    List<String> queryFiles(List<String> fileNames);
 
 }

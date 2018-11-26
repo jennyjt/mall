@@ -27,6 +27,8 @@ public class TableOutputMetaVO {
 
     private int entryId;
 
+    private int DbManagerMentId;
+
     public void setId(int id) {
         this.id = id;
     }
@@ -63,6 +65,10 @@ public class TableOutputMetaVO {
         this.entryId = entryId;
     }
 
+    public void setDbManagerMentId(int DbManagerMentId) {
+        DbManagerMentId = DbManagerMentId;
+    }
+
     public int getId() {
         return id;
     }
@@ -97,5 +103,9 @@ public class TableOutputMetaVO {
 
     public int getEntryId() {
         return entryId;
+    }
+
+    public int getDbManagerMentId() {
+        return DbManagerMentId;
     }
 }

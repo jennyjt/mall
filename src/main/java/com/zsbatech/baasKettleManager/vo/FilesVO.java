@@ -6,28 +6,22 @@ import java.util.Date;
  * Created with IntelliJ IDEA.
  * Description:
  * User: Zhangys
- * Date: 2018/11/21
+ * Date: 2018/11/22
  */
-public class JobMetaVO {
+public class FilesVO {
 
     private int id;
-
-    private String jobName;
 
     private String fileName;
 
     private Date createTime;
 
-    private  Date updateTime;
+    private Date updateTime;
 
-    private int transMetaId;
+    private FileContentVO fileContentVO;
 
     public int getId() {
         return id;
-    }
-
-    public String getJobName() {
-        return jobName;
     }
 
     public String getFileName() {
@@ -42,16 +36,12 @@ public class JobMetaVO {
         return updateTime;
     }
 
-    public int getTransMetaId() {
-        return transMetaId;
+    public FileContentVO getFileContentVO() {
+        return fileContentVO;
     }
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public void setJobName(String jobName) {
-        this.jobName = jobName;
     }
 
     public void setFileName(String fileName) {
@@ -66,7 +56,7 @@ public class JobMetaVO {
         this.updateTime = updateTime;
     }
 
-    public void setTransMetaId(int transMetaId) {
-        this.transMetaId = transMetaId;
+    public void setFileContentVO(FileContentVO fileContentVO) {
+        this.fileContentVO = fileContentVO;
     }
 }
