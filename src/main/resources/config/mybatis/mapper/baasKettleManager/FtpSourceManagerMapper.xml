@@ -7,18 +7,18 @@
     <result column="ftp_port" property="ftpPort" jdbcType="VARCHAR" />
     <result column="user_name" property="userName" jdbcType="VARCHAR" />
     <result column="pass_word" property="passWord" jdbcType="VARCHAR" />
-    <result column="poxy_host" property="poxyHost" jdbcType="VARCHAR" />
-    <result column="poxy_port" property="poxyPort" jdbcType="VARCHAR" />
-    <result column="poxy_user_name" property="poxyUserName" jdbcType="VARCHAR" />
-    <result column="poxy_pass_word" property="poxyPassWord" jdbcType="VARCHAR" />
+    <result column="proxy_host" property="proxyHost" jdbcType="VARCHAR" />
+    <result column="proxy_port" property="proxyPort" jdbcType="VARCHAR" />
+    <result column="proxy_user_name" property="proxyUserName" jdbcType="VARCHAR" />
+    <result column="proxy_pass_word" property="proxyPassWord" jdbcType="VARCHAR" />
     <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
     <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
     <result column="create_user" property="createUser" jdbcType="VARCHAR" />
     <result column="update_user" property="updateUser" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, ftp_host, ftp_port, user_name, pass_word, poxy_host, poxy_port, poxy_user_name, 
-    poxy_pass_word, create_time, update_time, create_user, update_user
+    id, ftp_host, ftp_port, user_name, pass_word, proxy_host, proxy_port, proxy_user_name, 
+    proxy_pass_word, create_time, update_time, create_user, update_user
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -32,13 +32,13 @@
   </delete>
   <insert id="insert" parameterType="com.zsbatech.baasKettleManager.model.FtpSourceManager" >
     insert into ftp_source_manager (id, ftp_host, ftp_port, 
-      user_name, pass_word, poxy_host, 
-      poxy_port, poxy_user_name, poxy_pass_word, 
+      user_name, pass_word, proxy_host, 
+      proxy_port, proxy_user_name, proxy_pass_word, 
       create_time, update_time, create_user, 
       update_user)
-    values (#{id,jdbcType=INTEGER}, #{ftpHost,jdbcType=VARCHAR}, #{ftpPort,jdbcType=VARCHAR},
-      #{userName,jdbcType=VARCHAR}, #{passWord,jdbcType=VARCHAR}, #{poxyHost,jdbcType=VARCHAR}, 
-      #{poxyPort,jdbcType=VARCHAR}, #{poxyUserName,jdbcType=VARCHAR}, #{poxyPassWord,jdbcType=VARCHAR}, 
+    values (#{id,jdbcType=INTEGER}, #{ftpHost,jdbcType=VARCHAR}, #{ftpPort,jdbcType=VARCHAR}, 
+      #{userName,jdbcType=VARCHAR}, #{passWord,jdbcType=VARCHAR}, #{proxyHost,jdbcType=VARCHAR}, 
+      #{proxyPort,jdbcType=VARCHAR}, #{proxyUserName,jdbcType=VARCHAR}, #{proxyPassWord,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, 
       #{updateUser,jdbcType=VARCHAR})
   </insert>
@@ -60,17 +60,17 @@
       <if test="passWord != null" >
         pass_word,
       </if>
-      <if test="poxyHost != null" >
-        poxy_host,
+      <if test="proxyHost != null" >
+        proxy_host,
       </if>
-      <if test="poxyPort != null" >
-        poxy_port,
+      <if test="proxyPort != null" >
+        proxy_port,
       </if>
-      <if test="poxyUserName != null" >
-        poxy_user_name,
+      <if test="proxyUserName != null" >
+        proxy_user_name,
       </if>
-      <if test="poxyPassWord != null" >
-        poxy_pass_word,
+      <if test="proxyPassWord != null" >
+        proxy_pass_word,
       </if>
       <if test="createTime != null" >
         create_time,
@@ -101,17 +101,17 @@
       <if test="passWord != null" >
         #{passWord,jdbcType=VARCHAR},
       </if>
-      <if test="poxyHost != null" >
-        #{poxyHost,jdbcType=VARCHAR},
+      <if test="proxyHost != null" >
+        #{proxyHost,jdbcType=VARCHAR},
       </if>
-      <if test="poxyPort != null" >
-        #{poxyPort,jdbcType=VARCHAR},
+      <if test="proxyPort != null" >
+        #{proxyPort,jdbcType=VARCHAR},
       </if>
-      <if test="poxyUserName != null" >
-        #{poxyUserName,jdbcType=VARCHAR},
+      <if test="proxyUserName != null" >
+        #{proxyUserName,jdbcType=VARCHAR},
       </if>
-      <if test="poxyPassWord != null" >
-        #{poxyPassWord,jdbcType=VARCHAR},
+      <if test="proxyPassWord != null" >
+        #{proxyPassWord,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null" >
         #{createTime,jdbcType=TIMESTAMP},
@@ -142,17 +142,17 @@
       <if test="passWord != null" >
         pass_word = #{passWord,jdbcType=VARCHAR},
       </if>
-      <if test="poxyHost != null" >
-        poxy_host = #{poxyHost,jdbcType=VARCHAR},
+      <if test="proxyHost != null" >
+        proxy_host = #{proxyHost,jdbcType=VARCHAR},
       </if>
-      <if test="poxyPort != null" >
-        poxy_port = #{poxyPort,jdbcType=VARCHAR},
+      <if test="proxyPort != null" >
+        proxy_port = #{proxyPort,jdbcType=VARCHAR},
       </if>
-      <if test="poxyUserName != null" >
-        poxy_user_name = #{poxyUserName,jdbcType=VARCHAR},
+      <if test="proxyUserName != null" >
+        proxy_user_name = #{proxyUserName,jdbcType=VARCHAR},
       </if>
-      <if test="poxyPassWord != null" >
-        poxy_pass_word = #{poxyPassWord,jdbcType=VARCHAR},
+      <if test="proxyPassWord != null" >
+        proxy_pass_word = #{proxyPassWord,jdbcType=VARCHAR},
       </if>
       <if test="createTime != null" >
         create_time = #{createTime,jdbcType=TIMESTAMP},
@@ -175,10 +175,10 @@
       ftp_port = #{ftpPort,jdbcType=VARCHAR},
       user_name = #{userName,jdbcType=VARCHAR},
       pass_word = #{passWord,jdbcType=VARCHAR},
-      poxy_host = #{poxyHost,jdbcType=VARCHAR},
-      poxy_port = #{poxyPort,jdbcType=VARCHAR},
-      poxy_user_name = #{poxyUserName,jdbcType=VARCHAR},
-      poxy_pass_word = #{poxyPassWord,jdbcType=VARCHAR},
+      proxy_host = #{proxyHost,jdbcType=VARCHAR},
+      proxy_port = #{proxyPort,jdbcType=VARCHAR},
+      proxy_user_name = #{proxyUserName,jdbcType=VARCHAR},
+      proxy_pass_word = #{proxyPassWord,jdbcType=VARCHAR},
       create_time = #{createTime,jdbcType=TIMESTAMP},
       update_time = #{updateTime,jdbcType=TIMESTAMP},
       create_user = #{createUser,jdbcType=VARCHAR},
@@ -191,45 +191,45 @@
     from ftp_source_manager
     <where>
       <if test="id != null" >
-          and #{id,jdbcType=INTEGER}
+        and #{id,jdbcType=INTEGER}
       </if>
       <if test="ftpHost != null" >
-          and #{ftpHost,jdbcType=VARCHAR}
+        and #{ftpHost,jdbcType=VARCHAR}
       </if>
       <if test="FtpPort != null" >
-          and #{ftpPort,jdbcType=VARCHAR}
+        and #{ftpPort,jdbcType=VARCHAR}
       </if>
       <if test="userName != null" >
-          and #{userName,jdbcType=VARCHAR}
+        and #{userName,jdbcType=VARCHAR}
       </if>
       <if test="passWord != null" >
-          and #{passWord,jdbcType=VARCHAR}
+        and #{passWord,jdbcType=VARCHAR}
       </if>
-      <if test="poxyHost != null" >
-          and #{poxyHost,jdbcType=VARCHAR}
+      <if test="proxyHost != null" >
+        and proxy_host = #{proxyHost,jdbcType=VARCHAR}
       </if>
-      <if test="poxyPort != null" >
-          and #{poxyPort,jdbcType=VARCHAR}
+      <if test="proxyPort != null" >
+        and proxy_port = #{proxyPort,jdbcType=VARCHAR}
       </if>
-      <if test="poxyUserName != null" >
-          and #{poxyUserName,jdbcType=VARCHAR}
+      <if test="proxyUserName != null" >
+        and proxy_user_name = #{proxyUserName,jdbcType=VARCHAR}
       </if>
-      <if test="poxyPassWord != null" >
-          and #{poxyPassWord,jdbcType=VARCHAR}
+      <if test="proxyPassWord != null" >
+        and proxy_pass_word = #{proxyPassWord,jdbcType=VARCHAR}
       </if>
       <if test="createTime != null" >
-          and #{createTime,jdbcType=TIMESTAMP}
+        and #{createTime,jdbcType=TIMESTAMP}
       </if>
       <if test="updateTime != null" >
-          and #{updateTime,jdbcType=TIMESTAMP}
+        and #{updateTime,jdbcType=TIMESTAMP}
       </if>
       <if test="createUser != null" >
-          and #{createUser,jdbcType=VARCHAR}
+        and #{createUser,jdbcType=VARCHAR}
       </if>
       <if test="updateUser != null" >
-          and #{updateUser,jdbcType=VARCHAR}
+        and #{updateUser,jdbcType=VARCHAR}
       </if>
     </where>
-      order by id desc
+    order by id desc
   </select>
 </mapper>
