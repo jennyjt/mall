@@ -3,7 +3,6 @@ package com.zsbatech.baasKettleManager.service.impl;
 
 import com.zsbatech.baasKettleManager.dao.*;
 import com.zsbatech.baasKettleManager.model.*;
-import com.zsbatech.baasKettleManager.model.DataMig;
 import com.zsbatech.baasKettleManager.service.DBMigrationService;
 import com.zsbatech.base.common.ResponseData;
 import org.pentaho.di.core.KettleEnvironment;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Date;
-
 
 
 /**
