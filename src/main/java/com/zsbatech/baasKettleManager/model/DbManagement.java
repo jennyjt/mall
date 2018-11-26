@@ -17,9 +17,11 @@ public class DbManagement {
 
     private String dbPassword;
 
-    private Date created;
+    private Date createTime;
 
-    private Date updated;
+    private Date updatedTime;
+
+    private String createUser;
 
     public Integer getId() {
         return id;
@@ -77,19 +79,27 @@ public class DbManagement {
         this.dbPassword = dbPassword == null ? null : dbPassword.trim();
     }
 
-    public Date getCreated() {
-        return created;
+    public Date getCreateTime() {
+        return createTime;
     }
 
-    public void setCreated(Date created) {
-        this.created = created;
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
     }
 
-    public Date getUpdated() {
-        return updated;
+    public Date getUpdatedTime() {
+        return updatedTime;
     }
 
-    public void setUpdated(Date updated) {
-        this.updated = updated;
+    public void setUpdatedTime(Date updatedTime) {
+        this.updatedTime = updatedTime;
+    }
+
+    public String getCreateUser() {
+        return createUser;
+    }
+
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser == null ? null : createUser.trim();
     }
 }
