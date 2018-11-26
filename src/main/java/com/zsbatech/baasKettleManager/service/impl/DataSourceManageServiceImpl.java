@@ -1,14 +1,14 @@
 package com.zsbatech.baasKettleManager.service.impl;
 
-import com.zsbatech.baasKettleManager.dao.DstDbConnectionMapper;
-import com.zsbatech.baasKettleManager.dao.SrcDbConnectionMapper;
-import com.zsbatech.baasKettleManager.model.DstDbConnection;
-import com.zsbatech.baasKettleManager.model.SrcDbConnection;
+import com.zsbatech.baasKettleManager.dao.DbManagementMapper;
+import com.zsbatech.baasKettleManager.model.DbManagement;
 import com.zsbatech.baasKettleManager.service.DataSouceManageService;
+import com.zsbatech.base.common.Pagination;
+import com.zsbatech.base.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.Map;
 
 /**
  * 数据源管理接口实现类
@@ -16,14 +16,12 @@ import java.util.List;
 @Service
 public class DataSourceManageServiceImpl implements DataSouceManageService {
     @Autowired
-    private SrcDbConnectionMapper srcDbMapper;
-
-    @Autowired
-    private DstDbConnectionMapper dstDbMapper;
+    private DbManagementMapper dbMapper;
 
     @Override
-    public boolean createSrcDataSource(SrcDbConnection dbConnection) {
-        int result = srcDbMapper.insert(dbConnection);
+    public boolean createDataSource(DbManagement dbConnection) {
+        dbConnection.setCreated(DateUtils.currentDateTime());
+        int result = dbMapper.insert(dbConnection);
 
         if(result <= 0){
             return false;
@@ -33,8 +31,9 @@ public class DataSourceManageServiceImpl implements DataSouceManageService {
     }
 
     @Override
-    public boolean createSrcDataSourceList(List<SrcDbConnection> dbConnectionList) {
-        int result = srcDbMapper.insertSrcDbConnList(dbConnectionList);
+    public boolean updateDataSource(DbManagement dbConnection) {
+        dbConnection.setUpdated(DateUtils.currentDateTime());
+        int result = dbMapper.updateByPrimaryKeySelective(dbConnection);
 
         if(result <= 0){
             return false;
@@ -44,45 +43,7 @@ public class DataSourceManageServiceImpl implements DataSouceManageService {
     }
 
     @Override
-    public boolean createDstDataSource(DstDbConnection dbConnection) {
-        int result = dstDbMapper.insert(dbConnection);
-
-        if(result <= 0){
-            return false;
-        }else{
-            return true;
-        }
-    }
-
-    @Override
-    public boolean updateSrcDataSource(SrcDbConnection dbConnection) {
-        int result = srcDbMapper.updateByPrimaryKeySelective(dbConnection);
-
-        if(result <= 0){
-            return false;
-        }else{
-            return true;
-        }
-    }
-
-    @Override
-    public boolean updateDstDataSource(DstDbConnection dbConnection) {
-        int result = dstDbMapper.updateByPrimaryKeySelective(dbConnection);
-
-        if(result <= 0){
-            return false;
-        }else{
-            return true;
-        }
-    }
-
-    @Override
-    public List<SrcDbConnection> getSrcDataSources(Integer jobId, Integer stepId) {
-        return srcDbMapper.getConnectionList(jobId, stepId);
-    }
-
-    @Override
-    public List<DstDbConnection> getDstDataSources(Integer jobId, Integer stepId) {
-        return dstDbMapper.getConnectionList(jobId, stepId);
+    public Pagination<DbManagement> getDataSources(Integer currPage, Integer pageSize, Map<String, Object> map) {
+        return null;
     }
 }

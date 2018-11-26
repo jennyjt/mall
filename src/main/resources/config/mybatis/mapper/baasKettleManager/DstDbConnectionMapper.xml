@@ -5,12 +5,7 @@
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="job_id" property="jobId" jdbcType="INTEGER" />
     <result column="step_id" property="stepId" jdbcType="INTEGER" />
-    <result column="link_name" property="linkName" jdbcType="VARCHAR" />
-    <result column="db_host" property="dbHost" jdbcType="VARCHAR" />
-    <result column="db_port" property="dbPort" jdbcType="VARCHAR" />
-    <result column="db_name" property="dbName" jdbcType="VARCHAR" />
-    <result column="db_user" property="dbUser" jdbcType="VARCHAR" />
-    <result column="db_password" property="dbPassword" jdbcType="VARCHAR" />
+    <result column="link_id" property="linkId" jdbcType="INTEGER" />
     <result column="dst_table" property="dstTable" jdbcType="VARCHAR" />
     <result column="created" property="created" jdbcType="TIMESTAMP" />
     <result column="updated" property="updated" jdbcType="TIMESTAMP" />
@@ -18,8 +13,7 @@
     <result column="dst_sql" property="dstSql" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List" >
-    id, job_id, step_id, link_name, db_host, db_port, db_name, db_user, db_password, 
-    dst_table, created, updated, dst_column, dst_sql
+    id, job_id, step_id, link_id, dst_table, created, updated, dst_column, dst_sql
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -27,40 +21,19 @@
     from dst_db_connection
     where id = #{id,jdbcType=INTEGER}
   </select>
-
-  <select id="getConnectionList" parameterType="java.util.Map" resultMap="BaseResultMap" >
-    select
-    <include refid="Base_Column_List" />
-    from dst_db_connection
-    <where>
-      <if test="jobId != null">
-        and job_id = #{jobId}
-      </if>
-      <if test="stepId != null">
-        and step_id = #{stepId}
-      </if>
-    </where>
-    order by id desc
-  </select>
-
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
     delete from dst_db_connection
     where id = #{id,jdbcType=INTEGER}
   </delete>
   <insert id="insert" parameterType="com.zsbatech.baasKettleManager.model.DstDbConnection" >
-    <selectKey resultType="int" keyProperty="id" order="AFTER">
-      select LAST_INSERT_ID()
-    </selectKey>
     insert into dst_db_connection (id, job_id, step_id, 
-      link_name, db_host, db_port, 
-      db_name, db_user, db_password, 
-      dst_table, created, updated, 
-      dst_column, dst_sql)
+      link_id, dst_table, created, 
+      updated, dst_column, dst_sql
+      )
     values (#{id,jdbcType=INTEGER}, #{jobId,jdbcType=INTEGER}, #{stepId,jdbcType=INTEGER}, 
-      #{linkName,jdbcType=VARCHAR}, #{dbHost,jdbcType=VARCHAR}, #{dbPort,jdbcType=VARCHAR}, 
-      #{dbName,jdbcType=VARCHAR}, #{dbUser,jdbcType=VARCHAR}, #{dbPassword,jdbcType=VARCHAR}, 
-      #{dstTable,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, #{updated,jdbcType=TIMESTAMP}, 
-      #{dstColumn,jdbcType=VARCHAR}, #{dstSql,jdbcType=VARCHAR})
+      #{linkId,jdbcType=INTEGER}, #{dstTable,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, 
+      #{updated,jdbcType=TIMESTAMP}, #{dstColumn,jdbcType=VARCHAR}, #{dstSql,jdbcType=VARCHAR}
+      )
   </insert>
   <insert id="insertSelective" parameterType="com.zsbatech.baasKettleManager.model.DstDbConnection" >
     insert into dst_db_connection
@@ -74,23 +47,8 @@
       <if test="stepId != null" >
         step_id,
       </if>
-      <if test="linkName != null" >
-        link_name,
-      </if>
-      <if test="dbHost != null" >
-        db_host,
-      </if>
-      <if test="dbPort != null" >
-        db_port,
-      </if>
-      <if test="dbName != null" >
-        db_name,
-      </if>
-      <if test="dbUser != null" >
-        db_user,
-      </if>
-      <if test="dbPassword != null" >
-        db_password,
+      <if test="linkId != null" >
+        link_id,
       </if>
       <if test="dstTable != null" >
         dst_table,
@@ -118,23 +76,8 @@
       <if test="stepId != null" >
         #{stepId,jdbcType=INTEGER},
       </if>
-      <if test="linkName != null" >
-        #{linkName,jdbcType=VARCHAR},
-      </if>
-      <if test="dbHost != null" >
-        #{dbHost,jdbcType=VARCHAR},
-      </if>
-      <if test="dbPort != null" >
-        #{dbPort,jdbcType=VARCHAR},
-      </if>
-      <if test="dbName != null" >
-        #{dbName,jdbcType=VARCHAR},
-      </if>
-      <if test="dbUser != null" >
-        #{dbUser,jdbcType=VARCHAR},
-      </if>
-      <if test="dbPassword != null" >
-        #{dbPassword,jdbcType=VARCHAR},
+      <if test="linkId != null" >
+        #{linkId,jdbcType=INTEGER},
       </if>
       <if test="dstTable != null" >
         #{dstTable,jdbcType=VARCHAR},
@@ -162,23 +105,8 @@
       <if test="stepId != null" >
         step_id = #{stepId,jdbcType=INTEGER},
       </if>
-      <if test="linkName != null" >
-        link_name = #{linkName,jdbcType=VARCHAR},
-      </if>
-      <if test="dbHost != null" >
-        db_host = #{dbHost,jdbcType=VARCHAR},
-      </if>
-      <if test="dbPort != null" >
-        db_port = #{dbPort,jdbcType=VARCHAR},
-      </if>
-      <if test="dbName != null" >
-        db_name = #{dbName,jdbcType=VARCHAR},
-      </if>
-      <if test="dbUser != null" >
-        db_user = #{dbUser,jdbcType=VARCHAR},
-      </if>
-      <if test="dbPassword != null" >
-        db_password = #{dbPassword,jdbcType=VARCHAR},
+      <if test="linkId != null" >
+        link_id = #{linkId,jdbcType=INTEGER},
       </if>
       <if test="dstTable != null" >
         dst_table = #{dstTable,jdbcType=VARCHAR},
@@ -202,12 +130,7 @@
     update dst_db_connection
     set job_id = #{jobId,jdbcType=INTEGER},
       step_id = #{stepId,jdbcType=INTEGER},
-      link_name = #{linkName,jdbcType=VARCHAR},
-      db_host = #{dbHost,jdbcType=VARCHAR},
-      db_port = #{dbPort,jdbcType=VARCHAR},
-      db_name = #{dbName,jdbcType=VARCHAR},
-      db_user = #{dbUser,jdbcType=VARCHAR},
-      db_password = #{dbPassword,jdbcType=VARCHAR},
+      link_id = #{linkId,jdbcType=INTEGER},
       dst_table = #{dstTable,jdbcType=VARCHAR},
       created = #{created,jdbcType=TIMESTAMP},
       updated = #{updated,jdbcType=TIMESTAMP},
