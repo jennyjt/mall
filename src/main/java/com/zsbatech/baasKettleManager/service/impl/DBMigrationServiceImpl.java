@@ -2,16 +2,11 @@ package com.zsbatech.baasKettleManager.service.impl;
 
 
 import com.zsbatech.baasKettleManager.dao.*;
-import com.zsbatech.baasKettleManager.model.*;
+import com.zsbatech.baasKettleManager.model.DataMig;
 import com.zsbatech.baasKettleManager.service.DBMigrationService;
 import com.zsbatech.base.common.ResponseData;
-import org.pentaho.di.core.KettleEnvironment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import java.util.Date;
 
 
 /**
@@ -40,7 +35,7 @@ public class DBMigrationServiceImpl implements DBMigrationService {
 
     public ResponseData<String> createMigration(DataMig dataMig) {
         ResponseData<String> responseData = new ResponseData<>();
-        try {
+        /*try {
             Date date = new Date();
             System.out.println(date);
             DataMigration dataMigration = new DataMigration();
@@ -143,7 +138,7 @@ public class DBMigrationServiceImpl implements DBMigrationService {
         } catch (Exception e) {
             e.printStackTrace();
             responseData.setError("fail!");
-        }
+        }*/
 
         return responseData;
     }
