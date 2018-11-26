@@ -124,7 +124,9 @@ public class ContentManageServiceImpl implements ContentManageService {
         List<String> fileList = new ArrayList<>();
         List<FilesVO> files =  filesVOMapper.queryFilesByfileName(fileNames);
         if(files != null){
-            fileList.add(files.toString());
+            for(FilesVO file:files) {
+                fileList.add(file.toString());
+            }
         }
         return fileList;
     }

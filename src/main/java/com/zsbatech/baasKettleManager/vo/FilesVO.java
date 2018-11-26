@@ -59,4 +59,8 @@ public class FilesVO {
     public void setFileContentVO(FileContentVO fileContentVO) {
         this.fileContentVO = fileContentVO;
     }
+
+    public String toString(){
+        return getFileContentVO().getSourceContent()+"/"+getFileName();
+    }
 }

@@ -13,14 +13,17 @@ import org.pentaho.di.core.util.Utils;
 import org.pentaho.di.core.vfs.KettleVFS;
 import org.pentaho.di.core.xml.XMLHandler;
 import org.pentaho.di.job.JobMeta;
+import org.pentaho.di.job.entries.ftp.JobEntryFTP;
 import org.pentaho.di.job.entries.special.JobEntrySpecial;
 import org.pentaho.di.job.entry.JobEntryCopy;
 import org.pentaho.di.job.entry.JobEntryInterface;
+import org.pentaho.di.trans.step.StepMetaInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.DataOutputStream;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -96,6 +99,8 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
             }
             if (((JobEntrySpecial) jobEntryInterface).isRepeat() == true) {
                 jobStartStepVO.setIsRepeat((short) 1);
+            }else {
+                jobStartStepVO.setIsRepeat((short)0);
             }
             jobStartStepVO.setCreateTime(new Date());
             jobStartStepVO.setUpdateTime(new Date());
@@ -103,14 +108,50 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
         return jobStartStepVO;
     }
 
-    public FTPPutStepVO getFTPPutStepVO(JobMeta jobMeta) {
-        FTPPutStepVO ftpPutStepVO = new FTPPutStepVO();
-        return null;
+    public FTPDownLoadStepVO getFTPDownLoadStepVO(JobMeta jobMeta) {
+        FTPDownLoadStepVO ftpDownLoadStepVO = new FTPDownLoadStepVO();
+        List<JobEntryCopy> jobEntryCopyList = jobMeta.getJobCopies();
+        for(JobEntryCopy jobEntryCopy:jobEntryCopyList){
+            JobEntryInterface jobEntryInterface = jobEntryCopy.getEntry();
+            if(jobEntryInterface instanceof JobEntryFTP){
+                ftpDownLoadStepVO.setTimeout(((JobEntryFTP) jobEntryInterface).getTimeout());
+                if(((JobEntryFTP) jobEntryInterface).isBinaryMode() == true) {
+                    ftpDownLoadStepVO.setBinaryMode((short)1);
+                }else {
+                    ftpDownLoadStepVO.setBinaryMode((short)0);
+                }
+                ftpDownLoadStepVO.setControlEncoding(((JobEntryFTP) jobEntryInterface).getControlEncoding());
+                ftpDownLoadStepVO.setFtpDirectory(((JobEntryFTP) jobEntryInterface).getFtpDirectory());
+                ftpDownLoadStepVO.setFtpFileName(((JobEntryFTP) jobEntryInterface).getWildcard());
+                ftpDownLoadStepVO.setTargetDirectory(((JobEntryFTP) jobEntryInterface).getTargetDirectory());
+                ftpDownLoadStepVO.setCreateTime(new Date());
+                ftpDownLoadStepVO.setUpdateTime(new Date());
+            }
+        }
+        return ftpDownLoadStepVO;
     }
 
-    public FTPDownLoadStepVO getFTPDownLoadStepVO(JobMeta jobMeta){
-
-        return null;
+    public FTPPutStepVO getFTPPutStepVO(JobMeta jobMeta){
+        FTPPutStepVO ftpPutStepVO = new FTPPutStepVO();
+        List<JobEntryCopy> jobEntryCopyList = jobMeta.getJobCopies();
+        for(JobEntryCopy jobEntryCopy:jobEntryCopyList){
+            JobEntryInterface jobEntryInterface = jobEntryCopy.getEntry();
+            if(jobEntryInterface instanceof JobEntryFTP){
+                ftpPutStepVO.setTimeout(((JobEntryFTP) jobEntryInterface).getTimeout());
+                if(((JobEntryFTP) jobEntryInterface).isBinaryMode() == true) {
+                    ftpPutStepVO.setBinaryMode((short)1);
+                }else {
+                    ftpPutStepVO.setBinaryMode((short)0);
+                }
+                ftpPutStepVO.setControlEncoding(((JobEntryFTP) jobEntryInterface).getControlEncoding());
+                ftpPutStepVO.setFtpDirectory(((JobEntryFTP) jobEntryInterface).getFtpDirectory());
+                ftpPutStepVO.setPutFileName(((JobEntryFTP) jobEntryInterface).getWildcard());
+                ftpPutStepVO.setTargetDirectory(((JobEntryFTP) jobEntryInterface).getTargetDirectory());
+                ftpPutStepVO.setCreateTime(new Date());
+                ftpPutStepVO.setUpdateTime(new Date());
+            }
+        }
+        return ftpPutStepVO;
     }
     public boolean saveByDB(String name) {
         return true;
