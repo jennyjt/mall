@@ -1,9 +1,6 @@
 package com.zsbatech.baasKettleManager.dao;
 
 import com.zsbatech.baasKettleManager.model.DstDbConnection;
-import org.apache.ibatis.annotations.Param;
-
-import java.util.List;
 
 public interface DstDbConnectionMapper {
     int deleteByPrimaryKey(Integer id);
@@ -17,6 +14,4 @@ public interface DstDbConnectionMapper {
     int updateByPrimaryKeySelective(DstDbConnection record);
 
     int updateByPrimaryKey(DstDbConnection record);
-
-    List<DstDbConnection> getConnectionList(@Param("jobId") Integer jobId, @Param("stepId") Integer stepId);
 }

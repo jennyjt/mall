@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zsbatech.baasKettleManager.dao.DbManagementMapper" >
+  <resultMap id="BaseResultMap" type="com.zsbatech.baasKettleManager.model.DbManagement" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="link_name" property="linkName" jdbcType="VARCHAR" />
+    <result column="db_host" property="dbHost" jdbcType="VARCHAR" />
+    <result column="db_port" property="dbPort" jdbcType="VARCHAR" />
+    <result column="db_name" property="dbName" jdbcType="VARCHAR" />
+    <result column="db_user" property="dbUser" jdbcType="VARCHAR" />
+    <result column="db_password" property="dbPassword" jdbcType="VARCHAR" />
+    <result column="created" property="created" jdbcType="TIMESTAMP" />
+    <result column="updated" property="updated" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    id, link_name, db_host, db_port, db_name, db_user, db_password, created, updated
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from db_management
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from db_management
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.zsbatech.baasKettleManager.model.DbManagement" >
+    insert into db_management (id, link_name, db_host, 
+      db_port, db_name, db_user, 
+      db_password, created, updated
+      )
+    values (#{id,jdbcType=INTEGER}, #{linkName,jdbcType=VARCHAR}, #{dbHost,jdbcType=VARCHAR}, 
+      #{dbPort,jdbcType=VARCHAR}, #{dbName,jdbcType=VARCHAR}, #{dbUser,jdbcType=VARCHAR}, 
+      #{dbPassword,jdbcType=VARCHAR}, #{created,jdbcType=TIMESTAMP}, #{updated,jdbcType=TIMESTAMP}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.zsbatech.baasKettleManager.model.DbManagement" >
+    insert into db_management
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="linkName != null" >
+        link_name,
+      </if>
+      <if test="dbHost != null" >
+        db_host,
+      </if>
+      <if test="dbPort != null" >
+        db_port,
+      </if>
+      <if test="dbName != null" >
+        db_name,
+      </if>
+      <if test="dbUser != null" >
+        db_user,
+      </if>
+      <if test="dbPassword != null" >
+        db_password,
+      </if>
+      <if test="created != null" >
+        created,
+      </if>
+      <if test="updated != null" >
+        updated,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="linkName != null" >
+        #{linkName,jdbcType=VARCHAR},
+      </if>
+      <if test="dbHost != null" >
+        #{dbHost,jdbcType=VARCHAR},
+      </if>
+      <if test="dbPort != null" >
+        #{dbPort,jdbcType=VARCHAR},
+      </if>
+      <if test="dbName != null" >
+        #{dbName,jdbcType=VARCHAR},
+      </if>
+      <if test="dbUser != null" >
+        #{dbUser,jdbcType=VARCHAR},
+      </if>
+      <if test="dbPassword != null" >
+        #{dbPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null" >
+        #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updated != null" >
+        #{updated,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zsbatech.baasKettleManager.model.DbManagement" >
+    update db_management
+    <set >
+      <if test="linkName != null" >
+        link_name = #{linkName,jdbcType=VARCHAR},
+      </if>
+      <if test="dbHost != null" >
+        db_host = #{dbHost,jdbcType=VARCHAR},
+      </if>
+      <if test="dbPort != null" >
+        db_port = #{dbPort,jdbcType=VARCHAR},
+      </if>
+      <if test="dbName != null" >
+        db_name = #{dbName,jdbcType=VARCHAR},
+      </if>
+      <if test="dbUser != null" >
+        db_user = #{dbUser,jdbcType=VARCHAR},
+      </if>
+      <if test="dbPassword != null" >
+        db_password = #{dbPassword,jdbcType=VARCHAR},
+      </if>
+      <if test="created != null" >
+        created = #{created,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updated != null" >
+        updated = #{updated,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zsbatech.baasKettleManager.model.DbManagement" >
+    update db_management
+    set link_name = #{linkName,jdbcType=VARCHAR},
+      db_host = #{dbHost,jdbcType=VARCHAR},
+      db_port = #{dbPort,jdbcType=VARCHAR},
+      db_name = #{dbName,jdbcType=VARCHAR},
+      db_user = #{dbUser,jdbcType=VARCHAR},
+      db_password = #{dbPassword,jdbcType=VARCHAR},
+      created = #{created,jdbcType=TIMESTAMP},
+      updated = #{updated,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>
