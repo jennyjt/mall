@@ -196,7 +196,7 @@
       <if test="ftpHost != null" >
         and #{ftpHost,jdbcType=VARCHAR}
       </if>
-      <if test="FtpPort != null" >
+      <if test="ftpPort != null" >
         and #{ftpPort,jdbcType=VARCHAR}
       </if>
       <if test="userName != null" >
