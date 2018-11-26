@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zsbatech.baasKettleManager.dao.FTPPutStepVOMapper">
+    <resultMap id="BaseResultMap" type="com.zsbatech.baasKettleManager.vo.FTPPutStepVO">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="ftp_source_id" property="ftpSourceId" jdbcType="INTEGER"/>
+        <result column="time_out" property="timeOut" jdbcType="INTEGER"/>
+        <result column="binary_mode" property="binaryMode" jdbcType="INTEGER"/>
+        <result column="control_encoding" property="controlEncoding" jdbcType="VARCHAR"/>
+        <result column="ftp_directory" property="ftpDirectory" jdbcType="VARCHAR"/>
+        <result column="put_ftp_name" property="putFtpName" jdbcType="VARCHAR"/>
+        <result column="target_directory" property="targetDirectory" jdbcType="VARCHAR"/>
+        <result column="job_meta_id" property="jobMetaId" jdbcType="INTEGER"/>
+        <result column="createtime" property="createTime" jdbcType="VARCHAR"/>
+        <result column="updatetime" property="updateTime" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, ftp_source_id, time_out,binary_mode,control_encoding,ftp_directory,put_ftp_name, target_directory,job_meta_id,createtime, updatetime
+  </sql>
+
+    <insert id="insert" parameterType="java.util.List">
+        insert into tableinput_step (id, ftp_source_id, time_out,binary_mode,control_encoding,
+        ftp_directory,put_ftp_name, target_directory,job_meta_id,createtime, updatetime)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            (#{item.id,jdbcType=INTEGER}, #{item.ftpSourceId,jdbcType=INTEGER},#{item.timeOut,jdbcType=INTEGER},
+            #{item.binaryMode,jdbcType=INTEGER},#{item.controlEncoding,jdbcType=VARCHAR},#{item.ftpDirectory,jdbcType=VARCHAR},,#{item.putFtpName,jdbcType=VARCHAR},
+            #{item.targetDirectory,jdbcType=VARCHAR},#{item.jobMetaId,jdbcType=INTEGER}#{item.createTime,jdbcType=VARCHAR},
+            #{item.updateTime,jdbcType=VARCHAR})
+        </foreach>
+    </insert>
+
+    <select id="selectTableInputStepVO" resultMap="BaseResultMap" parameterType="java.util.List">
+        select
+        <include refid="Base_Column_List"/>
+        from ftp_put_step
+        <where> id in
+            <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+                #{item,jdbcType=INTEGER}
+            </foreach>
+        </where>
+    </select>
+
+    <select id="selectTableInputStepVOS" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from tableinput_step
+        where trans_meta_id = #{transMetaId,jdbcType=INTEGER}
+    </select>
+</mapper>
