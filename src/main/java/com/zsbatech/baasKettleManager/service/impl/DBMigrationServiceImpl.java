@@ -35,7 +35,7 @@ public class DBMigrationServiceImpl implements DBMigrationService {
 
     public ResponseData<String> createMigration(DataMig dataMig) {
         ResponseData<String> responseData = new ResponseData<>();
-        /*try {
+        try {
             Date date = new Date();
             System.out.println(date);
             DataMigration dataMigration = new DataMigration();
@@ -138,7 +138,7 @@ public class DBMigrationServiceImpl implements DBMigrationService {
         } catch (Exception e) {
             e.printStackTrace();
             responseData.setError("fail!");
-        }*/
+        }
 
         return responseData;
     }
