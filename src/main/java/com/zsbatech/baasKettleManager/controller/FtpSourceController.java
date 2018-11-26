@@ -20,25 +20,25 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping(value = "/datasource")
 public class FtpSourceController {
 
-    private static Logger logger = LoggerFactory.getLogger(FtpSourceController.class);
-
-
-    @ApiOperation(value = "FTP数据源新增", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ApiResponses({@ApiResponse(code = Response.OK, message = "新增成功"),})
-    @ApiImplicitParams(
-            value = {
-                    @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
-            }
-    )
-    @RequestMapping(value = "/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ResponseBody
-    public ResponseData<String> createSrcDataSourceList(HttpServletRequest request,
-                                                        @RequestBody FtpSourceManager ftpSourceManager) {
-        ResponseData<String> responseData = new ResponseData<>();
-
-        //UniToken uniToken = JWTUtils.validateToken(request);
-
-        return responseData;
-    }
+//    private static Logger logger = LoggerFactory.getLogger(FtpSourceController.class);
+//
+//
+//    @ApiOperation(value = "FTP数据源新增", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+//    @ApiResponses({@ApiResponse(code = Response.OK, message = "新增成功"),})
+//    @ApiImplicitParams(
+//            value = {
+//                    @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
+//            }
+//    )
+//    @RequestMapping(value = "/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+//    @ResponseBody
+//    public ResponseData<String> createSrcDataSourceList(HttpServletRequest request,
+//                                                        @RequestBody FtpSourceManager ftpSourceManager) {
+//        ResponseData<String> responseData = new ResponseData<>();
+//
+//        //UniToken uniToken = JWTUtils.validateToken(request);
+//
+//        return responseData;
+//    }
 }
 

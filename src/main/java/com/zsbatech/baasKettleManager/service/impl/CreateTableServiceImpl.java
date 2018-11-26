@@ -33,8 +33,11 @@ public class CreateTableServiceImpl implements CreateTableService {
         // database driver
         String driver = "com.mysql.jdbc.Driver";
         // database url
-        String url = "jdbc:mysql://localhost:3306"+"/"+dataMig.getSrcDbName();
-        System.out.println(dataMig.getSrcDbName());
+//        String url = "jdbc:mysql://localhost:3306"+"/"+dataMig.getSrcDbName();
+//        System.out.println(dataMig.getSrcDbName());
+
+        String url = "jdbc:mysql://localhost:3306";
+
 
         String user = "root";
 
@@ -61,10 +64,10 @@ public class CreateTableServiceImpl implements CreateTableService {
             sql.append("`").append(colSet.getString("COLUMN_NAME")).append("` ");
             sql.append(colSet.getString("TYPE_NAME"));
             String typeName = colSet.getString("TYPE_NAME").trim();
-            if(!"FLOAT".equals(typeName) && !"TIMESTAMP".equals(typeName)) {
+            if(!"TIMESTAMP".equals(typeName)&& !"DATETIME".equals(typeName)) {
                 sql.append("(").append(colSet.getString("COLUMN_SIZE")).append(") "); //
-            }else if("TIMESTAMP".equals(typeName)) {
-                sql.append(" NULL ");
+            }else if("TIMESTAMP".equals(typeName) || "DATETIME".equalsIgnoreCase(typeName)) {
+                sql.append("(6) ");
             }
             if ("0".equals(colSet.getString("NULLABLE"))) {
                 if (StringUtils.isEmpty(colSet.getString("COLUMN_DEF"))) {
@@ -99,8 +102,8 @@ public class CreateTableServiceImpl implements CreateTableService {
         // database driver
         String driver = "com.mysql.jdbc.Driver";
         // database url
-        String url = "jdbc:mysql://localhost:3306"+"/"+dataMig.getDstDbName();
-//        String url = "jdbc:mysql://localhost:3306/";
+//        String url = "jdbc:mysql://localhost:3306"+"/"+dataMig.getDstDbName();
+        String url = "jdbc:mysql://localhost:3306/";
       System.out.println(url);
         String user = "root";
 
