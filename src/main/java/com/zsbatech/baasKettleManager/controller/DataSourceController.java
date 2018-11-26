@@ -1,12 +1,20 @@
 package com.zsbatech.baasKettleManager.controller;
 
+import com.zsbatech.baasKettleManager.model.DbManagement;
+import com.zsbatech.baasKettleManager.model.SrcDbConnection;
 import com.zsbatech.baasKettleManager.service.DataSouceManageService;
-import io.swagger.annotations.Api;
+import com.zsbatech.base.common.ResponseData;
+import com.zsbatech.base.constants.RequestField;
+import com.zsbatech.base.constants.Response;
+import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * 数据源管理
@@ -21,7 +29,7 @@ public class DataSourceController {
     @Autowired
     private DataSouceManageService dbManage;
 
-    /*@ApiOperation(value = "数据源新增", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "数据源新增", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiResponses({@ApiResponse(code = Response.OK, message = "新增成功"),})
     @ApiImplicitParams(
             value = {
@@ -31,12 +39,12 @@ public class DataSourceController {
     @RequestMapping(value = "/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public ResponseData<String> createSrcDataSourceList(HttpServletRequest request,
-                                                     @RequestBody List<SrcDbConnection> dbConnectionList) {
+                                                        @RequestBody DbManagement dbConnection) {
         ResponseData<String> responseData = new ResponseData<>();
 
         //UniToken uniToken = JWTUtils.validateToken(request);
 
-        boolean result = dbManage.createSrcDataSourceList(dbConnectionList);
+        boolean result = dbManage.createDataSource(dbConnection);
         if(result){
             responseData.setOK("success", "success");
         }else{
@@ -55,10 +63,10 @@ public class DataSourceController {
     @RequestMapping(value = "/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public ResponseData<String> updateSrcDataSource(HttpServletRequest request,
-                                                  @RequestBody SrcDbConnection dbConnection) {
+                                                  @RequestBody DbManagement dbConnection) {
         ResponseData<String> responseData = new ResponseData<>();
 
-        boolean result = dbManage.updateSrcDataSource(dbConnection);
+        boolean result = dbManage.updateDataSource(dbConnection);
         if(result){
             responseData.setOK("success", "success");
         }else{
@@ -80,13 +88,13 @@ public class DataSourceController {
                                                           @RequestParam(name = "link_name", required = false) String linkName) {
         ResponseData<List<SrcDbConnection>> responseData = new ResponseData<>();
 
-        List<SrcDbConnection> result = dbManage.getSrcDataSources(jobId, stepId);
+        /*List<SrcDbConnection> result = dbManage.getSrcDataSources(jobId, stepId);
         if(result != null){
             responseData.setOK("success", result);
         }else{
             responseData.setError("fail");
-        }
+        }*/
         return responseData;
-    }*/
+    }
 }
 
