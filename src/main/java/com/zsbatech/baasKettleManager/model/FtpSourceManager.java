@@ -7,19 +7,19 @@ public class FtpSourceManager {
 
     private String ftpHost;
 
-    private String ftpPost;
+    private String ftpPort;
 
     private String userName;
 
     private String passWord;
 
-    private String poxyHost;
+    private String proxyHost;
 
-    private String poxyPort;
+    private String proxyPort;
 
-    private String poxyUserName;
+    private String proxyUserName;
 
-    private String poxyPassWord;
+    private String proxyPassWord;
 
     private Date createTime;
 
@@ -45,12 +45,12 @@ public class FtpSourceManager {
         this.ftpHost = ftpHost == null ? null : ftpHost.trim();
     }
 
-    public String getFtpPost() {
-        return ftpPost;
+    public String getFtpPort() {
+        return ftpPort;
     }
 
-    public void setFtpPost(String ftpPost) {
-        this.ftpPost = ftpPost == null ? null : ftpPost.trim();
+    public void setFtpPort(String ftpPort) {
+        this.ftpPort = ftpPort == null ? null : ftpPort.trim();
     }
 
     public String getUserName() {
@@ -69,36 +69,36 @@ public class FtpSourceManager {
         this.passWord = passWord == null ? null : passWord.trim();
     }
 
-    public String getPoxyHost() {
-        return poxyHost;
+    public String getProxyHost() {
+        return proxyHost;
     }
 
-    public void setPoxyHost(String poxyHost) {
-        this.poxyHost = poxyHost == null ? null : poxyHost.trim();
+    public void setProxyHost(String proxyHost) {
+        this.proxyHost = proxyHost == null ? null : proxyHost.trim();
     }
 
-    public String getPoxyPort() {
-        return poxyPort;
+    public String getProxyPort() {
+        return proxyPort;
     }
 
-    public void setPoxyPort(String poxyPort) {
-        this.poxyPort = poxyPort == null ? null : poxyPort.trim();
+    public void setProxyPort(String proxyPort) {
+        this.proxyPort = proxyPort == null ? null : proxyPort.trim();
     }
 
-    public String getPoxyUserName() {
-        return poxyUserName;
+    public String getProxyUserName() {
+        return proxyUserName;
     }
 
-    public void setPoxyUserName(String poxyUserName) {
-        this.poxyUserName = poxyUserName == null ? null : poxyUserName.trim();
+    public void setProxyUserName(String proxyUserName) {
+        this.proxyUserName = proxyUserName == null ? null : proxyUserName.trim();
     }
 
-    public String getPoxyPassWord() {
-        return poxyPassWord;
+    public String getProxyPassWord() {
+        return proxyPassWord;
     }
 
-    public void setPoxyPassWord(String poxyPassWord) {
-        this.poxyPassWord = poxyPassWord == null ? null : poxyPassWord.trim();
+    public void setProxyPassWord(String proxyPassWord) {
+        this.proxyPassWord = proxyPassWord == null ? null : proxyPassWord.trim();
     }
 
     public Date getCreateTime() {
