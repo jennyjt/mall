@@ -2,16 +2,34 @@ package com.zsbatech.baasKettleManager.service.impl;
 
 
 import com.zsbatech.baasKettleManager.dao.*;
-import com.zsbatech.baasKettleManager.model.*;
+import com.zsbatech.baasKettleManager.model.DataMig;
+import com.zsbatech.baasKettleManager.model.DbManagement;
+import com.zsbatech.baasKettleManager.model.DstDbConnection;
 import com.zsbatech.baasKettleManager.service.DBMigrationService;
+import com.zsbatech.baasKettleManager.service.SaveTransMetaService;
 import com.zsbatech.base.common.ResponseData;
 import org.pentaho.di.core.KettleEnvironment;
+import org.pentaho.di.core.database.DatabaseMeta;
+import org.pentaho.di.core.plugins.PluginRegistry;
+import org.pentaho.di.core.plugins.StepPluginType;
+import org.pentaho.di.job.JobHopMeta;
+import org.pentaho.di.job.entries.deletefile.JobEntryDeleteFile;
+import org.pentaho.di.job.entries.special.JobEntrySpecial;
+import org.pentaho.di.job.entry.JobEntryCopy;
+import org.pentaho.di.trans.Trans;
+import org.pentaho.di.trans.TransHopMeta;
+import org.pentaho.di.trans.TransMeta;
+import org.pentaho.di.trans.step.StepMeta;
+import org.pentaho.di.trans.steps.insertupdate.InsertUpdateMeta;
+import org.pentaho.di.trans.steps.tableinput.TableInputMeta;
+import org.pentaho.di.trans.steps.tableoutput.TableOutputMeta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -23,19 +41,10 @@ import java.util.Date;
 public class DBMigrationServiceImpl implements DBMigrationService {
 
     @Autowired
-    private DataMigrationMapper dataMigrationMapper;
+    private DbManagementMapper dbManagementMapper;
     @Autowired
-    private TransMetaMapper transMetaMapper;
-    @Autowired
-    private TransHopMapper transHopMapper;
-    @Autowired
-    private SrcDbConnectionMapper srcDbConnectionMapper;
-    @Autowired
-    private DstDbConnectionMapper dstDbConnectionMapper;
-    @Autowired
-    private TableinputStepMapper tableinputStepMapper;
-    @Autowired
-    TableoutputStepMapper tableoutputStepMapper;
+    SaveTransMetaService saveTransMetaService;
+
 
 
     public ResponseData<String> createMigration(DataMig dataMig) {
@@ -43,107 +52,121 @@ public class DBMigrationServiceImpl implements DBMigrationService {
         try {
             Date date = new Date();
             System.out.println(date);
-            DataMigration dataMigration = new DataMigration();
+            /*
+                入参：
+                srcDbconnId:
+                dstDbconnId:
+                //类型
+                databaseSrcType:  string
+                databaseDstType:  string
+                //表
+                srcTable:
+                dstTable:
 
+                //table
+             */
+            System.out.println("transName 1: " + dataMig.getTransName());
+            DbManagement srcdbManagement = dbManagementMapper.selectByPrimaryKey(dataMig.getSrcDbconnId());
+            DbManagement dstdbManagement = dbManagementMapper.selectByPrimaryKey(dataMig.getDstDbconnId());
+            System.out.println("transName 2: " + dataMig.getTransName());
+
+
+            KettleEnvironment.init();
             TransMeta transMeta = new TransMeta();
-            TransHop transHop = new TransHop();
-            SrcDbConnection srcDbConnection = new SrcDbConnection();
-            DstDbConnection dstDbConnection = new DstDbConnection();
-            TableinputStep tableinputStep = new TableinputStep();
-            TableoutputStep tableoutputStep = new TableoutputStep();
+            System.out.println("transName 3: " + dataMig.getTransName());
+            //设置转换名称
+            transMeta.setName(dataMig.getTransName());
+            System.out.println("transName 4: " + dataMig.getTransName());
 
-            //trans_meta
-            transMeta.setTransName(dataMig.getTransName());
-            transMeta.setFileName(dataMig.getFileName());
-            transMeta.setCreatetime(date);
-            transMeta.setUpdatetime(date);
-            transMetaMapper.insert(transMeta);
-            int transMetaId = transMeta.getId();
-            System.out.println(transMetaId);
+        //添加转换数据库源连接
+            DatabaseMeta databaseMeta = new DatabaseMeta();
 
-            //input step
-            tableinputStep.setCreatetime(date);
-            tableinputStep.setUpdatetime(date);
-            tableinputStep.setTransStepName(dataMig.getTransStepName());
-            tableinputStep.setExcSql(dataMig.getExcSql());
-            tableinputStep.setTransMetaId(transMetaId);
-            tableinputStepMapper.insert(tableinputStep);
+            databaseMeta.setDatabaseType(dataMig.getDatabaseSrcType());
+            System.out.println("srctype: " + dataMig.getDatabaseSrcType());
+            databaseMeta.setDBName(srcdbManagement.getDbName());
+            databaseMeta.setHostname(srcdbManagement.getDbHost());
+            databaseMeta.setDBPort(srcdbManagement.getDbPort());
+            databaseMeta.setUsername(srcdbManagement.getDbUser());
+            databaseMeta.setPassword(srcdbManagement.getDbPassword());
+            databaseMeta.setName(srcdbManagement.getLinkName());
+//只读
+            databaseMeta.setReadOnly(true);
 
-            int inputStepId = tableinputStep.getId();
-            System.out.println(inputStepId);
+            transMeta.addDatabase(databaseMeta);
 
-            //output step
-            tableoutputStep.setCreatetime(date);
-            tableoutputStep.setUpdatetime(date);
-            tableoutputStep.setStepName(dataMig.getStepName());
-            tableoutputStep.setDbConnectionName(dataMig.getDstLinkName());
-            tableoutputStep.setTargetTable(dataMig.getTargetTable());
-            tableoutputStep.setTransMetaId(transMetaId);
+            //添加转换数据库目标连接
+            DatabaseMeta dstdatabaseMeta = new DatabaseMeta();
+            dstdatabaseMeta.setDatabaseType(dataMig.getDatabaseDstType());
+            dstdatabaseMeta.setDBName(dstdbManagement.getDbName());
+            dstdatabaseMeta.setHostname(dstdbManagement.getDbHost());
+            dstdatabaseMeta.setDBPort(dstdbManagement.getDbPort());
+            dstdatabaseMeta.setUsername(dstdbManagement.getDbUser());
+            dstdatabaseMeta.setPassword(dstdbManagement.getDbPassword());
+            dstdatabaseMeta.setName(dstdbManagement.getLinkName());
+//只读
+            dstdatabaseMeta.setReadOnly(false);
+            transMeta.addDatabase(dstdatabaseMeta);
 
-            tableoutputStepMapper.insert(tableoutputStep);
-            int outputStepId = tableoutputStep.getId();
-            System.out.println(outputStepId);
+            PluginRegistry registry = PluginRegistry.getInstance();
+            //第一个表输入步骤(TableInputMeta)
+            TableInputMeta tableInputMeta = new TableInputMeta();
+            String tableInputPluginId = registry.getPluginId(StepPluginType.class,tableInputMeta);
+            System.out.println("tableInputPluginId: " + tableInputPluginId);
+            //给表输入添加一个DatabaseMeta连接数据库
+            DatabaseMeta database_in = transMeta.findDatabase(srcdbManagement.getLinkName());
+            tableInputMeta.setDatabaseMeta(database_in);
+            String select_sql = "SELECT * FROM " + dataMig.getSrcTable();//表名必须传
+            tableInputMeta.setSQL(select_sql);
 
-            //src_db_Conn
-            srcDbConnection.setCreated(date);
-            srcDbConnection.setUpdated(date);
-            srcDbConnection.setLinkName(dataMig.getSrcLinkName());
-            srcDbConnection.setDbHost(dataMig.getSrcDbHost());
-            srcDbConnection.setDbPort(dataMig.getSrcDbPort());
-            srcDbConnection.setDbName(dataMig.getSrcDbName());
-            srcDbConnection.setDbUser(dataMig.getSrcDbUser());
-            srcDbConnection.setDbPassword(dataMig.getSrcDbPassword());
-            srcDbConnection.setSrcTable(dataMig.getSrcTable());
-            srcDbConnection.setSrcColumn(dataMig.getSrcColumn());
-            srcDbConnection.setSrcSql(dataMig.getSrcSql());
-            srcDbConnection.setStepId(inputStepId);
-            srcDbConnectionMapper.insert(srcDbConnection);
-            int srcDbConnId = srcDbConnection.getId();
+            //添加TableInputMeta到转换中
 
-            //dst_db_Conn
-            dstDbConnection.setCreated(date);
-            dstDbConnection.setUpdated(date);
-            dstDbConnection.setLinkName(dataMig.getDstLinkName());
-            dstDbConnection.setDbHost(dataMig.getDstDbHost());
-            dstDbConnection.setDbPort(dataMig.getDstDbPort());
-            dstDbConnection.setDbName(dataMig.getDstDbName());
-            dstDbConnection.setDbUser(dataMig.getDstDbUser());
-            dstDbConnection.setDbPassword(dataMig.getDstDbPassword());
-            dstDbConnection.setDstTable(dataMig.getDstTable());
-            dstDbConnection.setDstColumn(dataMig.getDstColumn());
-            dstDbConnection.setDstSql(dataMig.getDstSql());
-            dstDbConnection.setStepId(outputStepId);
-            dstDbConnectionMapper.insert(dstDbConnection);
-            int dstDbConnId = dstDbConnection.getId();
+            StepMeta tableInputMetaStep = new StepMeta(tableInputPluginId,"table_input",tableInputMeta);
+            transMeta.addStep(tableInputMetaStep);
 
-            //trans_hop
-            transHop.setCreatetime(date);
-            transHop.setUpdatetime(date);
-            transHop.setFromStepId(srcDbConnId);
-            transHop.setToStepId(dstDbConnId);
-            transHopMapper.insert(transHop);
-            int transHopId = transHop.getId();
+            //第二个步骤插入与更新
 
-            //dataMigration
+            TableOutputMeta tableOutputMeta = new TableOutputMeta();
 
-            dataMigration.setCreated(date);
-            dataMigration.setUpdated(date);
+            String tableOutputPluginId = registry.getPluginId(StepPluginType.class,tableOutputMeta);
+            //添加数据库连接
+            DatabaseMeta database_out = transMeta.findDatabase(dstdbManagement.getLinkName());
+            tableOutputMeta.setDatabaseMeta(database_out);
+            //设置操作的表
+            tableOutputMeta.setTableName(dataMig.getDstTable());//
 
-            dataMigration.setHopId(transHopId);
-            dataMigration.setTransMetaId(transMetaId);
-            dataMigration.setSrcDbconnId(srcDbConnId);
-            dataMigration.setDstDbconnId(dstDbConnId);
-            dataMigration.setInputStepId(inputStepId);
-            dataMigration.setOutputStepId(outputStepId);
-            dataMigration.setSqlString(dataMig.getSqlString());
-            dataMigrationMapper.insert(dataMigration);
+            tableOutputMeta.setParentStepMeta(tableInputMetaStep);
 
-            responseData.setOK(200,"success","success");
-            return responseData;
+            //添加输出步骤到转换中
+
+            StepMeta tableOutputMetaStep = new StepMeta(tableOutputPluginId,"table_output",tableOutputMeta);
+            transMeta.addStep(tableOutputMetaStep);
+
+            //hop
+            transMeta.addTransHop(new TransHopMeta(tableInputMetaStep,tableOutputMetaStep));
+//            return transMeta;
+
+            if (saveTransMetaService.save(transMeta,"C:\\Users\\de\\Desktop\\"+dataMig.getTransName()+ ".ktr",true)) {
+                responseData.setOK(200,"success","success");
+            }
+            TransMeta transMeta1 = new TransMeta("C:\\Users\\de\\Desktop\\"+dataMig.getTransName()+ ".ktr");
+            Trans trans = new Trans(transMeta1);
+            trans.prepareExecution(null);
+            trans.startThreads();
+            trans.waitUntilFinished();
+
+
+
+            if(trans.getErrors() != 0){
+                System.out.println("gqfkjffqwhkq");
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
             responseData.setError("fail!");
         }
+
+//        Boolean bool = saveTransMetaService.saveTransData("C:\\Users\\de\\Desktop\\"+dataMig.getTransName()+ ".ktr");
+//        System.out.println(bool);
 
         return responseData;
     }
