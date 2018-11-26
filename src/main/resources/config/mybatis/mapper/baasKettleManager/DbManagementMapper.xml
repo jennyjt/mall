@@ -156,28 +156,28 @@
     from db_management
     <where>
       <if test="id != null" >
-        id = #{id,jdbcType=INTEGER}
+        and id = #{id,jdbcType=INTEGER}
       </if>
       <if test="linkName != null" >
-        link_name = #{linkName,jdbcType=VARCHAR},
+        and link_name LIKE CONCAT(CONCAT('%',#{linkName}),'%')
       </if>
       <if test="dbHost != null" >
-        db_host = #{dbHost,jdbcType=VARCHAR},
+        and db_host = #{dbHost,jdbcType=VARCHAR}
       </if>
       <if test="dbPort != null" >
-        db_port = #{dbPort,jdbcType=VARCHAR},
+        and db_port = #{dbPort,jdbcType=VARCHAR},
       </if>
       <if test="dbName != null" >
-        db_name = #{dbName,jdbcType=VARCHAR},
+        and db_name = #{dbName,jdbcType=VARCHAR}
       </if>
       <if test="dbUser != null" >
-        db_user = #{dbUser,jdbcType=VARCHAR},
+        and db_user = #{dbUser,jdbcType=VARCHAR}
       </if>
       <if test="dbPassword != null" >
-        db_password = #{dbPassword,jdbcType=VARCHAR},
+          and db_password = #{dbPassword,jdbcType=VARCHAR}
       </if>
       <if test="createUser != null" >
-        create_user = #{createUser,jdbcType=VARCHAR},
+        and create_user = #{createUser,jdbcType=VARCHAR}
       </if>
     </where>
     order by id desc

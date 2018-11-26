@@ -28,8 +28,8 @@ public class DataSourceManageTests {
         conn.setDbName("my_test");
         conn.setDbUser("test");
         conn.setDbPassword("123456");
-        conn.setCreated(DateUtils.currentDateTime());
-        conn.setUpdated(DateUtils.currentDateTime());
+        conn.setCreateTime(DateUtils.currentDateTime());
+        conn.setUpdatedTime(DateUtils.currentDateTime());
         boolean result = dbService.createDataSource(conn);
         assertSame(true, result);
     }
@@ -44,14 +44,14 @@ public class DataSourceManageTests {
         conn.setDbName("my_test1");
         conn.setDbUser("test");
         conn.setDbPassword("123456");
-        conn.setUpdated(DateUtils.currentDateTime());
+        conn.setUpdatedTime(DateUtils.currentDateTime());
         boolean result = dbService.updateDataSource(conn);
         assertSame(true, result);
     }
 
     @Test
     public void testGetSrcConnections(){
-        Pagination<DbManagement> conns = dbService.getDataSources(1, 10, null);
+        Pagination<DbManagement> conns = dbService.getDataSources(1, 2, null);
         assertNotNull(conns);
     }
 

@@ -7,7 +7,7 @@ public class FtpSourceManager {
 
     private String ftpHost;
 
-    private String ftpPost;
+    private String FtpPort;
 
     private String userName;
 
@@ -45,12 +45,12 @@ public class FtpSourceManager {
         this.ftpHost = ftpHost == null ? null : ftpHost.trim();
     }
 
-    public String getFtpPost() {
-        return ftpPost;
+    public String getFtpPort() {
+        return FtpPort;
     }
 
-    public void setFtpPost(String ftpPost) {
-        this.ftpPost = ftpPost == null ? null : ftpPost.trim();
+    public void setFtpPort(String FtpPort) {
+        this.FtpPort = FtpPort == null ? null : FtpPort.trim();
     }
 
     public String getUserName() {

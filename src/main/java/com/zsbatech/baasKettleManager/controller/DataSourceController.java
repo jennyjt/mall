@@ -1,8 +1,8 @@
 package com.zsbatech.baasKettleManager.controller;
 
 import com.zsbatech.baasKettleManager.model.DbManagement;
-import com.zsbatech.baasKettleManager.model.SrcDbConnection;
 import com.zsbatech.baasKettleManager.service.DataSouceManageService;
+import com.zsbatech.base.common.Pagination;
 import com.zsbatech.base.common.ResponseData;
 import com.zsbatech.base.constants.RequestField;
 import com.zsbatech.base.constants.Response;
@@ -14,7 +14,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
 
 /**
  * 数据源管理
@@ -84,16 +83,22 @@ public class DataSourceController {
     )
     @RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public ResponseData<List<SrcDbConnection>> getSrcDataSourceList(HttpServletRequest request,
-                                                          @RequestParam(name = "link_name", required = false) String linkName) {
-        ResponseData<List<SrcDbConnection>> responseData = new ResponseData<>();
+    public ResponseData<Pagination<DbManagement>> getSrcDataSourceList(HttpServletRequest request,
+                                                                       @RequestParam(name = "curr_page", defaultValue = "1") Integer currPage,
+                                                                       @RequestParam(name = "page_size", defaultValue = "10") Integer pageSize,
+                                                                       @RequestParam(name = "link_name", required = false) String linkName,
+                                                                       @RequestParam(name = "user_id", required = false) String createUser) {
+        ResponseData<Pagination<DbManagement>> responseData = new ResponseData<>();
 
-        /*List<SrcDbConnection> result = dbManage.getSrcDataSources(jobId, stepId);
+        DbManagement param = new DbManagement();
+        param.setLinkName(linkName);
+        param.setCreateUser(createUser);
+        Pagination<DbManagement> result = dbManage.getDataSources(currPage, pageSize, param);
         if(result != null){
             responseData.setOK("success", result);
         }else{
             responseData.setError("fail");
-        }*/
+        }
         return responseData;
     }
 }
