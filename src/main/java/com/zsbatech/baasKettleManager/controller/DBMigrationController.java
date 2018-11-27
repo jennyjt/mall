@@ -17,14 +17,14 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.Map;
 
 @Controller
-@RequestMapping (value = "/database")
+@RequestMapping (value = "/database/migrate")
 public class DBMigrationController {
 
     @Autowired
     private DBMigrationService dbMigrationService;
 
 
-    @RequestMapping(value = "/migrate",method = RequestMethod.POST)
+    @RequestMapping(value = "/incr",method = RequestMethod.POST)
     @ResponseBody
     public ResponseData<String> createMigration(@RequestBody DataMig dataMig) {
         ResponseData<String> responseData = new ResponseData<>();
@@ -33,6 +33,27 @@ public class DBMigrationController {
             return responseData;
 
     }
+
+    @RequestMapping(value = "/cycle",method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseData<String> cycleMigration(@RequestBody DataMig dataMig) {
+        ResponseData<String> responseData = new ResponseData<>();
+
+        responseData = dbMigrationService.cycleMigration(dataMig);
+        return responseData;
+
+    }
+
+    @RequestMapping(value = "/update",method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseData<String> insertupdateMigration(@RequestBody DataMig dataMig) {
+        ResponseData<String> responseData = new ResponseData<>();
+
+        responseData = dbMigrationService.insertupdateMigration(dataMig);
+        return responseData;
+
+    }
+
 
 }
 

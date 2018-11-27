@@ -7,6 +7,8 @@ public class DbManagement {
 
     private String linkName;
 
+    private String dbType;
+
     private String dbHost;
 
     private String dbPort;
@@ -37,6 +39,14 @@ public class DbManagement {
 
     public void setLinkName(String linkName) {
         this.linkName = linkName == null ? null : linkName.trim();
+    }
+
+    public String getDbType() {
+        return dbType;
+    }
+
+    public void setDbType(String dbType) {
+        this.dbType = dbType == null ? null : dbType.trim();
     }
 
     public String getDbHost() {
