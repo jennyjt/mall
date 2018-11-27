@@ -44,6 +44,8 @@ public class FTPDownLoadStepVO {
 
     private int jobMetaId;
 
+    private String ftpFileName;
+
     public int getId() {
         return id;
     }
@@ -112,6 +114,10 @@ public class FTPDownLoadStepVO {
         return jobMetaId;
     }
 
+    public String getFtpFileName() {
+        return ftpFileName;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -178,5 +184,9 @@ public class FTPDownLoadStepVO {
 
     public void setJobMetaId(int jobMetaId) {
         this.jobMetaId = jobMetaId;
+    }
+
+    public void setFtpFileName(String ftpFileName) {
+        this.ftpFileName = ftpFileName;
     }
 }

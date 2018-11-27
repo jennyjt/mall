@@ -44,6 +44,8 @@ public class FTPPutStepVO {
 
     private int jobMetaId;
 
+    private  String putFileName;
+
     public int getId() {
         return id;
     }
@@ -112,6 +114,10 @@ public class FTPPutStepVO {
         return jobMetaId;
     }
 
+    public String getPutFileName() {
+        return putFileName;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -178,5 +184,9 @@ public class FTPPutStepVO {
 
     public void setJobMetaId(int jobMetaId) {
         this.jobMetaId = jobMetaId;
+    }
+
+    public void setPutFileName(String putFileName) {
+        this.putFileName = putFileName;
     }
 }

@@ -1,6 +1,9 @@
 package com.zsbatech.baasKettleManager.service.impl;
 
+import com.zsbatech.baasKettleManager.dao.FilesVOMapper;
 import com.zsbatech.baasKettleManager.service.ContentManageService;
+import com.zsbatech.baasKettleManager.vo.FilesVO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -19,13 +22,16 @@ import java.util.Map;
 @Service
 public class ContentManageServiceImpl implements ContentManageService {
 
+    @Autowired
+    private FilesVOMapper filesVOMapper;
+
     /**
      * 创建本地目录
      *
      * @param fileContents
      * @return
      */
-    public Map<String, List<String>> createContent(String[] fileContents) {
+    public Map<String, List<String>> createContent(List<String> fileContents) {
         Map<String, List<String>> map = new HashMap<>();
         List<String> fileList = new ArrayList<>();
         List<String> newCreateContentList = new ArrayList<>();
@@ -49,7 +55,7 @@ public class ContentManageServiceImpl implements ContentManageService {
      * @param files
      * @return
      */
-    public Map<String, List<String>> deleteFiles(String[] files) {
+    public Map<String, List<String>> deleteFiles(List<String> files) {
         Map<String, List<String>> map = new HashMap<>();
         List<String> fileList = new ArrayList<>();
         List<String> newCreateFileList = new ArrayList<>();
@@ -73,7 +79,7 @@ public class ContentManageServiceImpl implements ContentManageService {
      * @param fileContents
      * @return
      */
-    public Map<String, List<String>> deleteContents(String[] fileContents) {
+    public Map<String, List<String>> deleteContents(List<String> fileContents) {
         Map<String, List<String>> map = new HashMap<>();
         List<String> fileList = new ArrayList<>();
         List<String> newCreateFileList = new ArrayList<>();
@@ -106,5 +112,22 @@ public class ContentManageServiceImpl implements ContentManageService {
             map.put("已删除目录", newCreateFileList);
         }
         return map;
+    }
+
+    /**
+     * 创建本地目录
+     *
+     * @param fileNames
+     * @return
+     */
+    public List<String> queryFiles(List<String> fileNames) {
+        List<String> fileList = new ArrayList<>();
+        List<FilesVO> files =  filesVOMapper.queryFilesByfileName(fileNames);
+        if(files != null){
+            for(FilesVO file:files) {
+                fileList.add(file.toString());
+            }
+        }
+        return fileList;
     }
 }

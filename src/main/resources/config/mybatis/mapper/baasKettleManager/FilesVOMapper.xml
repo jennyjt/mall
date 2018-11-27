@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zsbatech.baasKettleManager.dao.FilesVOMapper" >
+  <resultMap id="BaseResultMap" type="com.zsbatech.baasKettleManager.vo.FilesVO" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="file_name" property="fileName" jdbcType="VARCHAR" />
+    <result column="createtime" property="createTime" jdbcType="VARCHAR" />
+    <result column="updatetime" property="updateTime" jdbcType="VARCHAR" />
+    <!--<association property="fileContentVO" select="getFileContentVO" column="file_content_id" javaType="com.zsbatech.baasKettleManager.vo.FileContentVO">-->
+    <!--</association>-->
+    <association property="fileContentVO" javaType="com.zsbatech.baasKettleManager.vo.FileContentVO">
+      <id column="file_content_id" property="id" jdbcType="INTEGER" />
+      <result column="source_content" property="sourceContent" jdbcType="VARCHAR" />
+      <result column="createtime" property="createTime" jdbcType="VARCHAR" />
+      <result column="updatetime" property="updateTime" jdbcType="VARCHAR" />
+    </association>
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, file_name, file_content_id,createtime, updatetime
+  </sql>
+
+  <insert id="insert" parameterType="com.zsbatech.baasKettleManager.vo.FilesVO" >
+    insert into trans_meta (id, file_name, file_content_id,
+      createtime, updatetime)
+    values (#{id,jdbcType=INTEGER}, #{fileName,jdbcType=VARCHAR},#{fileContentId,jdbcType=VARCHAR},#{createTime,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR})
+  </insert>
+
+  <select id="queryFilesByfileName" resultMap="BaseResultMap" parameterType="java.util.List" >
+    select
+    f.file_name,
+    f.createtime as createTime,
+    f.updatetime as updateTime,
+    fc.source_content
+    from files f left join file_content fc on f.file_content_id = fc.id
+    where file_name in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+</mapper>

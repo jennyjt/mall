@@ -6,62 +6,36 @@ package com.zsbatech.baasKettleManager.model;
  */
 public class DataMig extends DataMigration {
 
+//    srcDbconnId:
+//    dstDbconnId:
+//    //类型
+//    databaseSrcType:
+//    databaseDstType:
+
+
     //transmeta
     private String transName;
     private String fileName;
 
-    //transhop
-    private String fromStepId;
-    private String toStepId;
+    //dbconn  src
 
-    //inputstep
-    private String transStepName;
-
-    private String excSql;
-    private Integer transMetaId;
-
-    //outputstep
-
-    private String stepName;
-
-
-    private String targetTable;
-
-    private Byte isbatchInsert;
-
-    private Integer entityId;
-
-    //srcdbconnection
+    private Integer srcDbconnId;
+    private String databaseSrcType;
     private String srcLinkName;
-
-    private String srcDbHost;
-
-    private String srcDbPort;
-
-    private String srcDbName;
-
-    private String srcDbUser;
-
-    private String srcDbPassword;
-
     private String srcTable;
 
     private String srcColumn;
 
     private String srcSql;
 
-    //dst_db_connection
+
+    //dbconn  dst
+    private Integer dstDbconnId;
+
+    private String databaseDstType;
+
     private String dstLinkName;
 
-    private String dstDbHost;
-
-    private String dstDbPort;
-
-    private String dstDbName;
-
-    private String dstDbUser;
-
-    private String dstDbPassword;
 
     private String dstTable;
 
@@ -69,23 +43,6 @@ public class DataMig extends DataMigration {
 
     private String dstSql;
 
-    public DataMig() {
-    }
-//    private JobMeta jobMeta;
-//    private JobHop jobHop;
-//    private SrcDbConnection srcDbConnection;
-//    private DstDbConnection dstDbConnection;
-//    private TableinputStep tableinputStep;
-//    private TableoutputStep tableoutputStep;
-
-
-    public String getDstColumn() {
-        return dstColumn;
-    }
-
-    public void setDstColumn(String dstColumn) {
-        this.dstColumn = dstColumn;
-    }
 
     public String getTransName() {
         return transName;
@@ -103,78 +60,22 @@ public class DataMig extends DataMigration {
         this.fileName = fileName;
     }
 
-    public String getFromStepId() {
-        return fromStepId;
+    @Override
+    public Integer getSrcDbconnId() {
+        return srcDbconnId;
     }
 
-    public void setFromStepId(String fromStepId) {
-        this.fromStepId = fromStepId;
+    @Override
+    public void setSrcDbconnId(Integer srcDbconnId) {
+        this.srcDbconnId = srcDbconnId;
     }
 
-    public String getToStepId() {
-        return toStepId;
+    public String getDatabaseSrcType() {
+        return databaseSrcType;
     }
 
-    public void setToStepId(String toStepId) {
-        this.toStepId = toStepId;
-    }
-
-    public String getTransStepName() {
-        return transStepName;
-    }
-
-    public void setTransStepName(String transStepName) {
-        this.transStepName = transStepName;
-    }
-
-
-    public String getExcSql() {
-        return excSql;
-    }
-
-    public void setExcSql(String excSql) {
-        this.excSql = excSql;
-    }
-
-    public Integer getTransMetaId() {
-        return transMetaId;
-    }
-
-    public void setTransMetaId(Integer transMetaId) {
-        this.transMetaId = transMetaId;
-    }
-
-    public String getStepName() {
-        return stepName;
-    }
-
-    public void setStepName(String stepName) {
-        this.stepName = stepName;
-    }
-
-
-    public String getTargetTable() {
-        return targetTable;
-    }
-
-    public void setTargetTable(String targetTable) {
-        this.targetTable = targetTable;
-    }
-
-    public Byte getIsbatchInsert() {
-        return isbatchInsert;
-    }
-
-    public void setIsbatchInsert(Byte isbatchInsert) {
-        this.isbatchInsert = isbatchInsert;
-    }
-
-    public Integer getEntityId() {
-        return entityId;
-    }
-
-    public void setEntityId(Integer entityId) {
-        this.entityId = entityId;
+    public void setDatabaseSrcType(String databaseSrcType) {
+        this.databaseSrcType = databaseSrcType;
     }
 
     public String getSrcLinkName() {
@@ -183,46 +84,6 @@ public class DataMig extends DataMigration {
 
     public void setSrcLinkName(String srcLinkName) {
         this.srcLinkName = srcLinkName;
-    }
-
-    public String getSrcDbHost() {
-        return srcDbHost;
-    }
-
-    public void setSrcDbHost(String srcDbHost) {
-        this.srcDbHost = srcDbHost;
-    }
-
-    public String getSrcDbPort() {
-        return srcDbPort;
-    }
-
-    public void setSrcDbPort(String srcDbPort) {
-        this.srcDbPort = srcDbPort;
-    }
-
-    public String getSrcDbName() {
-        return srcDbName;
-    }
-
-    public void setSrcDbName(String srcDbName) {
-        this.srcDbName = srcDbName;
-    }
-
-    public String getSrcDbUser() {
-        return srcDbUser;
-    }
-
-    public void setSrcDbUser(String srcDbUser) {
-        this.srcDbUser = srcDbUser;
-    }
-
-    public String getSrcDbPassword() {
-        return srcDbPassword;
-    }
-
-    public void setSrcDbPassword(String srcDbPassword) {
-        this.srcDbPassword = srcDbPassword;
     }
 
     public String getSrcTable() {
@@ -249,52 +110,30 @@ public class DataMig extends DataMigration {
         this.srcSql = srcSql;
     }
 
+    @Override
+    public Integer getDstDbconnId() {
+        return dstDbconnId;
+    }
+
+    @Override
+    public void setDstDbconnId(Integer dstDbconnId) {
+        this.dstDbconnId = dstDbconnId;
+    }
+
+    public String getDatabaseDstType() {
+        return databaseDstType;
+    }
+
+    public void setDatabaseDstType(String databaseDstType) {
+        this.databaseDstType = databaseDstType;
+    }
+
     public String getDstLinkName() {
         return dstLinkName;
     }
 
     public void setDstLinkName(String dstLinkName) {
         this.dstLinkName = dstLinkName;
-    }
-
-    public String getDstDbHost() {
-        return dstDbHost;
-    }
-
-    public void setDstDbHost(String dstDbHost) {
-        this.dstDbHost = dstDbHost;
-    }
-
-    public String getDstDbPort() {
-        return dstDbPort;
-    }
-
-    public void setDstDbPort(String dstDbPort) {
-        this.dstDbPort = dstDbPort;
-    }
-
-    public String getDstDbName() {
-        return dstDbName;
-    }
-
-    public void setDstDbName(String dstDbName) {
-        this.dstDbName = dstDbName;
-    }
-
-    public String getDstDbUser() {
-        return dstDbUser;
-    }
-
-    public void setDstDbUser(String dstDbUser) {
-        this.dstDbUser = dstDbUser;
-    }
-
-    public String getDstDbPassword() {
-        return dstDbPassword;
-    }
-
-    public void setDstDbPassword(String dstDbPassword) {
-        this.dstDbPassword = dstDbPassword;
     }
 
     public String getDstTable() {
@@ -305,6 +144,14 @@ public class DataMig extends DataMigration {
         this.dstTable = dstTable;
     }
 
+    public String getDstColumn() {
+        return dstColumn;
+    }
+
+    public void setDstColumn(String dstColumn) {
+        this.dstColumn = dstColumn;
+    }
+
     public String getDstSql() {
         return dstSql;
     }
@@ -312,4 +159,9 @@ public class DataMig extends DataMigration {
     public void setDstSql(String dstSql) {
         this.dstSql = dstSql;
     }
+
+    public DataMig() {
+    }
+
+
 }

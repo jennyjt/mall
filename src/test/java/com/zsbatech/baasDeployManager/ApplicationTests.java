@@ -1,7 +1,9 @@
 package com.zsbatech.baasDeployManager;
 
+import com.zsbatech.baasKettleManager.service.ContentManageService;
 import com.zsbatech.baasKettleManager.service.FileSyncJobService;
 import com.zsbatech.baasKettleManager.service.SaveTransMetaService;
+import com.zsbatech.baasKettleManager.service.impl.ContentManageServiceImpl;
 import com.zsbatech.baasKettleManager.service.impl.SaveTransMetaServiceImpl;
 import com.zsbatech.baasKettleManager.vo.FTPDownLoadStepVO;
 import com.zsbatech.baasKettleManager.vo.JobStartStepVO;
@@ -17,13 +19,20 @@ import org.pentaho.di.job.entries.special.JobEntrySpecial;
 import org.pentaho.di.job.entry.JobEntryCopy;
 import org.pentaho.di.trans.Trans;
 import org.pentaho.di.trans.TransMeta;
+import org.pentaho.di.trans.steps.tableinput.TableInputMeta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ApplicationTests {
+
+    @Autowired
+    private ContentManageService contentManageService;
 
     @Autowired
     private FileSyncJobService fileSyncJobService;
@@ -56,6 +65,7 @@ public class ApplicationTests {
         {
             System.out.println("Error encountered");
         }
+        TableInputMeta tableInputMeta = new TableInputMeta();
     }
 
     @Test
@@ -122,6 +132,14 @@ public class ApplicationTests {
         ftpDownLoadStepVO.setControlEncoding("UTF-8");
         ftpDownLoadStepVO.setFtpDirectory("");
         ftpDownLoadStepVO.setTargetDirectory("C:\\Users\\zhang\\Desktop\\新建文件夹");
-        fileSyncJobService.createDownloadJobMeta(jobStartStepVO,ftpDownLoadStepVO);
+        fileSyncJobService.createDownloadJobMeta(jobStartStepVO,ftpDownLoadStepVO,"aaa");
+    }
+
+    @Test
+    public void TestFile(){
+        List<String> list = new ArrayList<>();
+        list.add("ccc");
+        list.add("ddd");
+        contentManageService.queryFiles(list);
     }
 }

@@ -12,14 +12,12 @@ import com.zsbatech.baasKettleManager.vo.TransMetaVO;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.KettleEnvironment;
-import org.pentaho.di.core.RowMetaAndData;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.exception.KettleMissingPluginsException;
 import org.pentaho.di.core.exception.KettleXMLException;
 import org.pentaho.di.core.plugins.PluginRegistry;
 import org.pentaho.di.core.plugins.StepPluginType;
-import org.pentaho.di.core.row.RowMeta;
 import org.pentaho.di.core.util.Utils;
 import org.pentaho.di.core.vfs.KettleVFS;
 import org.pentaho.di.core.xml.XMLHandler;
@@ -27,8 +25,6 @@ import org.pentaho.di.trans.TransHopMeta;
 import org.pentaho.di.trans.TransMeta;
 import org.pentaho.di.trans.step.StepMeta;
 import org.pentaho.di.trans.step.StepMetaInterface;
-import org.pentaho.di.trans.steps.fieldsplitter.FieldSplitterData;
-import org.pentaho.di.trans.steps.insertupdate.InsertUpdateMeta;
 import org.pentaho.di.trans.steps.tableinput.TableInputMeta;
 import org.pentaho.di.trans.steps.tableoutput.TableOutputMeta;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +42,8 @@ import java.util.*;
  */
 @Service
 public class SaveTransMetaServiceImpl implements SaveTransMetaService {
+
+    private String DBTransUrl="C:\\Users\\zhang\\Desktop\\";
 
     @Autowired
     private TableOutputMetaVOMapper tableOutputMetaVOMapper;
@@ -288,7 +286,7 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
             transMeta.addStep(tableInputStepMeta);
             transMeta.addTransHop(new TransHopMeta(tableInputStepMeta,tableOutputStepMeta));
         }
-        save(transMeta, "C:\\Users\\zhang\\Desktop\\jdee.ktr", true);
+        save(transMeta, DBTransUrl+name+".ktr", true);
         return true;
     }
 
