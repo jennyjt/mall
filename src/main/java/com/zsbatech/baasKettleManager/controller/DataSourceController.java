@@ -37,7 +37,7 @@ public class DataSourceController {
     )
     @RequestMapping(value = "/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public ResponseData<String> createSrcDataSourceList(HttpServletRequest request,
+    public ResponseData<String> createDataSource(HttpServletRequest request,
                                                         @RequestBody DbManagement dbConnection) {
         ResponseData<String> responseData = new ResponseData<>();
 
@@ -61,7 +61,7 @@ public class DataSourceController {
     )
     @RequestMapping(value = "/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public ResponseData<String> updateSrcDataSource(HttpServletRequest request,
+    public ResponseData<String> updateDataSource(HttpServletRequest request,
                                                   @RequestBody DbManagement dbConnection) {
         ResponseData<String> responseData = new ResponseData<>();
 
@@ -83,7 +83,7 @@ public class DataSourceController {
     )
     @RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public ResponseData<Pagination<DbManagement>> getSrcDataSourceList(HttpServletRequest request,
+    public ResponseData<Pagination<DbManagement>> getDataSourceList(HttpServletRequest request,
                                                                        @RequestParam(name = "curr_page", defaultValue = "1") Integer currPage,
                                                                        @RequestParam(name = "page_size", defaultValue = "10") Integer pageSize,
                                                                        @RequestParam(name = "link_name", required = false) String linkName,

@@ -37,7 +37,7 @@ public class FtpSourceController {
     )
     @RequestMapping(value = "/add", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public ResponseData<String> createSrcDataSourceList(HttpServletRequest request,
+    public ResponseData<String> createFtpDataSource(HttpServletRequest request,
                                                         @RequestBody FtpSourceManager ftpSourceManager) {
         ResponseData<String> responseData = new ResponseData<>();
 
@@ -60,7 +60,7 @@ public class FtpSourceController {
     )
     @RequestMapping(value = "/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public ResponseData<String> updateSrcDataSource(HttpServletRequest request,
+    public ResponseData<String> updateFtpDataSource(HttpServletRequest request,
                                                     @RequestBody FtpSourceManager ftpSourceManager) {
         ResponseData<String> responseData = new ResponseData<>();
 
@@ -82,7 +82,7 @@ public class FtpSourceController {
     )
     @RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public ResponseData<Pagination<FtpSourceManager>> getSrcDataSourceList(HttpServletRequest request,
+    public ResponseData<Pagination<FtpSourceManager>> getFtpDataSourceList(HttpServletRequest request,
                                                                        @RequestParam(name = "curr_page", defaultValue = "1") Integer currPage,
                                                                        @RequestParam(name = "page_size", defaultValue = "10") Integer pageSize,
                                                                        @RequestParam(name = "ftp_host", required = false) String ftpHost,
