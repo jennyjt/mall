@@ -1,32 +1,21 @@
 package com.zsbatech.baasKettleManager.service.impl;
 
-import org.pentaho.di.core.Const;
-import org.pentaho.di.core.DBCache;
 import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.database.Database;
 import org.pentaho.di.core.database.DatabaseMeta;
-import org.pentaho.di.core.database.MySQLDatabaseMeta;
-import org.pentaho.di.core.logging.LogStatus;
-import org.pentaho.di.core.logging.LogTableInterface;
 import org.pentaho.di.core.logging.StepLogTable;
 import org.pentaho.di.core.plugins.PluginRegistry;
 import org.pentaho.di.core.plugins.StepPluginType;
 import org.pentaho.di.core.row.RowMetaInterface;
-import org.pentaho.di.core.util.Utils;
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.di.core.variables.Variables;
-import org.pentaho.di.i18n.BaseMessages;
 import org.pentaho.di.trans.Trans;
 import org.pentaho.di.trans.TransHopMeta;
 import org.pentaho.di.trans.TransMeta;
-import org.pentaho.di.trans.step.StepDataInterface;
 import org.pentaho.di.trans.step.StepMeta;
-import org.pentaho.di.trans.step.StepMetaInterface;
 import org.pentaho.di.trans.steps.insertupdate.InsertUpdateMeta;
-import org.pentaho.di.trans.steps.tableexists.TableExistsMeta;
 import org.pentaho.di.trans.steps.tableinput.TableInputMeta;
 
-import java.util.List;
 
 public class CreateTableTest {
     /**
