@@ -39,7 +39,7 @@ public class FileUpDownloadController {
     @ResponseBody
     public ResponseData<String> fileUpload(HttpServletRequest request,
                                            @RequestParam(name = "file", required = true) MultipartFile file,
-                                           @RequestBody FTPDownLoadStepVO fileInfo) {
+                                           @RequestParam(name = "fileInfo", required = true) FTPDownLoadStepVO fileInfo) {
         ResponseData<String> responseData = new ResponseData<>();
         //UniToken uniToken = JWTUtils.validateToken(request);
 
