@@ -8,4 +8,9 @@ package com.zsbatech.baasKettleManager.service;
  */
 public interface JobExcuteService {
     void excute(String fileName);
+
+    void stop(String fileName);
+
+    void stopAll();
+
 }
