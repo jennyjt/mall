@@ -101,6 +101,7 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
 
         jobEntryFTP.setFtpDirectory(ftpDownLoadStepVO.getFtpDirectory());
         jobEntryFTP.setTargetDirectory(ftpDownLoadStepVO.getTargetDirectory());
+        jobEntryFTP.setWildcard(ftpDownLoadStepVO.getFtpFileName());
         JobEntryCopy jobEntryFTPCopy = new JobEntryCopy(jobEntryFTP);
         jobEntryFTPCopy.setDrawn(true);
         jobEntryFTPCopy.setLocation(80,20);
@@ -108,7 +109,7 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         JobHopMeta jobHopMeta = new JobHopMeta(jobEntrySpecialCopy, jobEntryFTPCopy);
         jobHopMeta.setUnconditional(true);
         jobMeta.addJobHop(jobHopMeta);
-        saveJobMetaService.save(jobMeta, ftpJobUrl+fileName, true);
+        saveJobMetaService.save(jobMeta, ftpJobUrl+fileName+".kjb", true);
         return true;
     }
 
@@ -176,6 +177,7 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
 
         jobEntryFTPPUT.setRemoteDirectory(ftpPutStepVO.getFtpDirectory());
         jobEntryFTPPUT.setLocalDirectory(ftpPutStepVO.getTargetDirectory());
+        jobEntryFTPPUT.setWildcard(ftpPutStepVO.getPutFileName());
         JobEntryCopy jobEntryFTPCopy = new JobEntryCopy(jobEntryFTPPUT);
         jobEntryFTPCopy.setDrawn(true);
         jobEntryFTPCopy.setLocation(80,20);
@@ -183,7 +185,7 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         JobHopMeta jobHopMeta = new JobHopMeta(jobEntrySpecialCopy, jobEntryFTPCopy);
         jobHopMeta.setUnconditional(true);
         jobMeta.addJobHop(jobHopMeta);
-        saveJobMetaService.save(jobMeta, ftpJobUrl+fileName, true);
+        saveJobMetaService.save(jobMeta, ftpJobUrl+fileName+".kjb", true);
         return true;
     }
 }
