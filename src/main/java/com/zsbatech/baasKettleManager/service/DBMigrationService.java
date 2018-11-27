@@ -15,4 +15,6 @@ import java.util.List;
 @Service
 public interface DBMigrationService {
     ResponseData<String> createMigration(DataMig dataMig);
+    ResponseData<String> cycleMigration(DataMig dataMig);
+    ResponseData<String> insertupdateMigration(DataMig dataMig);
 }

@@ -6,11 +6,6 @@ package com.zsbatech.baasKettleManager.model;
  */
 public class DataMig extends DataMigration {
 
-//    srcDbconnId:
-//    dstDbconnId:
-//    //类型
-//    databaseSrcType:
-//    databaseDstType:
 
 
     //transmeta
@@ -44,8 +39,20 @@ public class DataMig extends DataMigration {
     private String dstSql;
 
 
+    private String ktrString;
+
+
     public String getTransName() {
         return transName;
+    }
+
+
+    public String getKtrString() {
+        return ktrString;
+    }
+
+    public void setKtrString(String ktrString) {
+        this.ktrString = ktrString;
     }
 
     public void setTransName(String transName) {

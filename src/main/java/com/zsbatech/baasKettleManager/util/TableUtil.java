@@ -61,7 +61,8 @@ public class TableUtil {
         RowMetaInterface rowMetaInterface = db.getQueryFields(select_sql,false);
         db = new Database(destDbMeta);
         String sqlddl = db.getDDLCreationTable(tableName,rowMetaInterface);
-
+//        db.getCreateTableStatement();
+//        db.execStatement(sqlddl);
         return sqlddl;
     }
 
@@ -72,7 +73,7 @@ public class TableUtil {
                     .append("<connection>")
                     .append("<name>"+dbManagement.getLinkName()+"</name>")
                     .append("<server>"+dbManagement.getDbHost()+"</server>" )
-                    .append("<type>"+dbManagement.getCreateUser()+"</type>" )//TODO 修改为从数据库取dbManagement.getDbType()
+                    .append("<type>"+dbManagement.getDbType()+"</type>" )
                     .append("<access>Native</access>" )
                     .append("<database>"+dbManagement.getDbName()+"</database>" )
                     .append("<port>"+dbManagement.getDbPort()+"</port>" )
