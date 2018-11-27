@@ -181,4 +181,4 @@ bootRun {
 task runAll {}
 runAll.dependsOn(bootRun)
 
-mainClassName = 'com.zsbatech.baasDeployManagerApplication'
+mainClassName = 'com.zsbatech.BaasKettleManagerApplication'
