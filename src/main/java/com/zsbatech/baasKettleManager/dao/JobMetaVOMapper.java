@@ -13,4 +13,6 @@ import org.springframework.stereotype.Repository;
 public interface JobMetaVOMapper {
 
     int insert(JobMetaVO jobMetaVO);
+
+    JobMetaVO selectTransMetaVO(String jobName);
 }
