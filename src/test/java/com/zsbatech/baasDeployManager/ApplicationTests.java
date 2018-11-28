@@ -1,26 +1,18 @@
 package com.zsbatech.baasDeployManager;
 
-import com.zsbatech.baasKettleManager.service.ContentManageService;
-import com.zsbatech.baasKettleManager.service.FileSyncJobService;
-import com.zsbatech.baasKettleManager.service.SaveJobMetaService;
-import com.zsbatech.baasKettleManager.service.SaveTransMetaService;
-import com.zsbatech.baasKettleManager.service.impl.ContentManageServiceImpl;
-import com.zsbatech.baasKettleManager.service.impl.SaveJobMetaServiceImpl;
+import com.zsbatech.baasKettleManager.service.*;
 import com.zsbatech.baasKettleManager.service.impl.SaveTransMetaServiceImpl;
 import com.zsbatech.baasKettleManager.vo.FTPDownLoadStepVO;
 import com.zsbatech.baasKettleManager.vo.JobStartStepVO;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.pentaho.di.core.KettleEnvironment;
-import org.pentaho.di.core.annotations.JobEntry;
 import org.pentaho.di.core.database.DatabaseMeta;
-import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.plugins.PluginRegistry;
 import org.pentaho.di.core.plugins.StepPluginType;
 import org.pentaho.di.job.Job;
 import org.pentaho.di.job.JobHopMeta;
 import org.pentaho.di.job.JobMeta;
-import org.pentaho.di.job.entries.deletefile.JobEntryDeleteFile;
 import org.pentaho.di.job.entries.special.JobEntrySpecial;
 import org.pentaho.di.job.entries.trans.JobEntryTrans;
 import org.pentaho.di.job.entry.JobEntryCopy;
@@ -42,9 +34,12 @@ import java.util.List;
 public class ApplicationTests {
 
     @Autowired
+    private JobExcuteService jobExcuteService;
+
+    @Autowired
     private SaveJobMetaService saveJobMetaService;
     @Autowired
-    private ContentManageService contentManageService;
+    private CatalogManageService contentManageService;
 
     @Autowired
     private FileSyncJobService fileSyncJobService;
@@ -145,33 +140,26 @@ public class ApplicationTests {
         specialCopy.setDrawn(true);
         jobMeta.addJobEntry(specialCopy);
         JobEntryTrans jobEntryTrans = new JobEntryTrans("job");
-        jobEntryTrans.setFileName("C:\\Users\\zhang\\Desktop\\jdbc.ktr");
+        jobEntryTrans.setFileName("C:\\Users\\zhang\\Desktop\\transjob.ktr");
         JobEntryCopy transJob = new JobEntryCopy(jobEntryTrans);
         transJob.setLocation(200, 20);
         transJob.setDrawn(true);
         jobMeta.addJobEntry(transJob);
-//        JobEntryDeleteFile jobEntryDeleteFile = new JobEntryDeleteFile();
-//        jobEntryDeleteFile.setName("作业名称项");
-//        jobEntryDeleteFile.setFilename("C:\\Users\\zhang\\Desktop\\file.txt");
-//        JobEntryCopy deleteFileCopy = new JobEntryCopy(jobEntryDeleteFile);
-//        deleteFileCopy.setLocation(80,20);
-//        jobMeta.addJobEntry(deleteFileCopy);
         JobHopMeta jobHopMeta = new JobHopMeta(specialCopy, transJob);
         jobHopMeta.setUnconditional(true);
         jobMeta.addJobHop(jobHopMeta);
         saveJobMetaService.save(jobMeta, "C:\\Users\\zhang\\Desktop\\cads.kjb", true);
+        saveJobMetaService.saveTransJobData("C:\\Users\\zhang\\Desktop\\cads.kjb");
     }
 
     @Test
     public void testJob() throws Exception {
         KettleEnvironment.init();
-        //filename为作业的文件路径
         JobMeta jobMeta = new JobMeta("C:\\Users\\zhang\\Desktop\\cads.kjb", null);
         Job job = new Job(null, jobMeta);
-//    启动一个作业
         job.start();
+        Thread.currentThread().setName("cads");
         job.waitUntilFinished();
-        //检查作业中是否有错误产生
         if (job.getErrors() != 0) {
             System.out.println("Error encountered");
         }
@@ -210,5 +198,10 @@ public class ApplicationTests {
         list.add("ccc");
         list.add("ddd");
         contentManageService.queryFiles(list);
+    }
+
+    @Test
+    public  void testStop(){
+        jobExcuteService.stop("C:\\Users\\zhang\\Desktop\\cads.kjb");
     }
 }
