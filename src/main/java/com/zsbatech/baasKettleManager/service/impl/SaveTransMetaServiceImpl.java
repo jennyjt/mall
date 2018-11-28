@@ -95,7 +95,7 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
     }
 
     @Transactional
-    public boolean saveTransData(String fileName) {
+    public boolean saveTransData(String fileName,int srcDbConnId,int dstDbConnId) {
         try {
             KettleEnvironment.init();
         } catch (KettleException e) {
@@ -117,12 +117,12 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
             TransMetaVO transMetaVO = transMetaVOMapper.selectTransMetaVO(transMeta.getName());
             TableOutputMetaVO tableOutputMetaVO = getTableOutputMetaVO(transMeta);
             tableOutputMetaVO.setTransMetaId(transMetaVO.getId());
-            tableOutputMetaVO.setDBManageMentId(8);
+            tableOutputMetaVO.setDBManageMentId(dstDbConnId);
             List<TableInputStepVO> tableInputStepVOList = getTableInputStepVO(transMeta);
             List<String> stepNameList = new ArrayList<>();
             for (TableInputStepVO tableInputStepVO : tableInputStepVOList) {
                 tableInputStepVO.setTransMetaId(transMetaVO.getId());
-                tableInputStepVO.setDBManageMentId(8);
+                tableInputStepVO.setDBManageMentId(srcDbConnId);
                 stepNameList.add(tableInputStepVO.getStepName());
             }
             int toStepId = 0;
