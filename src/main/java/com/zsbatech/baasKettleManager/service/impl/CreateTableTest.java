@@ -7,6 +7,7 @@ import org.pentaho.di.core.logging.StepLogTable;
 import org.pentaho.di.core.plugins.PluginRegistry;
 import org.pentaho.di.core.plugins.StepPluginType;
 import org.pentaho.di.core.row.RowMetaInterface;
+import org.pentaho.di.core.util.Utils;
 import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.di.core.variables.Variables;
 import org.pentaho.di.trans.Trans;
@@ -22,8 +23,8 @@ public class CreateTableTest {
      * 两个库中的表名
      */
     public static String sourceDb_tablename = "user_tables";
-    public static String kettle_tablename = "agent_log";
-    public static String kettle_log = "kettle_log";
+    public static String kettle_tablename = "user_tables";
+    public static String kettle_log = "user_tables";
 
     /**
      * 数据库连接信息,适用于DatabaseMeta其中 一个构造器DatabaseMeta(String xml)
@@ -122,6 +123,19 @@ public class CreateTableTest {
             db = new Database(database_kettle);
             String sqlddl = db.getDDLCreationTable(kettle_tablename,rowMetaInterface);
             System.out.println(sqlddl);
+            java.util.List<RowMetaInterface> indexes = stepLogTable.getRecommendedIndexes();
+            StringBuilder ddl =  new StringBuilder();
+            for ( int i = 0; i < indexes.size(); i++ ) {
+                RowMetaInterface index = indexes.get( i );
+                if ( !index.isEmpty() ) {
+                    String createIndex =
+                            db.getCreateIndexStatement( kettle_tablename, "IDX_" + kettle_tablename + "_" + ( i + 1 ), index
+                                    .getFieldNames(), false, false, false, true );
+                    if ( !Utils.isEmpty( createIndex ) ) {
+                        ddl.append( createIndex );
+                    }
+                }
+            }
 
             insertUpdateMeta.setDatabaseMeta(database_kettle);
             //设置操作的表
