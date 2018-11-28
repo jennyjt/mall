@@ -32,7 +32,7 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
     @Autowired
     private CatalogManageService catalogManageService;
 
-//    @Autowired
+    //    @Autowired
     private String ftpJobUrl="C:\\Users\\zhang\\Desktop\\";
 
     @Autowired

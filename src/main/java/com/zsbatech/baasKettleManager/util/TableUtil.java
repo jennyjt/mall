@@ -1,19 +1,15 @@
 package com.zsbatech.baasKettleManager.util;
 
 import com.zsbatech.baasKettleManager.model.DbManagement;
+import org.apache.tomcat.util.buf.StringUtils;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.database.Database;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.row.RowMetaInterface;
-import org.pentaho.di.trans.TransMeta;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.List;
-
 
 public class TableUtil {
     private static Logger logger = LoggerFactory.getLogger(HttpUtils.class);
@@ -35,11 +31,12 @@ public class TableUtil {
         Database db = new Database(sourceDbMeta);
 
         db.connect();
+        db.setQueryLimit(1);
         String select_sql = "SELECT * FROM "+tableName;
         RowMetaInterface rowMetaInterface = db.getQueryFields(select_sql,false);
+        String[] primaryKeys = db.getPrimaryKeyColumnNames(tableName);//获取主键 TODO 拼接设置主键的sql
         db = new Database(destDbMeta);
         String sqlddl = db.getDDLCreationTable(tableName,rowMetaInterface);
-
         return sqlddl;
     }
     public static String getCreateIndexDDL(DbManagement sourceDM,DbManagement destDM,String tableName) throws KettleException {
