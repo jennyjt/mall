@@ -24,7 +24,7 @@ public class DBMigrationController {
     private DBMigrationService dbMigrationService;
 
 
-    @RequestMapping(value = "/incr",method = RequestMethod.POST)
+    @RequestMapping(value = "/update",method = RequestMethod.POST)
     @ResponseBody
     public ResponseData<String> createMigration(@RequestBody DataMig dataMig) {
         ResponseData<String> responseData = new ResponseData<>();
@@ -44,7 +44,7 @@ public class DBMigrationController {
 
     }
 
-    @RequestMapping(value = "/update",method = RequestMethod.POST)
+    @RequestMapping(value = "/incr",method = RequestMethod.POST)
     @ResponseBody
     public ResponseData<String> insertupdateMigration(@RequestBody DataMig dataMig) {
         ResponseData<String> responseData = new ResponseData<>();
