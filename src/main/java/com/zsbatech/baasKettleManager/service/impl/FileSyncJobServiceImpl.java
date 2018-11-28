@@ -33,7 +33,7 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
     private CatalogManageService catalogManageService;
 
     //    @Autowired
-    private String ftpJobUrl="C:\\Users\\zhang\\Desktop\\";
+    private String ftpJobUrl = "C:\\Users\\zhang\\Desktop\\";
 
     @Autowired
     private SaveJobMetaService saveJobMetaService;
@@ -46,7 +46,7 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
      * @param fileName
      * @return
      */
-    public boolean createDownloadJobMeta(JobStartStepVO jobStartStepVO, FTPDownLoadStepVO ftpDownLoadStepVO,String fileName) {
+    public boolean createDownloadJobMeta(JobStartStepVO jobStartStepVO, FTPDownLoadStepVO ftpDownLoadStepVO, String fileName) {
         try {
             KettleEnvironment.init();
         } catch (KettleException e) {
@@ -75,7 +75,7 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         }
         JobEntryCopy jobEntrySpecialCopy = new JobEntryCopy(jobEntrySpecial);
         jobEntrySpecialCopy.setDrawn(true);
-        jobEntrySpecialCopy.setLocation(30,20);
+        jobEntrySpecialCopy.setLocation(30, 20);
         jobMeta.addJobEntry(jobEntrySpecialCopy);
         JobEntryFTP jobEntryFTP = new JobEntryFTP();
         jobEntryFTP.setName("ftp下载");
@@ -104,7 +104,7 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         jobEntryFTP.setWildcard(ftpDownLoadStepVO.getFtpFileName());
         JobEntryCopy jobEntryFTPCopy = new JobEntryCopy(jobEntryFTP);
         jobEntryFTPCopy.setDrawn(true);
-        jobEntryFTPCopy.setLocation(80,20);
+        jobEntryFTPCopy.setLocation(80, 20);
         jobMeta.addJobEntry(jobEntryFTPCopy);
         JobHopMeta jobHopMeta = new JobHopMeta(jobEntrySpecialCopy, jobEntryFTPCopy);
         jobHopMeta.setUnconditional(true);
@@ -121,7 +121,7 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
      * @param fileName
      * @return
      */
-    public boolean createPutJobMeta(JobStartStepVO jobStartStepVO, FTPPutStepVO ftpPutStepVO,String fileName) {
+    public boolean createPutJobMeta(JobStartStepVO jobStartStepVO, FTPPutStepVO ftpPutStepVO, String fileName) {
         try {
             KettleEnvironment.init();
         } catch (KettleException e) {
@@ -150,7 +150,7 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         }
         JobEntryCopy jobEntrySpecialCopy = new JobEntryCopy(jobEntrySpecial);
         jobEntrySpecialCopy.setDrawn(true);
-        jobEntrySpecialCopy.setLocation(30,20);
+        jobEntrySpecialCopy.setLocation(30, 20);
         jobMeta.addJobEntry(jobEntrySpecialCopy);
         JobEntryFTPPUT jobEntryFTPPUT = new JobEntryFTPPUT();
         jobEntryFTPPUT.setName("ftp下载");
@@ -180,12 +180,118 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         jobEntryFTPPUT.setWildcard(ftpPutStepVO.getPutFileName());
         JobEntryCopy jobEntryFTPCopy = new JobEntryCopy(jobEntryFTPPUT);
         jobEntryFTPCopy.setDrawn(true);
-        jobEntryFTPCopy.setLocation(80,20);
+        jobEntryFTPCopy.setLocation(80, 20);
         jobMeta.addJobEntry(jobEntryFTPCopy);
         JobHopMeta jobHopMeta = new JobHopMeta(jobEntrySpecialCopy, jobEntryFTPCopy);
         jobHopMeta.setUnconditional(true);
         jobMeta.addJobHop(jobHopMeta);
-        saveJobMetaService.save(jobMeta, ftpJobUrl+fileName+".kjb", true);
+        saveJobMetaService.save(jobMeta, ftpJobUrl + fileName + ".kjb", true);
+        return true;
+    }
+
+    /**
+     * ftp间同步文件job
+     *
+     * @param jobStartStepVO
+     * @param ftpPutStepVO
+     * @param ftpDownLoadStepVO
+     * @param fileName
+     * @return
+     */
+    public boolean fileSyncFtpToFtpJobMeta(JobStartStepVO jobStartStepVO, FTPPutStepVO ftpPutStepVO, FTPDownLoadStepVO ftpDownLoadStepVO, String fileName) {
+        try {
+            KettleEnvironment.init();
+        } catch (KettleException e) {
+            e.printStackTrace();
+        }
+        JobMeta jobMeta = new JobMeta();
+        jobMeta.setJobstatus(0);
+        jobMeta.setName("ftp同步文件job");
+        JobEntrySpecial jobEntrySpecial = new JobEntrySpecial();
+        jobEntrySpecial.setName("START");
+        jobEntrySpecial.setStart(true);
+        if (jobStartStepVO.getIsRepeat() == 1) {
+            jobEntrySpecial.setRepeat(true);
+        } else {
+            jobEntrySpecial.setRepeat(false);
+        }
+        jobEntrySpecial.setSchedulerType(jobStartStepVO.getTimingType());
+        if (jobStartStepVO.getTimingType() == 1) {
+            jobEntrySpecial.setIntervalSeconds(jobStartStepVO.getTimingTime());
+        } else if (jobStartStepVO.getTimingType() == 2) {
+            jobEntrySpecial.setHour(jobStartStepVO.getTimingTime());
+        } else if (jobStartStepVO.getTimingType() == 3) {
+            jobEntrySpecial.setWeekDay(jobEntrySpecial.getWeekDay());
+        } else if (jobStartStepVO.getTimingType() == 4) {
+            jobEntrySpecial.setDayOfMonth(jobEntrySpecial.getDayOfMonth());
+        }
+        JobEntryCopy jobEntrySpecialCopy = new JobEntryCopy(jobEntrySpecial);
+        jobEntrySpecialCopy.setDrawn(true);
+        jobEntrySpecialCopy.setLocation(30, 20);
+        jobMeta.addJobEntry(jobEntrySpecialCopy);
+
+        //ftp下载
+        JobEntryFTP jobEntryFTP = new JobEntryFTP();
+        jobEntryFTP.setName("ftp下载");
+        jobEntryFTP.setServerName(ftpDownLoadStepVO.getServerName());
+        jobEntryFTP.setProxyHost(ftpDownLoadStepVO.getProxyHost());
+        jobEntryFTP.setUserName(ftpDownLoadStepVO.getUserName());
+        jobEntryFTP.setPassword(ftpDownLoadStepVO.getPassword());
+        jobEntryFTP.setProxyPort(ftpDownLoadStepVO.getProxyPort());
+        jobEntryFTP.setProxyPassword(ftpDownLoadStepVO.getProxyPassword());
+        jobEntryFTP.setProxyUsername(ftpDownLoadStepVO.getProxyUsername());
+        jobEntryFTP.setPort(ftpDownLoadStepVO.getPort());
+        jobEntryFTP.setTimeout(ftpDownLoadStepVO.getTimeout());
+        if (ftpDownLoadStepVO.getBinaryMode() == 1) {
+            jobEntryFTP.setBinaryMode(true);
+        }
+        jobEntryFTP.setControlEncoding(ftpDownLoadStepVO.getControlEncoding());
+
+        //创建目录
+        List<String> fileCataLogs = new ArrayList<>();
+        fileCataLogs.add(ftpDownLoadStepVO.getFtpDirectory());
+        fileCataLogs.add(ftpDownLoadStepVO.getTargetDirectory());
+        catalogManageService.createCatalogs(fileCataLogs);
+
+        jobEntryFTP.setFtpDirectory(ftpDownLoadStepVO.getFtpDirectory());
+        jobEntryFTP.setTargetDirectory(ftpDownLoadStepVO.getTargetDirectory());
+        jobEntryFTP.setWildcard(ftpDownLoadStepVO.getFtpFileName());
+        JobEntryCopy jobEntryFTPCopy = new JobEntryCopy(jobEntryFTP);
+        jobEntryFTPCopy.setDrawn(true);
+        jobEntryFTPCopy.setLocation(80, 20);
+        jobMeta.addJobEntry(jobEntryFTPCopy);
+        JobHopMeta jobHopMeta = new JobHopMeta(jobEntrySpecialCopy, jobEntryFTPCopy);
+        jobHopMeta.setUnconditional(true);
+        jobMeta.addJobHop(jobHopMeta);
+
+        //ftp上传
+        JobEntryFTPPUT jobEntryFTPPUT = new JobEntryFTPPUT();
+        jobEntryFTPPUT.setName("ftp下载");
+        jobEntryFTPPUT.setServerName(ftpPutStepVO.getServerName());
+        jobEntryFTPPUT.setProxyHost(ftpPutStepVO.getProxyHost());
+        jobEntryFTPPUT.setUserName(ftpPutStepVO.getUserName());
+        jobEntryFTPPUT.setPassword(ftpPutStepVO.getPassword());
+        jobEntryFTPPUT.setProxyPort(ftpPutStepVO.getProxyPort());
+        jobEntryFTPPUT.setProxyPassword(ftpPutStepVO.getProxyPassword());
+        jobEntryFTPPUT.setProxyUsername(ftpPutStepVO.getProxyUsername());
+        jobEntryFTPPUT.setServerPort(ftpPutStepVO.getPort());
+        jobEntryFTPPUT.setTimeout(ftpPutStepVO.getTimeout());
+        if (ftpPutStepVO.getBinaryMode() == 1) {
+            jobEntryFTPPUT.setBinaryMode(true);
+        }
+        jobEntryFTPPUT.setControlEncoding(ftpPutStepVO.getControlEncoding());
+
+        jobEntryFTPPUT.setRemoteDirectory(ftpPutStepVO.getFtpDirectory());
+        jobEntryFTPPUT.setLocalDirectory(ftpDownLoadStepVO.getTargetDirectory());
+        jobEntryFTPPUT.setWildcard(ftpDownLoadStepVO.getFtpFileName());
+        JobEntryCopy jobEntryFtpToFtpCopy = new JobEntryCopy(jobEntryFTPPUT);
+        jobEntryFtpToFtpCopy.setDrawn(true);
+        jobEntryFtpToFtpCopy.setLocation(80, 20);
+        jobMeta.addJobEntry(jobEntryFtpToFtpCopy);
+        JobHopMeta jobHopFtpMeta = new JobHopMeta(jobEntryFTPCopy, jobEntryFtpToFtpCopy);
+        jobHopFtpMeta.setUnconditional(false);
+        jobMeta.addJobHop(jobHopFtpMeta);
+        saveJobMetaService.save(jobMeta, ftpJobUrl + fileName + ".kjb", true);
         return true;
     }
 }
