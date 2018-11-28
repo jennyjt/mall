@@ -1,8 +1,7 @@
 package com.zsbatech.baasKettleManager.controller;
 
 import com.zsbatech.baasKettleManager.service.FileSyncJobService;
-import com.zsbatech.baasKettleManager.vo.FTPDownLoadSetp;
-import com.zsbatech.baasKettleManager.vo.FTPDownLoadStepVO;
+import com.zsbatech.baasKettleManager.vo.FTPSyncSetp;
 import com.zsbatech.baasKettleManager.vo.FTPPutStepVO;
 import com.zsbatech.baasKettleManager.vo.JobStartStepVO;
 import com.zsbatech.base.common.ResponseData;
@@ -14,9 +13,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -43,9 +39,9 @@ public class FileSyncJobController {
     )
     @RequestMapping(value = "/createDownloadJobMeta", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public ResponseData<String> createDownloadJobMeta(@RequestBody FTPDownLoadSetp ftpDownLoadStep) {
+    public ResponseData<String> createDownloadJobMeta(@RequestBody FTPSyncSetp ftpSyncSetp) {
         ResponseData<String> responseData = new ResponseData<>();
-        if(fileSyncJobService.createDownloadJobMeta(ftpDownLoadStep.getJobStartStepVO(),ftpDownLoadStep.getFtpDownLoadStepVO(),ftpDownLoadStep.getFileName())){
+        if(fileSyncJobService.createDownloadJobMeta(ftpSyncSetp.getJobStartStepVO(),ftpSyncSetp.getFtpDownLoadStepVO(),ftpSyncSetp.getFileName())){
             responseData.setOK("创建文件同步job成功","success");
         }else {
             responseData.setError("fail");
@@ -62,11 +58,9 @@ public class FileSyncJobController {
     )
     @RequestMapping(value = "/createPutJobMeta", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public ResponseData<String> createPutJobMeta(@RequestParam JobStartStepVO jobStartStepVO,
-                                                       @RequestParam FTPPutStepVO ftpPutStepVO,
-                                                       @RequestParam String fileName) {
+    public ResponseData<String> createPutJobMeta(@RequestBody FTPSyncSetp ftpSyncSetp) {
         ResponseData<String> responseData = new ResponseData<>();
-        if(fileSyncJobService.createPutJobMeta(jobStartStepVO,ftpPutStepVO,fileName)){
+        if(fileSyncJobService.createPutJobMeta(ftpSyncSetp.getJobStartStepVO(),ftpSyncSetp.getFtpPutStepVO(),ftpSyncSetp.getFileName())){
             responseData.setOK("创建文件上传同步job成功");
         }else {
             responseData.setError("创建文件上传同步job失败");
@@ -82,9 +76,9 @@ public class FileSyncJobController {
     )
     @RequestMapping(value = "/fileSyncFtpToFtpJobMeta", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public ResponseData<String> fileSyncFtpToFtpJobMeta(@RequestBody FTPDownLoadSetp ftpDownLoadStep) {
+    public ResponseData<String> fileSyncFtpToFtpJobMeta(@RequestBody FTPSyncSetp ftpSyncSetp) {
         ResponseData<String> responseData = new ResponseData<>();
-        if(fileSyncJobService.createDownloadJobMeta(ftpDownLoadStep.getJobStartStepVO(),ftpDownLoadStep.getFtpDownLoadStepVO(),ftpDownLoadStep.getFileName())){
+        if(fileSyncJobService.fileSyncFtpToFtpJobMeta(ftpSyncSetp.getJobStartStepVO(),ftpSyncSetp.getFtpDownLoadStepVO(),ftpSyncSetp.getFtpPutStepVO(),ftpSyncSetp.getFileName())){
             responseData.setOK("创建文件同步job成功","success");
         }else {
             responseData.setError("fail");
