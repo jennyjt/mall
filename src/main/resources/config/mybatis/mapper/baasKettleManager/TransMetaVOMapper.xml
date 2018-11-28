@@ -25,4 +25,12 @@
     where trans_name = #{transName,jdbcType=VARCHAR}
     limit 1
   </select>
+
+  <select id="selectTransMetaVOById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select
+    <include refid="Base_Column_List" />
+    from trans_meta
+    where id = #{transMetaId,jdbcType=VARCHAR}
+    limit 1
+  </select>
 </mapper>

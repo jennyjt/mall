@@ -21,11 +21,11 @@
     values (#{id,jdbcType=INTEGER}, #{stepName,jdbcType=VARCHAR},#{timingType,jdbcType=TINYINT},#{isRepeat,jdbcType=TINYINT},#{timingTime,jdbcType=TINYINT},#{jobMetaId,jdbcType=TINYINT},#{createTime,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR})
   </insert>
 
-  <select id="selectTransMetaVO" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  <select id="selectJobStartStepVO" resultMap="BaseResultMap" parameterType="java.lang.String" >
     select
     <include refid="Base_Column_List" />
     from job_start_step
-    where trans_name = #{transName,jdbcType=VARCHAR}
+    where job_meta_id = #{jobMetaId,jdbcType=VARCHAR}
     limit 1
   </select>
 </mapper>

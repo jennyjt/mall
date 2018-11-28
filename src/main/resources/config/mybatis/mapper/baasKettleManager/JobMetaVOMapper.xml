@@ -14,9 +14,6 @@
   </sql>
 
   <insert id="insert" parameterType="com.zsbatech.baasKettleManager.vo.JobMetaVO" >
-    <selectKey resultType="int" keyProperty="id" order="AFTER">
-      select LAST_INSERT_ID()
-    </selectKey>
     insert into job_meta (id, job_name, file_name,
       createtime, updatetime,trans_meta_id)
     values (#{id,jdbcType=INTEGER}, #{jobName,jdbcType=VARCHAR},#{fileName,jdbcType=VARCHAR},#{createTime,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR},#{transMetaId,jdbcType=INTEGER})
