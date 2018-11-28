@@ -73,6 +73,23 @@ public class FileSyncJobController {
         }
         return responseData;
     }
-
+    @ApiOperation(value = "ftp间文件同步job", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiResponses({@ApiResponse(code = Response.OK, message = "ftp间文件同步job"),})
+    @ApiImplicitParams(
+            value = {
+                    @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
+            }
+    )
+    @RequestMapping(value = "/fileSyncFtpToFtpJobMeta", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseBody
+    public ResponseData<String> fileSyncFtpToFtpJobMeta(@RequestBody FTPDownLoadSetp ftpDownLoadStep) {
+        ResponseData<String> responseData = new ResponseData<>();
+        if(fileSyncJobService.createDownloadJobMeta(ftpDownLoadStep.getJobStartStepVO(),ftpDownLoadStep.getFtpDownLoadStepVO(),ftpDownLoadStep.getFileName())){
+            responseData.setOK("创建文件同步job成功","success");
+        }else {
+            responseData.setError("fail");
+        }
+        return responseData;
+    }
 }
 

@@ -194,7 +194,7 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
             int fromStepId = 0;
             int toStepId = 0;
             if (jobStartStepVOMapper.insert(jobStartStepVO) != 0) {
-                fromStepId = new JobStartStepVO().getId();
+                fromStepId = jobStartStepVOMapper.selectJobStartStepVO(jobStartStepVO.getJobMetaId()).getId();
             }
             toStepId = transMetaId;
             JobHopMetaVO jobHopMetaVO = new JobHopMetaVO();
@@ -213,7 +213,7 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
     public JobMetaVO getJobMetaVO(JobMeta jobMeta) {
         JobMetaVO jobMetaVO = new JobMetaVO();
         jobMetaVO.setJobName(jobMeta.getName());
-        jobMetaVO.setFileName(jobMeta.getFilename() + ".kjb");
+        jobMetaVO.setFileName(jobMeta.getFilename());
         jobMetaVO.setCreateTime(new Date());
         jobMetaVO.setUpdateTime(new Date());
         return jobMetaVO;
