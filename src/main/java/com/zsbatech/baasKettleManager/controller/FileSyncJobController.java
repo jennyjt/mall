@@ -78,7 +78,7 @@ public class FileSyncJobController {
     @ResponseBody
     public ResponseData<String> fileSyncFtpToFtpJobMeta(@RequestBody FTPSyncSetp ftpSyncSetp) {
         ResponseData<String> responseData = new ResponseData<>();
-        if(fileSyncJobService.fileSyncFtpToFtpJobMeta(ftpSyncSetp.getJobStartStepVO(),ftpSyncSetp.getFtpDownLoadStepVO(),ftpSyncSetp.getFtpPutStepVO(),ftpSyncSetp.getFileName())){
+        if(fileSyncJobService.fileSyncFtpToFtpJobMeta(ftpSyncSetp.getJobStartStepVO(),ftpSyncSetp.getFtpPutStepVO(),ftpSyncSetp.getFtpDownLoadStepVO(),ftpSyncSetp.getFileName())){
             responseData.setOK("创建文件同步job成功","success");
         }else {
             responseData.setError("fail");
