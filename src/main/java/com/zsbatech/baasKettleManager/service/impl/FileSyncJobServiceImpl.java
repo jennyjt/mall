@@ -1,6 +1,6 @@
 package com.zsbatech.baasKettleManager.service.impl;
 
-import com.zsbatech.baasKettleManager.service.ContentManageService;
+import com.zsbatech.baasKettleManager.service.CatalogManageService;
 import com.zsbatech.baasKettleManager.service.FileSyncJobService;
 import com.zsbatech.baasKettleManager.service.SaveJobMetaService;
 import com.zsbatech.baasKettleManager.vo.FTPPutStepVO;
@@ -30,7 +30,7 @@ import java.util.List;
 public class FileSyncJobServiceImpl implements FileSyncJobService {
 
     @Autowired
-    private ContentManageService contentManageService;
+    private CatalogManageService catalogManageService;
 
 //    @Autowired
     private String ftpJobUrl="C:\\Users\\zhang\\Desktop\\";
@@ -94,10 +94,10 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         jobEntryFTP.setControlEncoding(ftpDownLoadStepVO.getControlEncoding());
 
         //创建目录
-        List<String> fileContents = new ArrayList<>();
-        fileContents.add(ftpDownLoadStepVO.getFtpDirectory());
-        fileContents.add(ftpDownLoadStepVO.getTargetDirectory());
-        contentManageService.createContent(fileContents);
+        List<String> fileCataLogs = new ArrayList<>();
+        fileCataLogs.add(ftpDownLoadStepVO.getFtpDirectory());
+        fileCataLogs.add(ftpDownLoadStepVO.getTargetDirectory());
+        catalogManageService.createCatalogs(fileCataLogs);
 
         jobEntryFTP.setFtpDirectory(ftpDownLoadStepVO.getFtpDirectory());
         jobEntryFTP.setTargetDirectory(ftpDownLoadStepVO.getTargetDirectory());
@@ -169,10 +169,10 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         jobEntryFTPPUT.setControlEncoding(ftpPutStepVO.getControlEncoding());
 
         //创建目录
-        List<String> fileContents = new ArrayList<>();
-        fileContents.add(ftpPutStepVO.getFtpDirectory());
-        fileContents.add(ftpPutStepVO.getTargetDirectory());
-        contentManageService.createContent(fileContents);
+        List<String> fileCatalogs = new ArrayList<>();
+        fileCatalogs.add(ftpPutStepVO.getFtpDirectory());
+        fileCatalogs.add(ftpPutStepVO.getTargetDirectory());
+        catalogManageService.createCatalogs(fileCatalogs);
 
 
         jobEntryFTPPUT.setRemoteDirectory(ftpPutStepVO.getFtpDirectory());

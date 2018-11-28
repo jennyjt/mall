@@ -32,5 +32,5 @@ public interface SaveJobMetaService {
 
     JobEntryTrans getJobEntryTrans(JobMeta jobMeta);
 
-    boolean saveByDB(String name);
+    boolean saveIncrJobByDB(String jobName);
 }
