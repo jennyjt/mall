@@ -1,6 +1,5 @@
 package com.zsbatech.baasKettleManager.service;
 
-import com.zsbatech.baasKettleManager.vo.FTPDownLoadStepVO;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -11,10 +10,9 @@ public interface FileUpDownloadService {
     /**
      * 文件上传
      * @param file
-     * @param fileInfo
      * @return
      */
-    boolean fileUpload(MultipartFile file, FTPDownLoadStepVO fileInfo);
+    boolean fileUpload(MultipartFile file);
 
     /**
      * 文件下载
