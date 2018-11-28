@@ -9,11 +9,11 @@ import java.util.List;
  * User: Zhangys
  * Date: 2018/11/22
  */
-public class FileContentVO {
+public class FileCatalogVO {
 
     private int id;
 
-    private String sourceContent;
+    private String sourceCatalog;
 
     private Date createTime;
 
@@ -25,8 +25,8 @@ public class FileContentVO {
         return id;
     }
 
-    public String getSourceContent() {
-        return sourceContent;
+    public String getSourceCatalog() {
+        return sourceCatalog;
     }
 
     public Date getCreateTime() {
@@ -45,8 +45,8 @@ public class FileContentVO {
         this.id = id;
     }
 
-    public void setSourceContent(String sourceContent) {
-        this.sourceContent = sourceContent;
+    public void setSourceCatalog(String sourceCatalog) {
+        this.sourceCatalog = sourceCatalog;
     }
 
     public void setCreateTime(Date createTime) {

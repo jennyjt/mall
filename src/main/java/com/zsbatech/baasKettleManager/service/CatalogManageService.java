@@ -9,14 +9,16 @@ import java.util.Map;
  * User: Zhangys
  * Date: 2018/11/20
  */
-public interface ContentManageService {
+public interface CatalogManageService {
 
-    Map<String, List<String>> createContent(List<String> files);
+    Map<String, List<String>> createCatalogs(List<String> files);
 
     Map<String, List<String>> deleteFiles(List<String> files);
 
-    Map<String, List<String>> deleteContents(List<String> fileContents);
+    Map<String, List<String>> deleteCatalogs(List<String> fileCatalogs);
 
     List<String> queryFiles(List<String> fileNames);
+
+    int saveFiles(List<String> files);
 
 }

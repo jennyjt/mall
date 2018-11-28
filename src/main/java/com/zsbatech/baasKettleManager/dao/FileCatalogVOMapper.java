@@ -1,6 +1,6 @@
 package com.zsbatech.baasKettleManager.dao;
 
-import com.zsbatech.baasKettleManager.vo.FileContentVO;
+import com.zsbatech.baasKettleManager.vo.FileCatalogVO;
 
 
 /**
@@ -9,7 +9,7 @@ import com.zsbatech.baasKettleManager.vo.FileContentVO;
  * User: Zhangys
  * Date: 2018/11/22
  */
-public interface FileContentVOMapper {
+public interface FileCatalogVOMapper {
 
-    int insert(FileContentVO fileContentVO);
+    int insert(FileCatalogVO fileContentVO);
 }

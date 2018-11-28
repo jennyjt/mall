@@ -1,17 +1,18 @@
 package com.zsbatech.baasKettleManager.service.impl;
 
+import com.zsbatech.baasKettleManager.dao.FileCatalogVOMapper;
 import com.zsbatech.baasKettleManager.dao.FilesVOMapper;
-import com.zsbatech.baasKettleManager.service.ContentManageService;
+import com.zsbatech.baasKettleManager.service.CatalogManageService;
+import com.zsbatech.baasKettleManager.vo.FileCatalogVO;
 import com.zsbatech.baasKettleManager.vo.FilesVO;
+import com.zsbatech.base.utils.JWTUtils;
+import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -20,7 +21,7 @@ import java.util.Map;
  * Date: 2018/11/20
  */
 @Service
-public class ContentManageServiceImpl implements ContentManageService {
+public class CatalogManageServiceImpl implements CatalogManageService {
 
     @Autowired
     private FilesVOMapper filesVOMapper;
@@ -28,14 +29,14 @@ public class ContentManageServiceImpl implements ContentManageService {
     /**
      * 创建本地目录
      *
-     * @param fileContents
+     * @param fileCatalogs
      * @return
      */
-    public Map<String, List<String>> createContent(List<String> fileContents) {
+    public Map<String, List<String>> createCatalogs(List<String> fileCatalogs) {
         Map<String, List<String>> map = new HashMap<>();
         List<String> fileList = new ArrayList<>();
         List<String> newCreateContentList = new ArrayList<>();
-        for (String file : fileContents) {
+        for (String file : fileCatalogs) {
             File file1 = new File(file);
             if (file1.exists()) {
                 fileList.add(file);
@@ -76,14 +77,14 @@ public class ContentManageServiceImpl implements ContentManageService {
     /**
      * 删除本地目录
      *
-     * @param fileContents
+     * @param fileCatalogs
      * @return
      */
-    public Map<String, List<String>> deleteContents(List<String> fileContents) {
+    public Map<String, List<String>> deleteCatalogs(List<String> fileCatalogs) {
         Map<String, List<String>> map = new HashMap<>();
         List<String> fileList = new ArrayList<>();
         List<String> newCreateFileList = new ArrayList<>();
-        for (String file : fileContents) {
+        for (String file : fileCatalogs) {
             File file1 = new File(file);
             if (file1.exists() && file1.listFiles().length == 0) {
                 file1.delete();
@@ -93,7 +94,7 @@ public class ContentManageServiceImpl implements ContentManageService {
                 File[] files = file1.listFiles();
                 for (File file2 : files) {
                     //文件无法删除
-                    if(!file2.delete()){
+                    if (!file2.delete()) {
                         try {
                             throw new IOException();
                         } catch (Exception e) {
@@ -122,12 +123,32 @@ public class ContentManageServiceImpl implements ContentManageService {
      */
     public List<String> queryFiles(List<String> fileNames) {
         List<String> fileList = new ArrayList<>();
-        List<FilesVO> files =  filesVOMapper.queryFilesByfileName(fileNames);
-        if(files != null){
-            for(FilesVO file:files) {
+        List<FilesVO> files = filesVOMapper.queryFilesByfileName(fileNames);
+        if (files != null) {
+            for (FilesVO file : files) {
                 fileList.add(file.toString());
             }
         }
         return fileList;
+    }
+
+    /**
+     * 存储文件目录信息
+     *
+     * @param files
+     * @return
+     */
+    public int saveFiles(List<String> files) {
+        List<FilesVO> filesVOList = new ArrayList<>();
+        for (String file : files) {
+            File file1 = new File(file);
+            FilesVO filesVO = new FilesVO();
+            filesVO.setFileCatalog(file1.getParentFile().toString());
+            filesVO.setCreateTime(new Date());
+            filesVO.setFileName(file1.getName());
+            filesVO.setUpdateTime(new Date());
+            filesVOList.add(filesVO);
+        }
+        return filesVOMapper.insertBatch(filesVOList);
     }
 }
