@@ -1,6 +1,7 @@
 package com.zsbatech.baasKettleManager.util;
 
 import com.zsbatech.baasKettleManager.model.DbManagement;
+import org.pentaho.di.core.Const;
 import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.database.Database;
 import org.pentaho.di.core.database.DatabaseMeta;
@@ -9,6 +10,9 @@ import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.trans.TransMeta;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class TableUtil {
@@ -38,6 +42,33 @@ public class TableUtil {
 
         return sqlddl;
     }
+    public static String getCreateIndexDDL(DbManagement sourceDM,DbManagement destDM,String tableName) throws KettleException {
+        StringBuilder ddlBuilder = new StringBuilder();
+
+        KettleEnvironment.init();
+
+        DatabaseMeta sourceDbMeta = new DatabaseMeta(getXmlByDbManagement(sourceDM));
+        DatabaseMeta destDbMeta = new DatabaseMeta(getXmlByDbManagement(destDM));
+
+        Database sourceDB = new Database(sourceDbMeta);
+        Database destDB = new Database(destDbMeta);
+        sourceDB.connect();
+        String[] indexF = {"id"};
+
+        String select_sql = "SELECT * FROM "+tableName;
+        RowMetaInterface rowMetaInterface = sourceDB.getQueryFields(select_sql,false);
+        String[] fields = rowMetaInterface.getFieldNames();
+        for(String field:fields){
+            indexF[0] = field;
+            boolean indexBoolean = sourceDB.checkIndexExists(tableName,indexF);
+            if(indexBoolean){
+                ddlBuilder.append(destDB.getCreateIndexStatement( tableName, "IDX_" + tableName + "_" + field, indexF, false, false, false, true ));
+                ddlBuilder.append(Const.CR);
+            }
+        }
+
+        return ddlBuilder.toString();
+    }
 
     /**
      * 获取目标库建表sql
@@ -64,6 +95,33 @@ public class TableUtil {
 //        db.getCreateTableStatement();
 //        db.execStatement(sqlddl);
         return sqlddl;
+    }
+    public static String getCreateIndexDDL(DbManagement sourceDM,DbManagement destDM,String tableName,String columns) throws KettleException {
+        StringBuilder ddlBuilder = new StringBuilder();
+
+        KettleEnvironment.init();
+
+        DatabaseMeta sourceDbMeta = new DatabaseMeta(getXmlByDbManagement(sourceDM));
+        DatabaseMeta destDbMeta = new DatabaseMeta(getXmlByDbManagement(destDM));
+
+        Database sourceDB = new Database(sourceDbMeta);
+        Database destDB = new Database(destDbMeta);
+        sourceDB.connect();
+        String[] indexF = {"id"};
+
+        String select_sql = "SELECT "+columns+" FROM "+tableName;
+        RowMetaInterface rowMetaInterface = sourceDB.getQueryFields(select_sql,false);
+        String[] fields = rowMetaInterface.getFieldNames();
+        for(String field:fields){
+            indexF[0] = field;
+            boolean indexBoolean = sourceDB.checkIndexExists(tableName,indexF);
+            if(indexBoolean){
+                ddlBuilder.append(destDB.getCreateIndexStatement( tableName, "IDX_" + tableName + "_" + field, indexF, false, false, false, true ));
+                ddlBuilder.append(Const.CR);
+            }
+        }
+
+        return ddlBuilder.toString();
     }
 
     private static String getXmlByDbManagement(DbManagement dbManagement){

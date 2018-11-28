@@ -61,6 +61,7 @@ public class FtpSourceManageTests {
         source.setDbUser("system");
         source.setDbPassword("123456");
         source.setCreateUser("ORACLE");//TODO 临时使用参数
+        source.setDbType("ORACLE");
 
         DbManagement dest = new DbManagement();
         dest.setLinkName("testMysql");
@@ -70,8 +71,35 @@ public class FtpSourceManageTests {
         dest.setDbUser("root");
         dest.setDbPassword("Encrypted 2bec2dcaa0be79f9db808a2228ec3f790");
         dest.setCreateUser("MYSQL");
+        dest.setDbType("MYSQL");
 
-        String ddl = TableUtil.getCreateTableDDL(source,dest,"USER_TABLES");
+        String ddl = TableUtil.getCreateTableDDL(source,dest,"KETTLE");
+        System.out.println(ddl);
+    }
+
+    @Test
+    public void testGetTableIndexSql() throws KettleException {
+        DbManagement source = new DbManagement();
+        source.setLinkName("testOracle");
+        source.setDbHost("172.16.0.181");
+        source.setDbPort("1521");
+        source.setDbName("orcl");
+        source.setDbUser("system");
+        source.setDbPassword("123456");
+        source.setCreateUser("ORACLE");//TODO 临时使用参数
+        source.setDbType("ORACLE");
+
+        DbManagement dest = new DbManagement();
+        dest.setLinkName("testMysql");
+        dest.setDbHost("117.50.10.62");
+        dest.setDbPort("3306");
+        dest.setDbName("switch_clearing");
+        dest.setDbUser("root");
+        dest.setDbPassword("Encrypted 2bec2dcaa0be79f9db808a2228ec3f790");
+        dest.setCreateUser("MYSQL");
+        dest.setDbType("MYSQL");
+
+        String ddl = TableUtil.getCreateIndexDDL(source,dest,"KETTLE");
         System.out.println(ddl);
     }
 
