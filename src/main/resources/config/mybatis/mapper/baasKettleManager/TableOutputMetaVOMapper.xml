@@ -11,17 +11,17 @@
         <result column="updatetime" property="updateTime" jdbcType="VARCHAR"/>
         <result column="isbatch_insert" property="isBatchInsert" jdbcType="INTEGER"/>
         <result column="entry_id" property="entryId" jdbcType="INTEGER"/>
-        <result column="db_managerment_id" property="dBManagerMentId" jdbcType="INTEGER"/>
+        <result column="db_management_id" property="dBManageMentId" jdbcType="INTEGER"/>
     </resultMap>
     <sql id="Base_Column_List">
-    id, step_name, target_table, createtime, updatetime,db_connection_name,isbatch_insert,entry_id,trans_meta_id,db_managerment_id
+    id, step_name, target_table, createtime, updatetime,db_connection_name,isbatch_insert,entry_id,trans_meta_id,db_management_id
   </sql>
 
     <insert id="insert" parameterType="com.zsbatech.baasKettleManager.vo.TableOutputMetaVO">
     insert into tableoutput_step (id, step_name,db_connection_name, target_table,isbatch_insert,
-     entry_id,createtime,updatetime,trans_meta_id,db_managerment_id)
+     entry_id,createtime,updatetime,trans_meta_id,db_management_id)
     values (#{id,jdbcType=INTEGER}, #{stepName,jdbcType=VARCHAR},#{dbConnectionName,jdbcType=VARCHAR},#{targetTable,jdbcType=VARCHAR}, #{isBatchInsert,jdbcType=INTEGER},
-    #{entryId,jdbcType=VARCHAR},#{createTime,jdbcType=INTEGER},#{updateTime,jdbcType=INTEGER},#{transMetaId,jdbcType=INTEGER},#{item.dBManagerMentId,jdbcType=INTEGER})
+    #{entryId,jdbcType=VARCHAR},#{createTime,jdbcType=INTEGER},#{updateTime,jdbcType=INTEGER},#{transMetaId,jdbcType=INTEGER},#{dBManageMentId,jdbcType=INTEGER})
   </insert>
 
     <select id="selectTableOutputMetaVO" resultMap="BaseResultMap" parameterType="java.lang.String">
