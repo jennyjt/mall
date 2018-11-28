@@ -1,5 +1,6 @@
 package com.zsbatech.baasKettleManager.service.impl;
 
+import com.zsbatech.baasKettleManager.service.CatalogManageService;
 import com.zsbatech.baasKettleManager.service.FileSyncJobService;
 import com.zsbatech.baasKettleManager.service.SaveJobMetaService;
 import com.zsbatech.baasKettleManager.vo.FTPPutStepVO;
@@ -16,6 +17,9 @@ import org.pentaho.di.job.entry.JobEntryCopy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * Description:
@@ -24,6 +28,9 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class FileSyncJobServiceImpl implements FileSyncJobService {
+
+    @Autowired
+    private CatalogManageService catalogManageService;
 
 //    @Autowired
     private String ftpJobUrl="C:\\Users\\zhang\\Desktop\\";
@@ -85,8 +92,16 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
             jobEntryFTP.setBinaryMode(true);
         }
         jobEntryFTP.setControlEncoding(ftpDownLoadStepVO.getControlEncoding());
+
+        //创建目录
+        List<String> fileCataLogs = new ArrayList<>();
+        fileCataLogs.add(ftpDownLoadStepVO.getFtpDirectory());
+        fileCataLogs.add(ftpDownLoadStepVO.getTargetDirectory());
+        catalogManageService.createCatalogs(fileCataLogs);
+
         jobEntryFTP.setFtpDirectory(ftpDownLoadStepVO.getFtpDirectory());
         jobEntryFTP.setTargetDirectory(ftpDownLoadStepVO.getTargetDirectory());
+        jobEntryFTP.setWildcard(ftpDownLoadStepVO.getFtpFileName());
         JobEntryCopy jobEntryFTPCopy = new JobEntryCopy(jobEntryFTP);
         jobEntryFTPCopy.setDrawn(true);
         jobEntryFTPCopy.setLocation(80,20);
@@ -94,7 +109,7 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         JobHopMeta jobHopMeta = new JobHopMeta(jobEntrySpecialCopy, jobEntryFTPCopy);
         jobHopMeta.setUnconditional(true);
         jobMeta.addJobHop(jobHopMeta);
-        saveJobMetaService.save(jobMeta, ftpJobUrl+fileName, true);
+        saveJobMetaService.save(jobMeta, ftpJobUrl+fileName+".kjb", true);
         return true;
     }
 
@@ -152,8 +167,17 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
             jobEntryFTPPUT.setBinaryMode(true);
         }
         jobEntryFTPPUT.setControlEncoding(ftpPutStepVO.getControlEncoding());
+
+        //创建目录
+        List<String> fileCatalogs = new ArrayList<>();
+        fileCatalogs.add(ftpPutStepVO.getFtpDirectory());
+        fileCatalogs.add(ftpPutStepVO.getTargetDirectory());
+        catalogManageService.createCatalogs(fileCatalogs);
+
+
         jobEntryFTPPUT.setRemoteDirectory(ftpPutStepVO.getFtpDirectory());
         jobEntryFTPPUT.setLocalDirectory(ftpPutStepVO.getTargetDirectory());
+        jobEntryFTPPUT.setWildcard(ftpPutStepVO.getPutFileName());
         JobEntryCopy jobEntryFTPCopy = new JobEntryCopy(jobEntryFTPPUT);
         jobEntryFTPCopy.setDrawn(true);
         jobEntryFTPCopy.setLocation(80,20);
@@ -161,7 +185,7 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         JobHopMeta jobHopMeta = new JobHopMeta(jobEntrySpecialCopy, jobEntryFTPCopy);
         jobHopMeta.setUnconditional(true);
         jobMeta.addJobHop(jobHopMeta);
-        saveJobMetaService.save(jobMeta, ftpJobUrl+fileName, true);
+        saveJobMetaService.save(jobMeta, ftpJobUrl+fileName+".kjb", true);
         return true;
     }
 }

@@ -1,6 +1,6 @@
 package com.zsbatech.baasKettleManager.controller;
 
-import com.zsbatech.baasKettleManager.service.ContentManageService;
+import com.zsbatech.baasKettleManager.service.CatalogManageService;
 import com.zsbatech.base.common.ResponseData;
 import com.zsbatech.base.constants.RequestField;
 import com.zsbatech.base.constants.Response;
@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,15 +21,15 @@ import java.util.Map;
  * User: Zhangys
  * Date: 2018/11/20
  */
-@Api(protocols = "http,https", tags = {"ContentManage"}, value = "/kettle/content", description = "文件目录管理接口")
+@Api(protocols = "http,https", tags = {"CatalogManage"}, value = "/catalog", description = "文件目录管理接口")
 @RestController
-@RequestMapping(value = "/kettle/content")
+@RequestMapping(value = "/catalog")
 public class ContentManageController {
 
     private static Logger logger = LoggerFactory.getLogger(ContentManageController.class);
 
     @Autowired
-    private ContentManageService contentManageService;
+    private CatalogManageService catalogManageService;
 
     @ApiOperation(value = "删除文件目录", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiResponses({@ApiResponse(code = Response.OK, message = "删除成功"),})
@@ -39,10 +38,10 @@ public class ContentManageController {
                     @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
             }
     )
-    @RequestMapping(value = "/deleteContent", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/deleteCatalog", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public ResponseData<Map> deleteFileContents(@RequestBody List<String> fileContents) {
-        Map<String, List<String>> map = contentManageService.deleteContents(fileContents);
+    public ResponseData<Map> deleteFileCatalogs(@RequestBody List<String> fileCatalogs) {
+        Map<String, List<String>> map = catalogManageService.deleteCatalogs(fileCatalogs);
         ResponseData<Map> responseData = new ResponseData<>();
         if (map != null) {
             responseData.setOK("删除成功", map);
@@ -59,10 +58,10 @@ public class ContentManageController {
                     @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
             }
     )
-    @RequestMapping(value = "/createContents", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/createFileCatalogs", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public ResponseData<Map> createFileContents(@RequestBody List<String> fileContents) {
-        Map<String, List<String>> map = contentManageService.createContent(fileContents);
+    public ResponseData<Map> createFileCatalogs(@RequestBody List<String> fileCatalogs) {
+        Map<String, List<String>> map = catalogManageService.createCatalogs(fileCatalogs);
         ResponseData<Map> responseData = new ResponseData<>();
         if (map != null) {
             responseData.setOK("创建成功", map);
@@ -82,7 +81,7 @@ public class ContentManageController {
     @RequestMapping(value = "/deleteFiles", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public ResponseData<Map> deleteFiles(@RequestBody List<String> files) {
-        Map<String, List<String>> map = contentManageService.deleteFiles(files);
+        Map<String, List<String>> map = catalogManageService.deleteFiles(files);
         ResponseData<Map> responseData = new ResponseData<>();
         if (map != null) {
             responseData.setOK("创建成功", map);
@@ -102,7 +101,7 @@ public class ContentManageController {
     @RequestMapping(value = "/queryFilesByfileName", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public ResponseData<List> queryFilesByfileName(@RequestBody List<String> fileNames) {
-        List<String> fileList = contentManageService.queryFiles(fileNames);
+        List<String> fileList = catalogManageService.queryFiles(fileNames);
         ResponseData<List> responseData = new ResponseData<>();
         if (fileList != null) {
             responseData.setError("文件未找到");

@@ -23,7 +23,7 @@
     select
     <include refid="Base_Column_List" />
     from job_meta
-    where job_name = #{transName,jdbcType=VARCHAR}
+    where job_name = #{jobName,jdbcType=VARCHAR}
     limit 1
   </select>
 </mapper>

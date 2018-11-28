@@ -18,7 +18,11 @@ public class FilesVO {
 
     private Date updateTime;
 
-    private FileContentVO fileContentVO;
+    private String createUser;
+
+    private String originName;
+
+    private String fileCatalog;
 
     public int getId() {
         return id;
@@ -36,8 +40,17 @@ public class FilesVO {
         return updateTime;
     }
 
-    public FileContentVO getFileContentVO() {
-        return fileContentVO;
+
+    public String getCreateUser() {
+        return createUser;
+    }
+
+    public String getOriginName() {
+        return originName;
+    }
+
+    public String getFileCatalog() {
+        return fileCatalog;
     }
 
     public void setId(int id) {
@@ -56,11 +69,20 @@ public class FilesVO {
         this.updateTime = updateTime;
     }
 
-    public void setFileContentVO(FileContentVO fileContentVO) {
-        this.fileContentVO = fileContentVO;
+
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser;
     }
 
     public String toString(){
-        return getFileContentVO().getSourceContent()+"/"+getFileName();
+        return getFileCatalog()+"/"+getFileName();
+    }
+
+    public void setOriginName(String originName) {
+        this.originName = originName;
+    }
+
+    public void setFileCatalog(String fileCatalog) {
+        this.fileCatalog = fileCatalog;
     }
 }

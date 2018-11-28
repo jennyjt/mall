@@ -1,11 +1,9 @@
 package com.zsbatech.baasKettleManager.service;
 
-import com.zsbatech.baasKettleManager.vo.FTPDownLoadStepVO;
-import com.zsbatech.baasKettleManager.vo.FTPPutStepVO;
-import com.zsbatech.baasKettleManager.vo.JobMetaVO;
-import com.zsbatech.baasKettleManager.vo.JobStartStepVO;
+import com.zsbatech.baasKettleManager.vo.*;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.job.JobMeta;
+import org.pentaho.di.job.entries.trans.JobEntryTrans;
 
 import java.util.List;
 
@@ -20,6 +18,10 @@ public interface SaveJobMetaService {
 
     boolean saveMeta(EngineMetaInterface meta, String filename);
 
+    boolean saveFTPJobData(String fileName);
+
+    boolean saveTransJobData(String fileName);
+
     JobMetaVO getJobMetaVO(JobMeta jobMeta);
 
     JobStartStepVO getJobStartStepVO(JobMeta jobMeta);
@@ -28,5 +30,7 @@ public interface SaveJobMetaService {
 
     FTPDownLoadStepVO getFTPDownLoadStepVO(JobMeta jobMeta);
 
-    boolean saveByDB(String name);
+    JobEntryTrans getJobEntryTrans(JobMeta jobMeta);
+
+    boolean saveIncrJobByDB(String jobName);
 }

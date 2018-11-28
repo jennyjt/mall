@@ -13,4 +13,6 @@ import org.springframework.stereotype.Repository;
 public interface JobStartStepVOMapper {
 
     int insert(JobStartStepVO startStepVO);
+
+    JobStartStepVO selectJobStartStepVO(Integer jobMetaId);
 }

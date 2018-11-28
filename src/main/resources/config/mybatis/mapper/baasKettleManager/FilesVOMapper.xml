@@ -4,34 +4,38 @@
   <resultMap id="BaseResultMap" type="com.zsbatech.baasKettleManager.vo.FilesVO" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="file_name" property="fileName" jdbcType="VARCHAR" />
+    <result column="file_catalog" property="fileCatalog" jdbcType="VARCHAR" />
+    <result column="origin_name" property="originName" jdbcType="VARCHAR" />
     <result column="createtime" property="createTime" jdbcType="VARCHAR" />
     <result column="updatetime" property="updateTime" jdbcType="VARCHAR" />
-    <!--<association property="fileContentVO" select="getFileContentVO" column="file_content_id" javaType="com.zsbatech.baasKettleManager.vo.FileContentVO">-->
-    <!--</association>-->
-    <association property="fileContentVO" javaType="com.zsbatech.baasKettleManager.vo.FileContentVO">
-      <id column="file_content_id" property="id" jdbcType="INTEGER" />
-      <result column="source_content" property="sourceContent" jdbcType="VARCHAR" />
-      <result column="createtime" property="createTime" jdbcType="VARCHAR" />
-      <result column="updatetime" property="updateTime" jdbcType="VARCHAR" />
-    </association>
   </resultMap>
   <sql id="Base_Column_List">
-    id, file_name, file_content_id,createtime, updatetime
+    id, file_name, file_content_id,createtime, updatetime,create_user
   </sql>
 
   <insert id="insert" parameterType="com.zsbatech.baasKettleManager.vo.FilesVO" >
-    insert into trans_meta (id, file_name, file_content_id,
-      createtime, updatetime)
-    values (#{id,jdbcType=INTEGER}, #{fileName,jdbcType=VARCHAR},#{fileContentId,jdbcType=VARCHAR},#{createTime,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR})
+    insert into files (id, file_name, file_catalog,origin_name,
+      createtime, updatetime,create_user)
+    values (#{id,jdbcType=INTEGER}, #{fileName,jdbcType=VARCHAR},#{fileCatalog,jdbcType=VARCHAR},#{originName,jdbcType=VARCHAR},#{createTime,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR},#{createUser,jdbcType=VARCHAR})
+  </insert>
+
+  <insert id="insertBatch" parameterType="java.util.List">
+    insert into files (id, file_name, file_catalog,origin_name,
+    createtime, updatetime,create_user)
+    values
+    <foreach collection="list" item="item" index="index" separator=",">
+      (
+      #{item.id,jdbcType=INTEGER}, #{item.fileName,jdbcType=VARCHAR},#{item.fileCatalog,jdbcType=VARCHAR},
+      #{item.originName,jdbcType=VARCHAR},#{item.createTime,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=VARCHAR},
+      #{item.createUser,jdbcType=VARCHAR}
+      )
+    </foreach>
   </insert>
 
   <select id="queryFilesByfileName" resultMap="BaseResultMap" parameterType="java.util.List" >
     select
-    f.file_name,
-    f.createtime as createTime,
-    f.updatetime as updateTime,
-    fc.source_content
-    from files f left join file_content fc on f.file_content_id = fc.id
+    <include refid="Base_Column_List" />
+    from files
     where file_name in
     <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
       #{item}

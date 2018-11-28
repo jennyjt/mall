@@ -15,4 +15,6 @@ public interface TransMetaVOMapper {
     int insert(TransMetaVO transMetaVO);
 
     TransMetaVO selectTransMetaVO(String name);
+
+    TransMetaVO selectTransMetaVOById(Integer transMetaId);
 }
