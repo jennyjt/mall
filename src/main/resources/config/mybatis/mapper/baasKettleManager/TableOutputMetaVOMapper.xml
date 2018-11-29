@@ -21,7 +21,9 @@
     insert into tableoutput_step (id, step_name,db_connection_name, target_table,isbatch_insert,
      entry_id,createtime,updatetime,trans_meta_id,db_management_id)
     values (#{id,jdbcType=INTEGER}, #{stepName,jdbcType=VARCHAR},#{dbConnectionName,jdbcType=VARCHAR},#{targetTable,jdbcType=VARCHAR}, #{isBatchInsert,jdbcType=INTEGER},
-    #{entryId,jdbcType=VARCHAR},#{createTime,jdbcType=INTEGER},#{updateTime,jdbcType=INTEGER},#{transMetaId,jdbcType=INTEGER},#{dBManageMentId,jdbcType=INTEGER})
+
+    #{entryId,jdbcType=INTEGER},#{createTime,jdbcType=INTEGER},#{updateTime,jdbcType=INTEGER},#{transMetaId,jdbcType=INTEGER},#{item.dBManagerMentId,jdbcType=INTEGER})
+
   </insert>
 
     <select id="selectTableOutputMetaVO" resultMap="BaseResultMap" parameterType="java.lang.String">
