@@ -94,10 +94,10 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         jobEntryFTP.setControlEncoding(ftpDownLoadStepVO.getControlEncoding());
 
         //创建目录
-        List<String> fileCataLogs = new ArrayList<>();
-        fileCataLogs.add(ftpDownLoadStepVO.getFtpDirectory());
-        fileCataLogs.add(ftpDownLoadStepVO.getTargetDirectory());
-        catalogManageService.createCatalogs(fileCataLogs);
+        List<String> fileContents = new ArrayList<>();
+        fileContents.add(ftpDownLoadStepVO.getFtpDirectory());
+        fileContents.add(ftpDownLoadStepVO.getTargetDirectory());
+        catalogManageService.createCatalogs(fileContents);
 
         jobEntryFTP.setFtpDirectory(ftpDownLoadStepVO.getFtpDirectory());
         jobEntryFTP.setTargetDirectory(ftpDownLoadStepVO.getTargetDirectory());
@@ -169,11 +169,10 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         jobEntryFTPPUT.setControlEncoding(ftpPutStepVO.getControlEncoding());
 
         //创建目录
-        List<String> fileCatalogs = new ArrayList<>();
-        fileCatalogs.add(ftpPutStepVO.getFtpDirectory());
-        fileCatalogs.add(ftpPutStepVO.getTargetDirectory());
-        catalogManageService.createCatalogs(fileCatalogs);
-
+        List<String> fileContents = new ArrayList<>();
+        fileContents.add(ftpPutStepVO.getFtpDirectory());
+        fileContents.add(ftpPutStepVO.getTargetDirectory());
+        catalogManageService.createCatalogs(fileContents);
 
         jobEntryFTPPUT.setRemoteDirectory(ftpPutStepVO.getFtpDirectory());
         jobEntryFTPPUT.setLocalDirectory(ftpPutStepVO.getTargetDirectory());
