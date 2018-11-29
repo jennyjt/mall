@@ -1,11 +1,14 @@
 package com.zsbatech.baasKettleManager.service.impl;
 
+import com.zsbatech.baasKettleManager.dao.FtpSourceManagerMapper;
+import com.zsbatech.baasKettleManager.model.FtpSourceManager;
 import com.zsbatech.baasKettleManager.service.CatalogManageService;
 import com.zsbatech.baasKettleManager.service.FileSyncJobService;
 import com.zsbatech.baasKettleManager.service.SaveJobMetaService;
-import com.zsbatech.baasKettleManager.vo.FTPPutStepVO;
-import com.zsbatech.baasKettleManager.vo.FTPDownLoadStepVO;
-import com.zsbatech.baasKettleManager.vo.JobStartStepVO;
+import com.zsbatech.baasKettleManager.util.ConfigUtil;
+import com.zsbatech.baasKettleManager.util.FTPUtil;
+import com.zsbatech.baasKettleManager.vo.*;
+import org.apache.commons.net.ftp.FTPClient;
 import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.job.JobHopMeta;
@@ -16,9 +19,12 @@ import org.pentaho.di.job.entries.special.JobEntrySpecial;
 import org.pentaho.di.job.entry.JobEntryCopy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -29,11 +35,13 @@ import java.util.List;
 @Service
 public class FileSyncJobServiceImpl implements FileSyncJobService {
 
+    private String ftpJobUrl = ConfigUtil.getPropertyValue("file.ftpJobUrl");
+
+    @Autowired
+    private FtpSourceManagerMapper ftpSourceManagerMapper;
+
     @Autowired
     private CatalogManageService catalogManageService;
-
-    //    @Autowired
-    private String ftpJobUrl = "C:\\Users\\zhang\\Desktop\\";
 
     @Autowired
     private SaveJobMetaService saveJobMetaService;
@@ -109,8 +117,7 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         JobHopMeta jobHopMeta = new JobHopMeta(jobEntrySpecialCopy, jobEntryFTPCopy);
         jobHopMeta.setUnconditional(true);
         jobMeta.addJobHop(jobHopMeta);
-        saveJobMetaService.save(jobMeta, ftpJobUrl+fileName+".kjb", true);
-        return true;
+        return saveJobMetaService.save(jobMeta, ftpJobUrl + fileName + ".kjb", true);
     }
 
     /**
@@ -184,8 +191,7 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         JobHopMeta jobHopMeta = new JobHopMeta(jobEntrySpecialCopy, jobEntryFTPCopy);
         jobHopMeta.setUnconditional(true);
         jobMeta.addJobHop(jobHopMeta);
-        saveJobMetaService.save(jobMeta, ftpJobUrl + fileName + ".kjb", true);
-        return true;
+        return saveJobMetaService.save(jobMeta, ftpJobUrl + fileName + ".kjb", true);
     }
 
     /**
@@ -290,7 +296,72 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         JobHopMeta jobHopFtpMeta = new JobHopMeta(jobEntryFTPCopy, jobEntryFtpToFtpCopy);
         jobHopFtpMeta.setUnconditional(false);
         jobMeta.addJobHop(jobHopFtpMeta);
-        saveJobMetaService.save(jobMeta, ftpJobUrl + fileName + ".kjb", true);
+        return saveJobMetaService.save(jobMeta, ftpJobUrl + fileName + ".kjb", true);
+    }
+
+    /**
+     * 存储文件信息
+     *
+     * @param createCode
+     * @param file
+     * @return
+     * @parm fileCatalog
+     */
+    @Transactional
+    public boolean saveFileInfo(int ftpSourceId, String createCode, String fileCatalog, String file) {
+        FtpSourceManager ftpSourceManager = ftpSourceManagerMapper.selectByPrimaryKey(ftpSourceId);
+        FTPClient ftpClient = FTPUtil.loginFTP(ftpSourceManager.getFtpHost(), Integer.valueOf(ftpSourceManager.getFtpPort()), ftpSourceManager.getUserName(), ftpSourceManager.getPassWord());
+        Map<String, List<String>> fileMap = null;
+        List<FilesVO> filesVOList = new ArrayList<>();
+        if (ftpClient != null) {
+            List<FileCatalogVO> fileCatalogVOList = getFileCataLogVO(fileCatalog);
+            if(file != null){
+                String[] strings = file.split("/");
+                FilesVO filesVO = new FilesVO();
+                filesVO.setOriginName(strings[strings.length-1]);
+                filesVO.setFileName(strings[strings.length-1]);
+                filesVO.setFileCatalog(fileCatalog);
+                filesVO.setUpdateTime(new Date());
+//                filesVO.setCreateUser();
+                filesVO.setCreateTime(new Date());
+
+                FilesFileCatalogVO filesFileCatalogVO = new FilesFileCatalogVO();
+            }
+            fileMap = FTPUtil.getFiles(ftpClient, fileCatalog, file);
+            fileMap.get(fileCatalog);
+        }
         return true;
+    }
+
+
+    /**
+     * 存储目录结构
+     * @param fileCatalogVOList
+     * @return
+     * @parm fileCatalog
+     */
+    public boolean saveFileCatalogInfo(List<FileCatalogVO> fileCatalogVOList){
+        if(fileCatalogVOList != null) {
+            for (FileCatalogVO fileCatalogVO : fileCatalogVOList){
+
+            }
+        }
+     return true;
+    }
+
+
+    //获取目录的层级信息
+    public List<FileCatalogVO> getFileCataLogVO(String fileCatalog){
+        List<FileCatalogVO> fileCatalogVOList = new ArrayList<>();
+        String[] catalogs = fileCatalog.split("/");
+        for(int i = 0;i<catalogs.length ;i++){
+            FileCatalogVO fileCatalogVO = new FileCatalogVO();
+            fileCatalogVO.setSourceCatalog(catalogs[i]);
+            fileCatalogVO.setCreateTime(new Date());
+            fileCatalogVO.setUpdateTime(new Date());
+            fileCatalogVO.setLayer((short)i);
+            fileCatalogVOList.add(fileCatalogVO);
+        }
+        return fileCatalogVOList;
     }
 }

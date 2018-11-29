@@ -2,8 +2,11 @@ package com.zsbatech.baasDeployManager;
 
 import com.zsbatech.baasKettleManager.service.*;
 import com.zsbatech.baasKettleManager.service.impl.SaveTransMetaServiceImpl;
+import com.zsbatech.baasKettleManager.util.FTPUtil;
 import com.zsbatech.baasKettleManager.vo.FTPDownLoadStepVO;
 import com.zsbatech.baasKettleManager.vo.JobStartStepVO;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.pentaho.di.core.KettleEnvironment;
@@ -194,15 +197,15 @@ public class ApplicationTests {
     }
 
     @Test
-    public void TestFile() {
-        List<String> list = new ArrayList<>();
-        list.add("ccc");
-        list.add("ddd");
-        contentManageService.queryFiles(list);
+    public void TestFile() throws Exception {
+        FTPClient ftpClient = FTPUtil.loginFTP("106.75.17.46", 21, "kettletest", "test123456");
+        boolean f = ftpClient.isConnected();
+        FTPFile[] file = ftpClient.listFiles("arrow-right-large.png");
+        System.out.println(file[0].getName());
     }
 
     @Test
-    public  void testStop(){
+    public void testStop() {
         jobExcuteService.stop("C:\\Users\\zhang\\Desktop\\cads.kjb");
     }
 }
