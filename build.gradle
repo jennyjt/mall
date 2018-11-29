@@ -130,6 +130,7 @@ dependencies {
             'org.springframework.boot:spring-boot-starter-actuator'
     )
     compile(
+            'commons-net:commons-net:1.4.1',
             'com.enterprisedt:edtftpj:2.1.0',
             'org.apache.commons:commons-vfs2:2.2',
             'org.owasp.encoder:encoder:1.2',
