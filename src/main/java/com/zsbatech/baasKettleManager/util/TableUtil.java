@@ -38,6 +38,7 @@ public class TableUtil {
         String select_sql = "SELECT * FROM "+tableName;
         RowMetaInterface rowMetaInterface = db.getQueryFields(select_sql,false);
         db = new Database(destDbMeta);
+//        db.getAlterTableStatement();//获取新增字段
         String sqlddl = db.getDDLCreationTable(tableName,rowMetaInterface);
 
         return sqlddl;
@@ -124,7 +125,7 @@ public class TableUtil {
         return ddlBuilder.toString();
     }
 
-    private static String getXmlByDbManagement(DbManagement dbManagement){
+    public static String getXmlByDbManagement(DbManagement dbManagement){
         if(dbManagement != null){
             StringBuffer xmlBuffer = new StringBuffer();
             xmlBuffer.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")

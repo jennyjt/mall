@@ -6,7 +6,6 @@ import com.zsbatech.baasKettleManager.vo.*;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.KettleEnvironment;
-import org.pentaho.di.core.annotations.JobEntry;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.exception.KettleXMLException;
 import org.pentaho.di.core.util.Utils;
@@ -37,6 +36,8 @@ import java.util.List;
  */
 @Service
 public class SaveJobMetaServiceImpl implements SaveJobMetaService {
+
+    private String DBTransUrl="C:\\Users\\zhang\\Desktop\\";
 
     @Autowired
     private JobHopMetaVOMapper jobHopMetaVOMapper;
@@ -179,12 +180,15 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
         JobStartStepVO jobStartStepVO = null;
         JobEntryTrans jobEntryTrans = getJobEntryTrans(jobMeta);
         String transName = jobEntryTrans.getName();
-        int transMetaId = transMetaVOMapper.selectTransMetaVO(transName).getId();
+        int transMetaId = 0;
+        if(transMetaVOMapper.selectTransMetaVO(transName) != null) {
+            transMetaId = transMetaVOMapper.selectTransMetaVO(transName).getId();
+        }
         getJobMetaVO(jobMeta).setTransMetaId(transMetaId);
         if (jobMetaVOMapper.selectTransMetaVO(jobMeta.getName()) != null) {
             return true;
         } else if (jobMetaVOMapper.insert(getJobMetaVO(jobMeta)) != 0) {
-            int jobMetaId = new JobMetaVO().getId();
+            int jobMetaId =jobMetaVOMapper.selectTransMetaVO(jobMeta.getName()).getId();
             jobStartStepVO = getJobStartStepVO(jobMeta);
             jobStartStepVO.setJobMetaId(jobMetaId);
             int fromStepId = 0;
@@ -198,8 +202,10 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
                 jobHopMetaVO.setFromStepId(fromStepId);
                 jobHopMetaVO.setToStepId(toStepId);
                 jobHopMetaVO.setCondition((short)0);
-                jobHopMetaVOMapper.insert(jobHopMetaVO);
+                jobHopMetaVO.setCreateTime(new Date());
+                jobHopMetaVO.setUpdateTime(new Date());
             }
+            jobHopMetaVOMapper.insert(jobHopMetaVO);
         }
         return true;
     }
@@ -298,7 +304,48 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
         return jobEntryTrans;
     }
 
-    public boolean saveByDB(String name) {
-        return true;
+    public boolean saveIncrJobByDB(String jobName) {
+        try {
+            KettleEnvironment.init();
+        } catch (KettleException e) {
+            e.printStackTrace();
+        }
+        JobMetaVO jobMetaVO = jobMetaVOMapper.selectTransMetaVO(jobName);
+        JobStartStepVO jobStartStepVO = jobStartStepVOMapper.selectJobStartStepVO(jobMetaVO.getId());
+        TransMetaVO transMetaVO = transMetaVOMapper.selectTransMetaVOById(jobMetaVO.getTransMetaId());
+        JobMeta jobMeta = new JobMeta();
+        jobMeta.setName(jobMetaVO.getJobName());
+        JobEntrySpecial jobEntrySpecial = new JobEntrySpecial();
+        jobEntrySpecial.setName(jobStartStepVO.getStepName());
+        if(jobStartStepVO.getIsRepeat() == 1) {
+            jobEntrySpecial.setRepeat(true);
+        }else {
+            jobEntrySpecial.setRepeat(false);
+        }
+        jobEntrySpecial.setSchedulerType(jobStartStepVO.getTimingType());
+        if (jobStartStepVO.getTimingType() == 1) {
+            jobEntrySpecial.setIntervalMinutes(jobStartStepVO.getTimingTime());
+        } else if (jobStartStepVO.getTimingType() == 2) {
+            jobEntrySpecial.setHour(jobStartStepVO.getTimingTime());
+        } else if (jobStartStepVO.getTimingType() == 3) {
+            jobEntrySpecial.setWeekDay(jobStartStepVO.getTimingTime());
+        } else if (jobStartStepVO.getTimingType() == 4) {
+            jobEntrySpecial.setDayOfMonth(jobStartStepVO.getTimingTime());
+        }
+        jobEntrySpecial.setStart(true);
+        JobEntryCopy specialCopy = new JobEntryCopy(jobEntrySpecial);
+        specialCopy.setLocation(30, 20);
+        specialCopy.setDrawn(true);
+        jobMeta.addJobEntry(specialCopy);
+        JobEntryTrans jobEntryTrans = new JobEntryTrans(transMetaVO.getTransName());
+        jobEntryTrans.setFileName(DBTransUrl+transMetaVO.getFileName());
+        JobEntryCopy transJob = new JobEntryCopy(jobEntryTrans);
+        transJob.setLocation(200, 20);
+        transJob.setDrawn(true);
+        jobMeta.addJobEntry(transJob);
+        JobHopMeta jobHopMeta = new JobHopMeta(specialCopy,transJob);
+        jobHopMeta.setUnconditional(true);
+        jobMeta.addJobHop(jobHopMeta);
+        return save(jobMeta,DBTransUrl+jobMetaVO.getFileName(),true);
     }
 }

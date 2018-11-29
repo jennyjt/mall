@@ -138,7 +138,7 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             transMeta.addTransHop(new TransHopMeta(tableInputMetaStep,tableOutputMetaStep));
 
             if (saveTransMetaService.save(transMeta,path + dataMig.getTransName()+ ".ktr",true)) {
-                saveTransMetaService.saveTransData(path + dataMig.getTransName()+ ".ktr");
+//                saveTransMetaService.saveTransData(path + dataMig.getTransName()+ ".ktr");
 
             TransMeta transMeta1 = new TransMeta(path + dataMig.getTransName()+ ".ktr");
             Trans trans = new Trans(transMeta1);
@@ -170,7 +170,7 @@ public class DBMigrationServiceImpl implements DBMigrationService {
 
             KettleEnvironment.init();
 //            ktrpath = dataMig.getKtrString();
-            ktrpath = "C:\\Users\\de\\Desktop\\transjob.ktr" ;
+            ktrpath = "C:\\Users\\de\\Desktop\\"+dataMig.getKtrString() ;
 
             JobMeta jobMeta = new JobMeta();
             jobMeta.setName(dataMig.getKtrString());
@@ -187,7 +187,7 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             specialCopy.setLocation(30,30);
             specialCopy.setDrawn(true);
             jobMeta.addJobEntry(specialCopy);
-            JobEntryTrans jobEntryTrans = new JobEntryTrans("job");
+            JobEntryTrans jobEntryTrans = new JobEntryTrans(dataMig.getJobName());
             jobEntryTrans.setFileName(ktrpath);
             JobEntryCopy transJob = new JobEntryCopy(jobEntryTrans);
             transJob.setLocation(200,20);

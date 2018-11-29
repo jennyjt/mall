@@ -149,9 +149,9 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
                     transHopMetaVOList.add(transHopMetaVO);
                 }
             }
-            if (transHopMetaVOMapper.insertHopBatch(transHopMetaVOList) > 0) {
-                return true;
-            }
+//            if (transHopMetaVOMapper.insertHopBatch(transHopMetaVOList) > 0) {
+//                return true;
+//            }
         }
         return false;
     }

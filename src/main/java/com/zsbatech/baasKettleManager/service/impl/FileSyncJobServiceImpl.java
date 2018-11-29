@@ -174,7 +174,6 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         fileContents.add(ftpPutStepVO.getTargetDirectory());
         catalogManageService.createCatalogs(fileContents);
 
-
         jobEntryFTPPUT.setRemoteDirectory(ftpPutStepVO.getFtpDirectory());
         jobEntryFTPPUT.setLocalDirectory(ftpPutStepVO.getTargetDirectory());
         jobEntryFTPPUT.setWildcard(ftpPutStepVO.getPutFileName());

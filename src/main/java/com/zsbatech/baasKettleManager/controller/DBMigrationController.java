@@ -24,7 +24,7 @@ public class DBMigrationController {
     private DBMigrationService dbMigrationService;
 
 
-    @RequestMapping(value = "/update",method = RequestMethod.POST)
+    @RequestMapping(value = "/create",method = RequestMethod.POST)
     @ResponseBody
     public ResponseData<String> createMigration(@RequestBody DataMig dataMig) {
         ResponseData<String> responseData = new ResponseData<>();
