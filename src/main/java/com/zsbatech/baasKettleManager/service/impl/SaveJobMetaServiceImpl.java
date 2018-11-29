@@ -2,6 +2,7 @@ package com.zsbatech.baasKettleManager.service.impl;
 
 import com.zsbatech.baasKettleManager.dao.*;
 import com.zsbatech.baasKettleManager.service.SaveJobMetaService;
+import com.zsbatech.baasKettleManager.util.ConfigUtil;
 import com.zsbatech.baasKettleManager.vo.*;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.EngineMetaInterface;
@@ -37,7 +38,7 @@ import java.util.List;
 @Service
 public class SaveJobMetaServiceImpl implements SaveJobMetaService {
 
-    private String DBTransUrl="C:\\Users\\zhang\\Desktop\\";
+    private String DBTransUrl = ConfigUtil.getPropertyValue("file.jobMetaUrl");
 
     @Autowired
     private JobHopMetaVOMapper jobHopMetaVOMapper;
@@ -216,6 +217,7 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
         jobMetaVO.setFileName(jobMeta.getFilename());
         jobMetaVO.setCreateTime(new Date());
         jobMetaVO.setUpdateTime(new Date());
+        jobMetaVO.setExecuteStatus((short)0);
         return jobMetaVO;
     }
 

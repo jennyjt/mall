@@ -2,8 +2,6 @@ package com.zsbatech.baasKettleManager.controller;
 
 import com.zsbatech.baasKettleManager.service.FileSyncJobService;
 import com.zsbatech.baasKettleManager.vo.FTPSyncSetp;
-import com.zsbatech.baasKettleManager.vo.FTPPutStepVO;
-import com.zsbatech.baasKettleManager.vo.JobStartStepVO;
 import com.zsbatech.base.common.ResponseData;
 import com.zsbatech.base.constants.RequestField;
 import com.zsbatech.base.constants.Response;
@@ -42,7 +40,7 @@ public class FileSyncJobController {
     public ResponseData<String> createDownloadJobMeta(@RequestBody FTPSyncSetp ftpSyncSetp) {
         ResponseData<String> responseData = new ResponseData<>();
         if(fileSyncJobService.createDownloadJobMeta(ftpSyncSetp.getJobStartStepVO(),ftpSyncSetp.getFtpDownLoadStepVO(),ftpSyncSetp.getFileName())){
-            responseData.setOK("创建文件同步job成功","success");
+            responseData.setOK(200,"创建文件同步job成功","success");
         }else {
             responseData.setError("fail");
         }
@@ -61,7 +59,7 @@ public class FileSyncJobController {
     public ResponseData<String> createPutJobMeta(@RequestBody FTPSyncSetp ftpSyncSetp) {
         ResponseData<String> responseData = new ResponseData<>();
         if(fileSyncJobService.createPutJobMeta(ftpSyncSetp.getJobStartStepVO(),ftpSyncSetp.getFtpPutStepVO(),ftpSyncSetp.getFileName())){
-            responseData.setOK("创建文件上传同步job成功");
+            responseData.setOK(200,"创建文件上传同步job成功","SUCCESS");
         }else {
             responseData.setError("创建文件上传同步job失败");
         }
@@ -79,7 +77,7 @@ public class FileSyncJobController {
     public ResponseData<String> fileSyncFtpToFtpJobMeta(@RequestBody FTPSyncSetp ftpSyncSetp) {
         ResponseData<String> responseData = new ResponseData<>();
         if(fileSyncJobService.fileSyncFtpToFtpJobMeta(ftpSyncSetp.getJobStartStepVO(),ftpSyncSetp.getFtpPutStepVO(),ftpSyncSetp.getFtpDownLoadStepVO(),ftpSyncSetp.getFileName())){
-            responseData.setOK("创建文件同步job成功","success");
+            responseData.setOK(200,"创建文件同步job成功","success");
         }else {
             responseData.setError("fail");
         }

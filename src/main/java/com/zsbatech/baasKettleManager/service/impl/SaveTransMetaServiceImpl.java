@@ -5,6 +5,7 @@ import com.zsbatech.baasKettleManager.dao.TableInputStepVOMapper;
 import com.zsbatech.baasKettleManager.dao.TransHopMetaVOMapper;
 import com.zsbatech.baasKettleManager.dao.TransMetaVOMapper;
 import com.zsbatech.baasKettleManager.service.SaveTransMetaService;
+import com.zsbatech.baasKettleManager.util.ConfigUtil;
 import com.zsbatech.baasKettleManager.vo.TableInputStepVO;
 import com.zsbatech.baasKettleManager.vo.TableOutputMetaVO;
 import com.zsbatech.baasKettleManager.vo.TransHopMetaVO;
@@ -43,7 +44,7 @@ import java.util.*;
 @Service
 public class SaveTransMetaServiceImpl implements SaveTransMetaService {
 
-    private String DBTransUrl="C:\\Users\\zhang\\Desktop\\";
+    private String DBTransUrl= ConfigUtil.getPropertyValue("file.transMetaUrl");
 
     @Autowired
     private TableOutputMetaVOMapper tableOutputMetaVOMapper;

@@ -10,9 +10,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.util.concurrent.ThreadPoolExecutor;
-
 /**
  * Created with IntelliJ IDEA.
  * Description:
