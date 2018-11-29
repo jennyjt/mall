@@ -5,7 +5,7 @@ import java.util.Date;
 public class JobMeta {
     private Integer id;
 
-    private String name;
+    private String jobName;
 
     private String filename;
 
@@ -13,8 +13,7 @@ public class JobMeta {
 
     private Date updatetime;
 
-    public JobMeta() {
-    }
+    private Integer transMetaId;
 
     public Integer getId() {
         return id;
@@ -24,12 +23,12 @@ public class JobMeta {
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getJobName() {
+        return jobName;
     }
 
-    public void setName(String name) {
-        this.name = name == null ? null : name.trim();
+    public void setJobName(String jobName) {
+        this.jobName = jobName == null ? null : jobName.trim();
     }
 
     public String getFilename() {
@@ -54,5 +53,13 @@ public class JobMeta {
 
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
+    }
+
+    public Integer getTransMetaId() {
+        return transMetaId;
+    }
+
+    public void setTransMetaId(Integer transMetaId) {
+        this.transMetaId = transMetaId;
     }
 }
