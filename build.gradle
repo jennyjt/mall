@@ -20,7 +20,7 @@ def currentTimeStr = currentTime.format("yyyyMMddHHmmss")
 defaultEnv = defaultEnv ?: "dev"
 
 def env = "$defaultEnv"
-def baseArchivesName = 'baas-deploy-manager'
+def baseArchivesName = 'kettle-manager'
 
 if ("" != "$env") {
     // 包名规则， 如果 version 存在 则 $baseArchivesName-$env-$version (version 会自动追加！)，
