@@ -1,132 +1,105 @@
 package com.zsbatech.baasKettleManager.service.impl;
 
+import com.zsbatech.baasKettleManager.service.CatalogManageService;
 import com.zsbatech.baasKettleManager.service.FileUpDownloadService;
-import com.zsbatech.baasKettleManager.vo.FTPDownLoadStepVO;
+import com.zsbatech.baasKettleManager.util.ConfigUtil;
+import com.zsbatech.baasKettleManager.vo.FilesVO;
+import com.zsbatech.base.utils.DateUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.net.URLEncoder;
+import java.util.List;
+
 /**
- * 数据源管理接口实现类
+ * 文件上传下载接口实现类
  */
 @Service
 public class FileDownloadServiceImpl implements FileUpDownloadService {
 
+    @Autowired
+    private CatalogManageService catalogManageService;
+
     @Override
-    public boolean fileUpload(MultipartFile file, FTPDownLoadStepVO fileInfo) {
-       /* try {
-            KettleEnvironment.init();
-        } catch (KettleException e) {
+    public boolean fileUpload(MultipartFile file, String userId) {
+        //文件要上传的路径
+        String path = ConfigUtil.getPropertyValue("file.httpDirectory");
+        String oldFileName = file.getOriginalFilename();
+        String newFileName = DateUtils.currentTimestamp() + oldFileName.substring(oldFileName.lastIndexOf("."));
+
+        File targetFile = new File(path + File.separator + newFileName);
+        //如果目标文件路径不存在就新建
+        if(!targetFile.getParentFile().exists()){
+            targetFile.getParentFile().mkdirs();
+        }
+        try {
+            //文件复制
+            file.transferTo(targetFile);
+
+            FilesVO filesVO = new FilesVO();
+            filesVO.setOriginName(oldFileName);
+            filesVO.setCreateTime(DateUtils.currentDateTime());
+            filesVO.setCreateUser(userId);
+            filesVO.setFileCatalog(path);
+            filesVO.setFileName(newFileName);
+            boolean result = catalogManageService.saveFile(filesVO);
+            if(!result){
+                return false;
+            }
+        } catch (IllegalStateException e) {
             e.printStackTrace();
+            return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
         }
-        JobMeta jobMeta = new JobMeta();
-        jobMeta.setJobstatus(0);
-        jobMeta.setName("ftp");
-        JobEntrySpecial jobEntrySpecial = new JobEntrySpecial();
-        jobEntrySpecial.setName("START");
-        jobEntrySpecial.setStart(true);
-        if (jobStartStepVO.getIsRepeat() == 1) {
-            jobEntrySpecial.setRepeat(true);
-        } else {
-            jobEntrySpecial.setRepeat(false);
-        }
-        jobEntrySpecial.setSchedulerType(jobStartStepVO.getTimingType());
-        if (jobStartStepVO.getTimingType() == 1) {
-            jobEntrySpecial.setIntervalSeconds(jobStartStepVO.getTimingTime());
-        } else if (jobStartStepVO.getTimingType() == 2) {
-            jobEntrySpecial.setHour(jobStartStepVO.getTimingTime());
-        } else if (jobStartStepVO.getTimingType() == 3) {
-            jobEntrySpecial.setWeekDay(jobEntrySpecial.getWeekDay());
-        } else if (jobStartStepVO.getTimingType() == 4) {
-            jobEntrySpecial.setDayOfMonth(jobEntrySpecial.getDayOfMonth());
-        }
-        JobEntryCopy jobEntrySpecialCopy = new JobEntryCopy(jobEntrySpecial);
-        jobEntrySpecialCopy.setDrawn(true);
-        jobEntrySpecialCopy.setLocation(30,20);
-        jobMeta.addJobEntry(jobEntrySpecialCopy);
-        JobEntryFTPPUT jobEntryFTPPUT = new JobEntryFTPPUT();
-        jobEntryFTPPUT.setName("ftp下载");
-        jobEntryFTPPUT.setServerName(ftpPutStepVO.getServerName());
-        jobEntryFTPPUT.setProxyHost(ftpPutStepVO.getProxyHost());
-        jobEntryFTPPUT.setUserName(ftpPutStepVO.getUserName());
-        jobEntryFTPPUT.setPassword(ftpPutStepVO.getPassword());
-        jobEntryFTPPUT.setProxyPort(ftpPutStepVO.getProxyPort());
-        jobEntryFTPPUT.setProxyPassword(ftpPutStepVO.getProxyPassword());
-        jobEntryFTPPUT.setProxyUsername(ftpPutStepVO.getProxyUsername());
-        jobEntryFTPPUT.setServerPort(ftpPutStepVO.getPort());
-        jobEntryFTPPUT.setTimeout(ftpPutStepVO.getTimeout());
-        if (ftpPutStepVO.getBinaryMode() == 1) {
-            jobEntryFTPPUT.setBinaryMode(true);
-        }
-        jobEntryFTPPUT.setControlEncoding(ftpPutStepVO.getControlEncoding());
-        jobEntryFTPPUT.setRemoteDirectory(ftpPutStepVO.getFtpDirectory());
-        jobEntryFTPPUT.setLocalDirectory(ftpPutStepVO.getTargetDirectory());
-        JobEntryCopy jobEntryFTPCopy = new JobEntryCopy(jobEntryFTPPUT);
-        jobEntryFTPCopy.setDrawn(true);
-        jobEntryFTPCopy.setLocation(80,20);
-        jobMeta.addJobEntry(jobEntryFTPCopy);
-        JobHopMeta jobHopMeta = new JobHopMeta(jobEntrySpecialCopy, jobEntryFTPCopy);
-        jobHopMeta.setUnconditional(true);
-        jobMeta.addJobHop(jobHopMeta);
-        saveJobMetaService.save(jobMeta, ftpJobUrl+fileName, true);*/
         return true;
     }
 
     @Override
-    public void fileDownload(Integer fileId) {
-        /*try {
-            KettleEnvironment.init();
-        } catch (KettleException e) {
+    public boolean fileDownload(List<Integer> fileIds, HttpServletResponse response) {
+        List<FilesVO> fileInfos = catalogManageService.getFileInfosByIds(fileIds);
+        if (fileInfos == null || fileInfos.isEmpty()){
+            return false;
+        }
+        try {
+            for(FilesVO fileInfo:fileInfos) {
+                File file = new File(fileInfo.getFileCatalog() + File.separator + fileInfo.getFileName());
+                //判断文件是否存在
+                if (!file.exists()) {
+                    return false;
+                }
+
+                response.setContentLengthLong(file.length());
+                response.setContentType("application/octet-stream");
+                response.setCharacterEncoding("UTF-8");
+                //设置文件响应大小
+                response.setContentLengthLong(file.length());
+                response.addHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(fileInfo.getOriginName(), "UTF-8"));
+                response.addHeader("Pargam", "no-cache");
+                response.addHeader("Cache-Control", "no-cache");
+
+                //copyUtil里面关闭流
+                //FileCopyUtils.copy(new FileInputStream(file), response.getOutputStream());
+                FileInputStream is = new FileInputStream(file);
+                StreamUtils.copy(is, response.getOutputStream());
+                is.close();
+            }
+        } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                response.getOutputStream().close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        JobMeta jobMeta = new JobMeta();
-        jobMeta.setJobstatus(0);
-        jobMeta.setName("ftp");
-        JobEntrySpecial jobEntrySpecial = new JobEntrySpecial();
-        jobEntrySpecial.setName("START");
-        jobEntrySpecial.setStart(true);
-        if (jobStartStepVO.getIsRepeat() == 1) {
-            jobEntrySpecial.setRepeat(true);
-        } else {
-            jobEntrySpecial.setRepeat(false);
-        }
-        jobEntrySpecial.setSchedulerType(jobStartStepVO.getTimingType());
-        if (jobStartStepVO.getTimingType() == 1) {
-            jobEntrySpecial.setIntervalSeconds(jobStartStepVO.getTimingTime());
-        } else if (jobStartStepVO.getTimingType() == 2) {
-            jobEntrySpecial.setHour(jobStartStepVO.getTimingTime());
-        } else if (jobStartStepVO.getTimingType() == 3) {
-            jobEntrySpecial.setWeekDay(jobEntrySpecial.getWeekDay());
-        } else if (jobStartStepVO.getTimingType() == 4) {
-            jobEntrySpecial.setDayOfMonth(jobEntrySpecial.getDayOfMonth());
-        }
-        JobEntryCopy jobEntrySpecialCopy = new JobEntryCopy(jobEntrySpecial);
-        jobEntrySpecialCopy.setDrawn(true);
-        jobEntrySpecialCopy.setLocation(30,20);
-        jobMeta.addJobEntry(jobEntrySpecialCopy);
-        JobEntryFTP jobEntryFTP = new JobEntryFTP();
-        jobEntryFTP.setName("ftp下载");
-        jobEntryFTP.setServerName(ftpDownLoadStepVO.getServerName());
-        jobEntryFTP.setProxyHost(ftpDownLoadStepVO.getProxyHost());
-        jobEntryFTP.setUserName(ftpDownLoadStepVO.getUserName());
-        jobEntryFTP.setPassword(ftpDownLoadStepVO.getPassword());
-        jobEntryFTP.setProxyPort(ftpDownLoadStepVO.getProxyPort());
-        jobEntryFTP.setProxyPassword(ftpDownLoadStepVO.getProxyPassword());
-        jobEntryFTP.setProxyUsername(ftpDownLoadStepVO.getProxyUsername());
-        jobEntryFTP.setPort(ftpDownLoadStepVO.getPort());
-        jobEntryFTP.setTimeout(ftpDownLoadStepVO.getTimeout());
-        if (ftpDownLoadStepVO.getBinaryMode() == 1) {
-            jobEntryFTP.setBinaryMode(true);
-        }
-        jobEntryFTP.setControlEncoding(ftpDownLoadStepVO.getControlEncoding());
-        jobEntryFTP.setFtpDirectory(ftpDownLoadStepVO.getFtpDirectory());
-        jobEntryFTP.setTargetDirectory(ftpDownLoadStepVO.getTargetDirectory());
-        JobEntryCopy jobEntryFTPCopy = new JobEntryCopy(jobEntryFTP);
-        jobEntryFTPCopy.setDrawn(true);
-        jobEntryFTPCopy.setLocation(80,20);
-        jobMeta.addJobEntry(jobEntryFTPCopy);
-        JobHopMeta jobHopMeta = new JobHopMeta(jobEntrySpecialCopy, jobEntryFTPCopy);
-        jobHopMeta.setUnconditional(true);
-        jobMeta.addJobHop(jobHopMeta);
-        saveJobMetaService.save(jobMeta, ftpJobUrl+fileName, true);*/
+        return true;
     }
 }

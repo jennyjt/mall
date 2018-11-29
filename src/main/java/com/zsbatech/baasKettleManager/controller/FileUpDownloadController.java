@@ -1,7 +1,6 @@
 package com.zsbatech.baasKettleManager.controller;
 
 import com.zsbatech.baasKettleManager.service.FileUpDownloadService;
-import com.zsbatech.baasKettleManager.vo.FTPDownLoadStepVO;
 import com.zsbatech.base.common.ResponseData;
 import com.zsbatech.base.constants.RequestField;
 import com.zsbatech.base.constants.Response;
@@ -14,13 +13,15 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * 文件上传下载管理
  */
-@Api(protocols = "http,https", tags = {"FileUpDownload"}, value = "/httpfile", description = "文件上传下载管理")
+@Api(protocols = "http,https", tags = {"FileUpDownload"}, value = "/file", description = "文件上传下载管理")
 @RestController
-@RequestMapping(value = "/httpfile")
+@RequestMapping(value = "/file")
 public class FileUpDownloadController {
 
     private static Logger logger = LoggerFactory.getLogger(FileUpDownloadController.class);
@@ -38,8 +39,7 @@ public class FileUpDownloadController {
     @RequestMapping(value = "/upload", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public ResponseData<String> fileUpload(HttpServletRequest request,
-                                           @RequestParam(name = "file", required = true) MultipartFile file,
-                                           @RequestParam(name = "fileInfo", required = true) FTPDownLoadStepVO fileInfo) {
+                                           @RequestParam(name = "file", required = true) MultipartFile file) {
         ResponseData<String> responseData = new ResponseData<>();
         //UniToken uniToken = JWTUtils.validateToken(request);
 
@@ -48,30 +48,37 @@ public class FileUpDownloadController {
             return responseData;
         }
 
-        boolean result = fileService.fileUpload(file, fileInfo);
-
-        if(result){
+        boolean result = fileService.fileUpload(file, "2");
+        if(result) {
             responseData.setOK("success", "success");
         }else{
-            responseData.setError("fail");
+            responseData.setError("fail", "upload fail");
         }
+
         return responseData;
     }
 
-    @ApiOperation(value = "下载文件", notes = "", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @ApiOperation(value = "下载文件", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiResponses({@ApiResponse(code = Response.OK, message = "下载成功"),})
     @ApiImplicitParams(
             value = {
                     @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
             }
     )
-    @RequestMapping(value = "/download", method = RequestMethod.GET, produces = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @RequestMapping(value = "/download", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public void fileDownload(HttpServletRequest request,
-                                           @RequestBody Integer fileId) {
+    public ResponseData<String> fileDownload(HttpServletRequest request, HttpServletResponse response,
+                             @RequestParam(name = "file_ids", required = true) List<Integer> fileIds) {
         //UniToken uniToken = JWTUtils.validateToken(request);
+        ResponseData<String> responseData = new ResponseData<>();
+        boolean result = fileService.fileDownload(fileIds, response);
+        if(result) {
+            responseData.setOK("success", "success");
+        }else{
+            responseData.setError("fail", "no such file");
+        }
 
-        fileService.fileDownload(fileId);
+        return responseData;
     }
 }
 

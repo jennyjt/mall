@@ -1,12 +1,8 @@
 package com.zsbatech.baasKettleManager.service.impl;
 
-import com.zsbatech.baasKettleManager.dao.FileCatalogVOMapper;
 import com.zsbatech.baasKettleManager.dao.FilesVOMapper;
 import com.zsbatech.baasKettleManager.service.CatalogManageService;
-import com.zsbatech.baasKettleManager.vo.FileCatalogVO;
 import com.zsbatech.baasKettleManager.vo.FilesVO;
-import com.zsbatech.base.utils.JWTUtils;
-import io.jsonwebtoken.Jwts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -151,4 +147,25 @@ public class CatalogManageServiceImpl implements CatalogManageService {
         }
         return filesVOMapper.insertBatch(filesVOList);
     }
+
+    @Override
+    public boolean saveFile(FilesVO filesVO) {
+        int result = filesVOMapper.insert(filesVO);
+        if(result > 0) {
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    @Override
+    public FilesVO getFileInfoById(Integer fileId) {
+        return filesVOMapper.getFileByFileId(fileId);
+    }
+
+    @Override
+    public List<FilesVO> getFileInfosByIds(List<Integer> fileIds) {
+        return filesVOMapper.getFilesByFileIds(fileIds);
+    }
+
 }
