@@ -8,15 +8,19 @@
     <result column="createtime" property="createTime" jdbcType="VARCHAR" />
     <result column="updatetime" property="updateTime" jdbcType="VARCHAR" />
     <result column="trans_meta_id" property="transMetaId" jdbcType="INTEGER" />
+    <result column="execute_status" property="executeStatus" jdbcType="TINYINT" />
+
   </resultMap>
   <sql id="Base_Column_List" >
-    id, job_name, file_name, createtime, updatetime,trans_meta_id
+    id, job_name, file_name, createtime, updatetime,trans_meta_id,execute_status
   </sql>
 
   <insert id="insert" parameterType="com.zsbatech.baasKettleManager.vo.JobMetaVO" >
     insert into job_meta (id, job_name, file_name,
-      createtime, updatetime,trans_meta_id)
-    values (#{id,jdbcType=INTEGER}, #{jobName,jdbcType=VARCHAR},#{fileName,jdbcType=VARCHAR},#{createTime,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR},#{transMetaId,jdbcType=INTEGER})
+      createtime, updatetime,trans_meta_id,execute_status)
+    values
+    (#{id,jdbcType=INTEGER}, #{jobName,jdbcType=VARCHAR},#{fileName,jdbcType=VARCHAR},#{createTime,jdbcType=VARCHAR},
+    #{updateTime,jdbcType=VARCHAR},#{transMetaId,jdbcType=INTEGER},#{executeStatus,jdbcType=TINYINT})
   </insert>
 
   <select id="selectTransMetaVO" resultMap="BaseResultMap" parameterType="java.lang.String" >

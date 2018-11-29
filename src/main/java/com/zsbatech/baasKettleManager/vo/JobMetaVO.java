@@ -22,6 +22,8 @@ public class JobMetaVO {
 
     private int transMetaId;
 
+    private short executeStatus;
+
     public int getId() {
         return id;
     }
@@ -46,6 +48,10 @@ public class JobMetaVO {
         return transMetaId;
     }
 
+    public short getExecuteStatus() {
+        return executeStatus;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -68,5 +74,9 @@ public class JobMetaVO {
 
     public void setTransMetaId(int transMetaId) {
         this.transMetaId = transMetaId;
+    }
+
+    public void setExecuteStatus(short executeStatus) {
+        this.executeStatus = executeStatus;
     }
 }

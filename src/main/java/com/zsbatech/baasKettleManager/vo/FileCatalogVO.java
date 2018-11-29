@@ -19,7 +19,11 @@ public class FileCatalogVO {
 
     private Date updateTime;
 
-    private List<FilesVO> filesVOList;
+    private String createUser;
+
+    private int parentId;
+
+    private short layer;
 
     public int getId() {
         return id;
@@ -37,9 +41,18 @@ public class FileCatalogVO {
         return updateTime;
     }
 
-    public List<FilesVO> getFilesVOList() {
-        return filesVOList;
+    public String getCreateUser() {
+        return createUser;
     }
+
+    public int getParentId() {
+        return parentId;
+    }
+
+    public short getLayer() {
+        return layer;
+    }
+
 
     public void setId(int id) {
         this.id = id;
@@ -57,7 +70,15 @@ public class FileCatalogVO {
         this.updateTime = updateTime;
     }
 
-    public void setFilesVOList(List<FilesVO> filesVOList) {
-        this.filesVOList = filesVOList;
+    public void setCreateUser(String createUser) {
+        this.createUser = createUser;
+    }
+
+    public void setParentId(int parentId) {
+        this.parentId = parentId;
+    }
+
+    public void setLayer(short layer) {
+        this.layer = layer;
     }
 }

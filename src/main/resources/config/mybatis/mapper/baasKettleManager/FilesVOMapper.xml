@@ -8,16 +8,19 @@
     <result column="origin_name" property="originName" jdbcType="VARCHAR" />
     <result column="createtime" property="createTime" jdbcType="VARCHAR" />
     <result column="updatetime" property="updateTime" jdbcType="VARCHAR" />
-    <result column="create_user" property="createUser" jdbcType="INTEGER" />
+    <result column="create_user" property="createUser" jdbcType="VARCHAR" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, file_name, file_catalog, origin_name, createtime, updatetime, create_user
+    id, file_name, file_catalog,origin_name,createtime, updatetime,create_user
   </sql>
 
   <insert id="insert" parameterType="com.zsbatech.baasKettleManager.vo.FilesVO" >
     insert into files (id, file_name, file_catalog,origin_name,
       createtime, updatetime,create_user)
-    values (#{id,jdbcType=INTEGER}, #{fileName,jdbcType=VARCHAR},#{fileCatalog,jdbcType=VARCHAR},#{originName,jdbcType=VARCHAR},#{createTime,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR},#{createUser,jdbcType=INTEGER})
+    values
+    (#{id,jdbcType=INTEGER}, #{fileName,jdbcType=VARCHAR},#{fileCatalog,jdbcType=VARCHAR},
+    #{originName,jdbcType=VARCHAR},#{createTime,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR},
+    #{createUser,jdbcType=VARCHAR})
   </insert>
 
   <insert id="insertBatch" parameterType="java.util.List">
