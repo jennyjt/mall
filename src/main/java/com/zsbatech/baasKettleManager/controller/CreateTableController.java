@@ -28,4 +28,14 @@ public class CreateTableController {
             return responseData;
         }
 
+    @RequestMapping(value = "/getcolumns", method = RequestMethod.POST)
+    @ResponseBody
+    public  ResponseData<String> getColumns(@RequestBody DataMig dataMig) {
+
+
+        ResponseData responseData = createTableService.getColumns(dataMig);
+
+        return responseData;
+    }
+
 }

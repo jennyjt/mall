@@ -73,7 +73,7 @@ public class FtpSourceManageTests {
         dest.setCreateUser("MYSQL");
         dest.setDbType("MYSQL");
 
-        String ddl = TableUtil.getCreateTableDDL(source,dest,"KETTLE");
+        String ddl = TableUtil.getCreateTableDDL(source,dest,"KETTLE1");
         System.out.println(ddl);
     }
 

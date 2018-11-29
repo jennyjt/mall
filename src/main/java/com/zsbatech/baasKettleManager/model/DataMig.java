@@ -1,13 +1,21 @@
 package com.zsbatech.baasKettleManager.model;
 
+import java.util.List;
+
 /**
  * @author Caohuaijie@zsbatech.com
  * @date 2018/11/19 17:52
  */
 public class DataMig extends DataMigration {
 
+    private String updatetime;
+    private String timeStamp;
+    private List<String> updateLookup;
 
-
+    //周期同步
+    private String cycleTime;
+    private String jobName;
+    private String ktrString;
     //transmeta
     private String transName;
     private String fileName;
@@ -15,8 +23,7 @@ public class DataMig extends DataMigration {
     //dbconn  src
 
     private Integer srcDbconnId;
-    private String databaseSrcType;
-    private String srcLinkName;
+
     private String srcTable;
 
     private String srcColumn;
@@ -27,11 +34,6 @@ public class DataMig extends DataMigration {
     //dbconn  dst
     private Integer dstDbconnId;
 
-    private String databaseDstType;
-
-    private String dstLinkName;
-
-
     private String dstTable;
 
     private String dstColumn;
@@ -39,7 +41,45 @@ public class DataMig extends DataMigration {
     private String dstSql;
 
 
-    private String ktrString;
+    public String getCycleTime() {
+        return cycleTime;
+    }
+
+    public void setCycleTime(String cycleTime) {
+        this.cycleTime = cycleTime;
+    }
+
+    public String getJobName() {
+        return jobName;
+    }
+
+    public void setJobName(String jobName) {
+        this.jobName = jobName;
+    }
+
+    public String getTimeStamp() {
+        return timeStamp;
+    }
+
+    public void setTimeStamp(String timeStamp) {
+        this.timeStamp = timeStamp;
+    }
+
+    public List<String> getUpdateLookup() {
+        return updateLookup;
+    }
+
+    public void setUpdateLookup(List<String> updateLookup) {
+        this.updateLookup = updateLookup;
+    }
+
+    public String getUpdatetime() {
+        return updatetime;
+    }
+
+    public void setUpdatetime(String updatetime) {
+        this.updatetime = updatetime;
+    }
 
 
     public String getTransName() {
@@ -77,21 +117,7 @@ public class DataMig extends DataMigration {
         this.srcDbconnId = srcDbconnId;
     }
 
-    public String getDatabaseSrcType() {
-        return databaseSrcType;
-    }
 
-    public void setDatabaseSrcType(String databaseSrcType) {
-        this.databaseSrcType = databaseSrcType;
-    }
-
-    public String getSrcLinkName() {
-        return srcLinkName;
-    }
-
-    public void setSrcLinkName(String srcLinkName) {
-        this.srcLinkName = srcLinkName;
-    }
 
     public String getSrcTable() {
         return srcTable;
@@ -127,21 +153,6 @@ public class DataMig extends DataMigration {
         this.dstDbconnId = dstDbconnId;
     }
 
-    public String getDatabaseDstType() {
-        return databaseDstType;
-    }
-
-    public void setDatabaseDstType(String databaseDstType) {
-        this.databaseDstType = databaseDstType;
-    }
-
-    public String getDstLinkName() {
-        return dstLinkName;
-    }
-
-    public void setDstLinkName(String dstLinkName) {
-        this.dstLinkName = dstLinkName;
-    }
 
     public String getDstTable() {
         return dstTable;

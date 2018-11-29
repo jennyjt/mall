@@ -6,21 +6,18 @@
         <result column="from_step_id" property="fromStepId" jdbcType="INTEGER"/>
         <result column="to_step_id" property="toStepId" jdbcType="INTEGER"/>
         <result column="hop_sequence" property="hopSequence" jdbcType="TINYINT"/>
-        <result column="condition" property="condition" jdbcType="TINYINT"/>
+        <result column="cndition" property="condition" jdbcType="TINYINT"/>
         <result column="createtime" property="createTime" jdbcType="VARCHAR"/>
         <result column="updatetime" property="updateTime" jdbcType="VARCHAR"/>
     </resultMap>
     <sql id="Base_Column_List">
-    id, from_step_id, to_step_id,hop_sequence,condition, createtime, updatetime
+    id, from_step_id, to_step_id,hop_sequence,cndition, createtime, updatetime
   </sql>
 
-    <insert id="insertHopBatch" parameterType="com.zsbatech.baasKettleManager.vo.JobHopMetaVO">
+    <insert id="insert" parameterType="com.zsbatech.baasKettleManager.vo.JobHopMetaVO">
         insert into job_hop (id, from_step_id, to_step_id,
-        hop_sequence,condition,createtime, updatetime)
-        values
-            (
-            #{id,jdbcType=INTEGER},
-            #{fromStepId,jdbcType=INTEGER},#{toStepId,jdbcType=INTEGER},#{hopSequence,jdbcType=TINYINT},
+        hop_sequence,cndition,createtime, updatetime)
+        values(#{id,jdbcType=INTEGER}, #{fromStepId,jdbcType=INTEGER},#{toStepId,jdbcType=INTEGER},#{hopSequence,jdbcType=TINYINT},
             #{condition,jdbcType=TINYINT},#{createTime,jdbcType=VARCHAR},#{updateTime,jdbcType=VARCHAR}
             )
     </insert>
