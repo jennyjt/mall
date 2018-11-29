@@ -18,14 +18,14 @@
   <insert id="insert" parameterType="com.zsbatech.baasKettleManager.vo.JobStartStepVO" >
     insert into job_start_step (id, job_step_name, timing_type,
     is_repeat,timing_time,job_meta_id,createtime, updatetime)
-    values (#{id,jdbcType=INTEGER}, #{stepName,jdbcType=VARCHAR},#{timingType,jdbcType=TINYINT},#{isRepeat,jdbcType=TINYINT},#{timingTime,jdbcType=TINYINT},#{jobMetaId,jdbcType=TINYINT},#{createTime,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR})
+    values (#{id,jdbcType=INTEGER}, #{stepName,jdbcType=VARCHAR},#{timingType,jdbcType=TINYINT},#{isRepeat,jdbcType=TINYINT},#{timingTime,jdbcType=TINYINT},#{jobMetaId,jdbcType=INTEGER},#{createTime,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR})
   </insert>
 
-  <select id="selectJobStartStepVO" resultMap="BaseResultMap" parameterType="java.lang.String" >
+  <select id="selectJobStartStepVO" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select
     <include refid="Base_Column_List" />
     from job_start_step
-    where job_meta_id = #{jobMetaId,jdbcType=VARCHAR}
+    where job_meta_id = #{jobMetaId,jdbcType=INTEGER}
     limit 1
   </select>
 </mapper>

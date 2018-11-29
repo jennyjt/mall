@@ -41,18 +41,29 @@ public class JobExcuteServiceImpl implements JobExcuteService {
     }
 
     public void stop(String fileName) {
-        ThreadGroup currentGroup = Thread.currentThread().getThreadGroup();
-        while (currentGroup.getParent() != null) {
-            currentGroup = currentGroup.getParent();
+        JobMeta jobMeta = null;
+        try {
+            KettleEnvironment.init();
+            jobMeta = new JobMeta("C:\\Users\\de\\Desktop\\job.kjb", null);
+        } catch (KettleException e) {
+            e.printStackTrace();
         }
-        int noThreads = currentGroup.activeCount();
-        Thread[] lstThreads = new Thread[noThreads];
-        currentGroup.enumerate(lstThreads);
-        for (Thread thread : lstThreads) {
-            if(thread.getName().equals(fileName)){
-                thread.interrupt();
-            }
-        }
+        Job job = new Job(null, jobMeta);
+        job.stopAll();
+//        ThreadGroup currentGroup = Thread.currentThread().getThreadGroup();
+//        while (currentGroup.getParent() != null) {
+//            currentGroup = currentGroup.getParent();
+//        }
+//        currentGroup.interrupt();
+//        int noThreads = currentGroup.activeCount();
+//        Thread[] lstThreads = new Thread[noThreads];
+//        currentGroup.enumerate(lstThreads);
+//        for (Thread thread : lstThreads) {
+//            if (thread.getName().equals(fileName)) {
+//                thread.interrupt();
+//
+//            }
+//        }
     }
 
     public void stopAll() {

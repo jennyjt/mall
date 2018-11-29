@@ -32,6 +32,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -73,8 +74,7 @@ public class DBMigrationServiceImpl implements DBMigrationService {
         //添加转换数据库源连接
             DatabaseMeta databaseMeta = new DatabaseMeta();
 
-            databaseMeta.setDatabaseType(dataMig.getDatabaseSrcType());
-            System.out.println("srctype: " + dataMig.getDatabaseSrcType());
+            databaseMeta.setDatabaseType(srcdbManagement.getDbType());
             databaseMeta.setDBName(srcdbManagement.getDbName());
             databaseMeta.setHostname(srcdbManagement.getDbHost());
             databaseMeta.setDBPort(srcdbManagement.getDbPort());
@@ -88,7 +88,7 @@ public class DBMigrationServiceImpl implements DBMigrationService {
 
             //添加转换数据库目标连接
             DatabaseMeta dstdatabaseMeta = new DatabaseMeta();
-            dstdatabaseMeta.setDatabaseType(dataMig.getDatabaseDstType());
+            dstdatabaseMeta.setDatabaseType(dstdbManagement.getDbType());
             dstdatabaseMeta.setDBName(dstdbManagement.getDbName());
             dstdatabaseMeta.setHostname(dstdbManagement.getDbHost());
             dstdatabaseMeta.setDBPort(dstdbManagement.getDbPort());
@@ -138,6 +138,7 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             transMeta.addTransHop(new TransHopMeta(tableInputMetaStep,tableOutputMetaStep));
 
             if (saveTransMetaService.save(transMeta,path + dataMig.getTransName()+ ".ktr",true)) {
+//                saveTransMetaService.saveTransData(path + dataMig.getTransName()+ ".ktr");
 
             TransMeta transMeta1 = new TransMeta(path + dataMig.getTransName()+ ".ktr");
             Trans trans = new Trans(transMeta1);
@@ -169,11 +170,10 @@ public class DBMigrationServiceImpl implements DBMigrationService {
 
             KettleEnvironment.init();
 //            ktrpath = dataMig.getKtrString();
-            ktrpath = "C:\\Users\\de\\Desktop\\transjob.ktr" ;
+            ktrpath = "C:\\Users\\de\\Desktop\\"+dataMig.getKtrString() ;
 
-            System.out.println(ktrpath);
             JobMeta jobMeta = new JobMeta();
-            jobMeta.setName("删除文件");
+            jobMeta.setName(dataMig.getKtrString());
             JobEntrySpecial jobEntrySpecial = new JobEntrySpecial();
             jobEntrySpecial.setName("start");
             jobEntrySpecial.setRepeat(true);
@@ -187,18 +187,13 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             specialCopy.setLocation(30,30);
             specialCopy.setDrawn(true);
             jobMeta.addJobEntry(specialCopy);
-            JobEntryTrans jobEntryTrans = new JobEntryTrans("job");
+            JobEntryTrans jobEntryTrans = new JobEntryTrans(dataMig.getJobName());
             jobEntryTrans.setFileName(ktrpath);
             JobEntryCopy transJob = new JobEntryCopy(jobEntryTrans);
             transJob.setLocation(200,20);
             transJob.setDrawn(true);
             jobMeta.addJobEntry(transJob);
-//        JobEntryDeleteFile jobEntryDeleteFile = new JobEntryDeleteFile();
-//        jobEntryDeleteFile.setName("作业名称项");
-//        jobEntryDeleteFile.setFilename("C:\\Users\\zhang\\Desktop\\file.txt");
-//        JobEntryCopy deleteFileCopy = new JobEntryCopy(jobEntryDeleteFile);
-//        deleteFileCopy.setLocation(80,20);
-//        jobMeta.addJobEntry(deleteFileCopy);
+
             JobHopMeta jobHopMeta = new JobHopMeta(specialCopy, transJob);
             jobHopMeta.setUnconditional(true);
             jobMeta.addJobHop(jobHopMeta);
@@ -207,6 +202,7 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             JobMeta jobMeta1 = new JobMeta(path+"job.kjb",null);
             Job job = new Job(null,jobMeta1);
             job.start();
+            Thread.currentThread().setName("aaa");
             job.waitUntilFinished();
 
             if(job.getErrors() != 0){
@@ -242,8 +238,7 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             //添加转换数据库源连接
             DatabaseMeta databaseMeta = new DatabaseMeta();
 
-            databaseMeta.setDatabaseType(dataMig.getDatabaseSrcType());
-            System.out.println("srctype: " + dataMig.getDatabaseSrcType());
+            databaseMeta.setDatabaseType(srcdbManagement.getDbType());
             databaseMeta.setDBName(srcdbManagement.getDbName());
             databaseMeta.setHostname(srcdbManagement.getDbHost());
             databaseMeta.setDBPort(srcdbManagement.getDbPort());
@@ -257,7 +252,7 @@ public class DBMigrationServiceImpl implements DBMigrationService {
 
             //添加转换数据库目标连接
             DatabaseMeta dstdatabaseMeta = new DatabaseMeta();
-            dstdatabaseMeta.setDatabaseType(dataMig.getDatabaseDstType());
+            dstdatabaseMeta.setDatabaseType(dstdbManagement.getDbType());
             dstdatabaseMeta.setDBName(dstdbManagement.getDbName());
             dstdatabaseMeta.setHostname(dstdbManagement.getDbHost());
             dstdatabaseMeta.setDBPort(dstdbManagement.getDbPort());
@@ -276,8 +271,8 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             //给表输入添加一个DatabaseMeta连接数据库
             DatabaseMeta database_in = transMeta.findDatabase(srcdbManagement.getLinkName());
             tableInputMeta.setDatabaseMeta(database_in);
-            String select_sql = "SELECT * FROM " + dataMig.getSrcTable();
-            System.out.println("sql" + select_sql);
+            String select_sql = "SELECT * FROM " + dataMig.getSrcTable()+ " where "+ dataMig.getTimeStamp() + " > " +"\""+dataMig.getUpdatetime()+"\"";
+
             tableInputMeta.setSQL(select_sql);
 
             //添加TableInputMeta到转换中
@@ -303,9 +298,18 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             tableOutputMeta.setKeyCondition(new String[]{"="});
 
             //update字段
-            String[] updatelookup = {"id","name","age","sex"} ;
-            String [] updateStream = {"id","name","age","sex"};
-            Boolean[] updateOrNot = {false,true,true,true};
+//            String[] updatelookup = {"id","name","age","sex","create_time","update_time"} ;
+//            String [] updateStream = {"id","name","age","sex","create_time","update_time"};
+//            Boolean[] updateOrNot = {false,true,true,true,true,true};
+            List<String> list = dataMig.getUpdateLookup();
+            String[] updatelookup = list.toArray(new String[list.size()]);
+            String[] updateStream = updatelookup;
+            Boolean[] updateOrNot =new Boolean[list.size()];
+            updateOrNot[0] = false;
+            for (int i=1;i<list.size();i++){
+                updateOrNot[i]= true;
+            }
+
             tableOutputMeta.setUpdateLookup(updatelookup);
             tableOutputMeta.setUpdateStream(updateStream);
             tableOutputMeta.setUpdate(updateOrNot);

@@ -5,8 +5,6 @@ import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.job.JobMeta;
 import org.pentaho.di.job.entries.trans.JobEntryTrans;
 
-import java.util.List;
-
 /**
  * Created with IntelliJ IDEA.
  * Description:
