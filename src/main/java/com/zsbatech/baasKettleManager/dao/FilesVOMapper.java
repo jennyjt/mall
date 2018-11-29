@@ -1,6 +1,7 @@
 package com.zsbatech.baasKettleManager.dao;
 
 import com.zsbatech.baasKettleManager.vo.FilesVO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -17,4 +18,8 @@ public interface FilesVOMapper {
     int insertBatch(List<FilesVO> filesVOList);
 
     List<FilesVO> queryFilesByfileName(List<String> fileNames);
+
+    FilesVO getFileByFileId(@Param("id") Integer fileId);
+
+    List<FilesVO> getFilesByFileIds(@Param("ids") List<Integer> fileIds);
 }

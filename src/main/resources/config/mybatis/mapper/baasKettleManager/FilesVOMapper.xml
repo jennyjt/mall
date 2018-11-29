@@ -8,26 +8,27 @@
     <result column="origin_name" property="originName" jdbcType="VARCHAR" />
     <result column="createtime" property="createTime" jdbcType="VARCHAR" />
     <result column="updatetime" property="updateTime" jdbcType="VARCHAR" />
+    <result column="create_user" property="createUser" jdbcType="INTEGER" />
   </resultMap>
   <sql id="Base_Column_List">
-    id, file_name, file_content_id,createtime, updatetime,create_user
+    id, file_name, file_catalog, origin_name, createtime, updatetime, create_user
   </sql>
 
   <insert id="insert" parameterType="com.zsbatech.baasKettleManager.vo.FilesVO" >
     insert into files (id, file_name, file_catalog,origin_name,
       createtime, updatetime,create_user)
-    values (#{id,jdbcType=INTEGER}, #{fileName,jdbcType=VARCHAR},#{fileCatalog,jdbcType=VARCHAR},#{originName,jdbcType=VARCHAR},#{createTime,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR},#{createUser,jdbcType=VARCHAR})
+    values (#{id,jdbcType=INTEGER}, #{fileName,jdbcType=VARCHAR},#{fileCatalog,jdbcType=VARCHAR},#{originName,jdbcType=VARCHAR},#{createTime,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR},#{createUser,jdbcType=INTEGER})
   </insert>
 
   <insert id="insertBatch" parameterType="java.util.List">
-    insert into files (id, file_name, file_catalog,origin_name,
-    createtime, updatetime,create_user)
+    insert into files (id, file_name, file_catalog, origin_name,
+    createtime, updatetime, create_user)
     values
     <foreach collection="list" item="item" index="index" separator=",">
       (
       #{item.id,jdbcType=INTEGER}, #{item.fileName,jdbcType=VARCHAR},#{item.fileCatalog,jdbcType=VARCHAR},
       #{item.originName,jdbcType=VARCHAR},#{item.createTime,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=VARCHAR},
-      #{item.createUser,jdbcType=VARCHAR}
+      #{item.createUser,jdbcType=INTEGER}
       )
     </foreach>
   </insert>
@@ -38,6 +39,21 @@
     from files
     where file_name in
     <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+  <select id="getFileByFileId" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select
+    <include refid="Base_Column_List" />
+    from files where id = #{id,jdbcType=INTEGER}
+  </select>
+
+  <select id="getFilesByFileIds" resultMap="BaseResultMap" parameterType="java.util.Map" >
+    select
+    <include refid="Base_Column_List" />
+    from files where id IN
+    <foreach collection="ids" index="index" item="item" open="(" separator="," close=")">
       #{item}
     </foreach>
   </select>
