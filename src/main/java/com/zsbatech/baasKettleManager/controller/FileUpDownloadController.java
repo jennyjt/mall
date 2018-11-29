@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  * 文件上传下载管理
@@ -68,10 +67,10 @@ public class FileUpDownloadController {
     @RequestMapping(value = "/download", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public ResponseData<String> fileDownload(HttpServletRequest request, HttpServletResponse response,
-                             @RequestParam(name = "file_ids", required = true) List<Integer> fileIds) {
+                             @RequestParam(name = "file_id", required = true) Integer fileId) {
         //UniToken uniToken = JWTUtils.validateToken(request);
         ResponseData<String> responseData = new ResponseData<>();
-        boolean result = fileService.fileDownload(fileIds, response);
+        boolean result = fileService.fileDownload(fileId, response);
         if(result) {
             responseData.setOK("success", "success");
         }else{
