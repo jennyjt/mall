@@ -3,7 +3,6 @@ package com.zsbatech.baasKettleManager.service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
 
 /**
  * HTTP文件上传下载管理接口
@@ -23,5 +22,5 @@ public interface FileUpDownloadService {
      * @param fileId
      * @param response
      */
-    boolean fileDownload(List<Integer> fileId, HttpServletResponse response);
+    boolean fileDownload(Integer fileId, HttpServletResponse response);
 }
