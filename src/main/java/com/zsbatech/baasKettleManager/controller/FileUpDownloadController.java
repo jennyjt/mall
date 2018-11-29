@@ -57,14 +57,14 @@ public class FileUpDownloadController {
         return responseData;
     }
 
-    @ApiOperation(value = "下载文件", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "下载文件", notes = "", produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ApiResponses({@ApiResponse(code = Response.OK, message = "下载成功"),})
     @ApiImplicitParams(
             value = {
                     @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
             }
     )
-    @RequestMapping(value = "/download", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/download", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public ResponseData<String> fileDownload(HttpServletRequest request, HttpServletResponse response,
                              @RequestParam(name = "file_id", required = true) Integer fileId) {
