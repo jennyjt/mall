@@ -3,7 +3,6 @@ package com.zsbatech.baasKettleManager.service.impl;
 import com.zsbatech.baasKettleManager.dao.DbManagementMapper;
 import com.zsbatech.baasKettleManager.model.DataMig;
 import com.zsbatech.baasKettleManager.model.DbManagement;
-import com.zsbatech.baasKettleManager.model.DbResponse;
 import com.zsbatech.baasKettleManager.service.CreateTableService;
 import com.zsbatech.baasKettleManager.util.TableUtil;
 import com.zsbatech.base.common.ResponseData;
@@ -13,10 +12,8 @@ import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -32,14 +29,7 @@ public class CreateTableServiceImpl implements CreateTableService {
         DbManagement  dbManagementsrc = dbManagementMapper.selectByPrimaryKey(dataMig.getSrcDbconnId());
         DbManagement  dbManagementdst = dbManagementMapper.selectByPrimaryKey(dataMig.getDstDbconnId());
         try {
-            String execSql = TableUtil.getCreateTableDDL(dbManagementsrc,dbManagementdst,"user");
-//            CREATE TABLE `test` (
-//                    `a` varchar(255) NOT NULL,
-//            `b` varchar(255) NOT NULL,
-//            `c` varchar(255) NOT NULL,
-//            `d` varchar(255) DEFAULT NULL,
-//            PRIMARY KEY (`a`,`b`,`c`)
-//) ENGINE=InnoDB DEFAULT CHARSET=utf8;//todo 联合主键
+           String execSql = TableUtil.getCreateTableDDL(dbManagementsrc,dbManagementdst,dataMig.getSrcTable());
 
             createTb(dbManagementdst,execSql);
             responseData.setOK(200,"success","Create table success.");
@@ -91,8 +81,9 @@ public class CreateTableServiceImpl implements CreateTableService {
             RowMetaInterface rowMetaInterface = db.getQueryFields(select_sql,false);
             String[] fields = rowMetaInterface.getFieldNames();
 
+            db.disconnect();
             responseData.set(200,"success",Arrays.toString(fields));
-//            responseData.setOK(200,"success","Create table success.");
+
         } catch (Exception e) {
             e.printStackTrace();
             responseData.setError("Create table fail!");
