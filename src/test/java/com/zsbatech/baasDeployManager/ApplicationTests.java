@@ -167,7 +167,8 @@ public class ApplicationTests {
 
     @Test
     public void testmaet() {
-        saveTransMetaService.saveTransData("C:\\Users\\zhang\\Desktop\\jdbc.ktr", 0, 0);
+        //saveTransMetaService.saveTransData("C:\\Users\\zhang\\Desktop\\jdbc.ktr",8,8);
+        saveJobMetaService.saveTransJobData("C:\\Users\\zhang\\Desktop\\cads.kjb");
     }
 
     @Test
