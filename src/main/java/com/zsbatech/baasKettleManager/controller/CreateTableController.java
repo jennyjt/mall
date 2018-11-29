@@ -1,7 +1,6 @@
 package com.zsbatech.baasKettleManager.controller;
 
 import com.zsbatech.baasKettleManager.model.DataMig;
-import com.zsbatech.baasKettleManager.model.DbResponse;
 
 import com.zsbatech.baasKettleManager.service.CreateTableService;
 import com.zsbatech.base.common.ResponseData;

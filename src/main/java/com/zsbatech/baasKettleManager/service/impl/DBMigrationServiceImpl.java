@@ -1,22 +1,26 @@
 package com.zsbatech.baasKettleManager.service.impl;
 
 
+import com.github.pagehelper.page.PageMethod;
 import com.zsbatech.baasKettleManager.dao.*;
 import com.zsbatech.baasKettleManager.model.DataMig;
 import com.zsbatech.baasKettleManager.model.DbManagement;
-import com.zsbatech.baasKettleManager.model.DstDbConnection;
+import com.zsbatech.baasKettleManager.model.JobMetaExample;
 import com.zsbatech.baasKettleManager.service.DBMigrationService;
 import com.zsbatech.baasKettleManager.service.SaveJobMetaService;
 import com.zsbatech.baasKettleManager.service.SaveTransMetaService;
+import com.zsbatech.baasKettleManager.util.TableUtil;
+import com.zsbatech.base.common.Pagination;
 import com.zsbatech.base.common.ResponseData;
 import org.pentaho.di.core.KettleEnvironment;
+import org.pentaho.di.core.database.Database;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.plugins.PluginRegistry;
 import org.pentaho.di.core.plugins.StepPluginType;
+import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.job.Job;
 import org.pentaho.di.job.JobHopMeta;
 import org.pentaho.di.job.JobMeta;
-import org.pentaho.di.job.entries.deletefile.JobEntryDeleteFile;
 import org.pentaho.di.job.entries.special.JobEntrySpecial;
 import org.pentaho.di.job.entries.trans.JobEntryTrans;
 import org.pentaho.di.job.entry.JobEntryCopy;
@@ -29,11 +33,8 @@ import org.pentaho.di.trans.steps.tableinput.TableInputMeta;
 import org.pentaho.di.trans.steps.tableoutput.TableOutputMeta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 
@@ -47,6 +48,8 @@ public class DBMigrationServiceImpl implements DBMigrationService {
 
     @Autowired
     private DbManagementMapper dbManagementMapper;
+    @Autowired
+    private JobMetaMapper jobMetaMapper;
     @Autowired
     SaveTransMetaService saveTransMetaService;
     @Autowired
@@ -229,6 +232,16 @@ public class DBMigrationServiceImpl implements DBMigrationService {
 
             KettleEnvironment.init();
 
+            DatabaseMeta sourceDbMeta = new DatabaseMeta(TableUtil.getXmlByDbManagement(srcdbManagement));
+
+            Database db = new Database(sourceDbMeta);
+
+            db.connect();
+            String selectsql = "SELECT * FROM "+dataMig.getSrcTable();
+            RowMetaInterface rowMetaInterface = db.getQueryFields(selectsql,false);
+            String[] fields = rowMetaInterface.getFieldNames();
+
+            db.disconnect();
 
             org.pentaho.di.trans.TransMeta transMeta = new TransMeta();
 
@@ -297,16 +310,20 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             tableOutputMeta.setKeyStream2(new String[]{""});//一定要加上
             tableOutputMeta.setKeyCondition(new String[]{"="});
 
-            //update字段
-//            String[] updatelookup = {"id","name","age","sex","create_time","update_time"} ;
-//            String [] updateStream = {"id","name","age","sex","create_time","update_time"};
-//            Boolean[] updateOrNot = {false,true,true,true,true,true};
+
+            String[] updatelookup = new String[fields.length];
+
             List<String> list = dataMig.getUpdateLookup();
-            String[] updatelookup = list.toArray(new String[list.size()]);
+            if (list == null || list.size() == 0){
+                 updatelookup =  fields;
+            }else{
+                 updatelookup = list.toArray(new String[list.size()]);
+            }
+
             String[] updateStream = updatelookup;
-            Boolean[] updateOrNot =new Boolean[list.size()];
+            Boolean[] updateOrNot =new Boolean[updatelookup.length];
             updateOrNot[0] = false;
-            for (int i=1;i<list.size();i++){
+            for (int i=1;i<updatelookup.length;i++){
                 updateOrNot[i]= true;
             }
 
@@ -346,6 +363,22 @@ public class DBMigrationServiceImpl implements DBMigrationService {
 //        System.out.println(bool);
 
         return responseData;
+    }
+
+    public Pagination<com.zsbatech.baasKettleManager.model.JobMeta> getJobList(Integer currPage, Integer pageSize) {
+        PageMethod.startPage(currPage, pageSize);
+        JobMetaExample jobMetaExample = new JobMetaExample();
+        JobMetaExample.Criteria criteria = jobMetaExample.createCriteria();
+        criteria.andIdIsNotNull();
+        List<com.zsbatech.baasKettleManager.model.JobMeta> jobMetaList = jobMetaMapper.selectByExample(jobMetaExample);
+        Pagination<com.zsbatech.baasKettleManager.model.JobMeta> jobMetaPagination = new Pagination<com.zsbatech.baasKettleManager.model.JobMeta>(jobMetaList);
+        return jobMetaPagination;
+    }
+
+    public com.zsbatech.baasKettleManager.model.JobMeta getJobDetail (Integer jobId) {
+
+        com.zsbatech.baasKettleManager.model.JobMeta jobMeta = jobMetaMapper.selectByPrimaryKey(jobId);
+        return jobMeta;
     }
 
 }
