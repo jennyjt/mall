@@ -6,11 +6,13 @@ package com.zsbatech.baasKettleManager.vo;
  * User: Zhangys
  * Date: 2018/11/23
  */
-public class FTPDownLoadSetp {
+public class FTPSyncSetp {
 
     private JobStartStepVO jobStartStepVO;
 
     private FTPDownLoadStepVO ftpDownLoadStepVO;
+
+    private FTPPutStepVO ftpPutStepVO;
 
     private String fileName;
 
@@ -26,6 +28,10 @@ public class FTPDownLoadSetp {
         return fileName;
     }
 
+    public FTPPutStepVO getFtpPutStepVO() {
+        return ftpPutStepVO;
+    }
+
     public void setJobStartStepVO(JobStartStepVO jobStartStepVO) {
         this.jobStartStepVO = jobStartStepVO;
     }
@@ -36,5 +42,9 @@ public class FTPDownLoadSetp {
 
     public void setFileName(String fileName) {
         this.fileName = fileName;
+    }
+
+    public void setFtpPutStepVO(FTPPutStepVO ftpPutStepVO) {
+        this.ftpPutStepVO = ftpPutStepVO;
     }
 }

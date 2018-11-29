@@ -21,7 +21,7 @@ public interface SaveTransMetaService {
 
     boolean saveMeta( EngineMetaInterface meta, String filename );
 
-    boolean saveTransData(String fileName);
+    boolean saveTransData(String fileName,int srcDbConnId,int dstDbConnId);
 
     TransMetaVO getTransMetaVO(TransMeta transMeta);
 
