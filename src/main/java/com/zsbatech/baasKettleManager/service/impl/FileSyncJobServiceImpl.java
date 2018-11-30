@@ -1,5 +1,8 @@
 package com.zsbatech.baasKettleManager.service.impl;
 
+import com.zsbatech.baasKettleManager.dao.FileCatalogVOMapper;
+import com.zsbatech.baasKettleManager.dao.FilesFileCatalogVOMapper;
+import com.zsbatech.baasKettleManager.dao.FilesVOMapper;
 import com.zsbatech.baasKettleManager.dao.FtpSourceManagerMapper;
 import com.zsbatech.baasKettleManager.model.FtpSourceManager;
 import com.zsbatech.baasKettleManager.service.CatalogManageService;
@@ -9,6 +12,7 @@ import com.zsbatech.baasKettleManager.util.ConfigUtil;
 import com.zsbatech.baasKettleManager.util.FTPUtil;
 import com.zsbatech.baasKettleManager.vo.*;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.ibatis.jdbc.Null;
 import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.job.JobHopMeta;
@@ -21,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,6 +41,15 @@ import java.util.Map;
 public class FileSyncJobServiceImpl implements FileSyncJobService {
 
     private String ftpJobUrl = ConfigUtil.getPropertyValue("file.ftpJobUrl");
+
+    @Autowired
+    private FileCatalogVOMapper fileCatalogVOMapper;
+
+    @Autowired
+    private FilesVOMapper filesVOMapper;
+
+    @Autowired
+    private FilesFileCatalogVOMapper filesFileCatalogVOMapper;
 
     @Autowired
     private FtpSourceManagerMapper ftpSourceManagerMapper;
@@ -309,58 +323,115 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
      */
     @Transactional
     public boolean saveFileInfo(int ftpSourceId, String createCode, String fileCatalog, String file) {
+        boolean insert = false;
+        List<FilesFileCatalogVO> filesFileCatalogVOList = new ArrayList<>();
         FtpSourceManager ftpSourceManager = ftpSourceManagerMapper.selectByPrimaryKey(ftpSourceId);
         FTPClient ftpClient = FTPUtil.loginFTP(ftpSourceManager.getFtpHost(), Integer.valueOf(ftpSourceManager.getFtpPort()), ftpSourceManager.getUserName(), ftpSourceManager.getPassWord());
         Map<String, List<String>> fileMap = null;
-        List<FilesVO> filesVOList = new ArrayList<>();
         if (ftpClient != null) {
             List<FileCatalogVO> fileCatalogVOList = getFileCataLogVO(fileCatalog);
-            if(file != null){
-                String[] strings = file.split("/");
+            List<FileCatalogVO> fileCatalogVOS =  saveFileCatalogInfo(fileCatalogVOList);
+            if (file != null) {
                 FilesVO filesVO = new FilesVO();
-                filesVO.setOriginName(strings[strings.length-1]);
-                filesVO.setFileName(strings[strings.length-1]);
+                filesVO.setOriginName(file);
+                filesVO.setFileName(file);
                 filesVO.setFileCatalog(fileCatalog);
                 filesVO.setUpdateTime(new Date());
-//                filesVO.setCreateUser();
+                filesVO.setCreateUser(createCode);
                 filesVO.setCreateTime(new Date());
+                if (filesVOMapper.insert(filesVO) != 0) {
+                    int filsVOId = filesVOMapper.selectByName(filesVO.getFileName()).getId();
+                    for (FileCatalogVO fileCatalogVO : fileCatalogVOS) {
+                        FilesFileCatalogVO filesFileCatalogVO = new FilesFileCatalogVO();
+                        filesFileCatalogVO.setFileId(filsVOId);
+                        filesFileCatalogVO.setFileCatalogId(fileCatalogVO.getId());
+                        filesFileCatalogVOList.add(filesFileCatalogVO);
+                    }
+                }
+                if (filesFileCatalogVOMapper.insertBatch(filesFileCatalogVOList) != 0) {
+                    insert = true;
+                }
 
-                FilesFileCatalogVO filesFileCatalogVO = new FilesFileCatalogVO();
+            } else {
+                fileMap = FTPUtil.getFiles(ftpClient, fileCatalog, file);
+                List<String> fileList = fileMap.get(fileCatalog);
+                for (String file1 : fileList) {
+                    FilesVO filesVO = new FilesVO();
+                    filesVO.setOriginName(file1);
+                    filesVO.setFileName(file1);
+                    filesVO.setFileCatalog(fileCatalog);
+                    filesVO.setUpdateTime(new Date());
+                    filesVO.setCreateTime(new Date());
+                    if (filesVOMapper.insert(filesVO) != 0) {
+                        FilesVO filesVO1 = filesVOMapper.selectByName(filesVO.getFileName());
+                        if (fileCatalog != null) {
+                            for (FileCatalogVO fileCatalogVO : fileCatalogVOS) {
+                                FilesFileCatalogVO filesFileCatalogVO = new FilesFileCatalogVO();
+                                filesFileCatalogVO.setFileId(filesVO1.getId());
+                                filesFileCatalogVO.setFileCatalogId(fileCatalogVO.getId());
+                                filesFileCatalogVOList.add(filesFileCatalogVO);
+                            }
+                        } else {
+                            FilesFileCatalogVO filesFileCatalogVO = new FilesFileCatalogVO();
+                            filesFileCatalogVO.setFileId(filesVO1.getId());
+                            filesFileCatalogVOList.add(filesFileCatalogVO);
+                        }
+                    }
+                }
             }
-            fileMap = FTPUtil.getFiles(ftpClient, fileCatalog, file);
-            fileMap.get(fileCatalog);
+            if (filesFileCatalogVOMapper.insertBatch(filesFileCatalogVOList) != 0) {
+                insert = true;
+            }
         }
-        return true;
+        return insert;
     }
 
 
     /**
      * 存储目录结构
+     *
      * @param fileCatalogVOList
      * @return
      * @parm fileCatalog
      */
-    public boolean saveFileCatalogInfo(List<FileCatalogVO> fileCatalogVOList){
-        if(fileCatalogVOList != null) {
-            for (FileCatalogVO fileCatalogVO : fileCatalogVOList){
+    public List<FileCatalogVO> saveFileCatalogInfo(List<FileCatalogVO> fileCatalogVOList) {
 
+        //查询的表中数据带id字段
+        List<FileCatalogVO> fileCatalogVOS = new ArrayList<>();
+        if (fileCatalogVOList != null) {
+            for (int i = 0; i < fileCatalogVOList.size(); i++) {
+                FileCatalogVO fileCatalogVO = fileCatalogVOMapper.select(fileCatalogVOList.get(i));
+                fileCatalogVOS.add(fileCatalogVO);
+                if (fileCatalogVO == null) {
+                    if (i != 0) {
+                        fileCatalogVO.setParentId(fileCatalogVOS.get(i - 1).getId());
+                        fileCatalogVOMapper.insert(fileCatalogVO);
+                    } else {
+                        fileCatalogVOMapper.insert(fileCatalogVO);
+                    }
+                }
+                if (i == fileCatalogVOList.size() - 1) {
+                    fileCatalogVOS.add(fileCatalogVOMapper.select(fileCatalogVO));
+                }
             }
         }
-     return true;
+        return fileCatalogVOS;
     }
 
 
     //获取目录的层级信息
-    public List<FileCatalogVO> getFileCataLogVO(String fileCatalog){
+    public List<FileCatalogVO> getFileCataLogVO(String fileCatalog) {
         List<FileCatalogVO> fileCatalogVOList = new ArrayList<>();
-        String[] catalogs = fileCatalog.split("/");
-        for(int i = 0;i<catalogs.length ;i++){
-            FileCatalogVO fileCatalogVO = new FileCatalogVO();
-            fileCatalogVO.setSourceCatalog(catalogs[i]);
-            fileCatalogVO.setCreateTime(new Date());
-            fileCatalogVO.setUpdateTime(new Date());
-            fileCatalogVO.setLayer((short)i);
-            fileCatalogVOList.add(fileCatalogVO);
+        if (fileCatalog != null) {
+            String[] catalogs = fileCatalog.split("/");
+            for (int i = 0; i < catalogs.length; i++) {
+                FileCatalogVO fileCatalogVO = new FileCatalogVO();
+                fileCatalogVO.setSourceCatalog(catalogs[i]);
+                fileCatalogVO.setCreateTime(new Date());
+                fileCatalogVO.setUpdateTime(new Date());
+                fileCatalogVO.setLayer((short) i);
+                fileCatalogVOList.add(fileCatalogVO);
+            }
         }
         return fileCatalogVOList;
     }

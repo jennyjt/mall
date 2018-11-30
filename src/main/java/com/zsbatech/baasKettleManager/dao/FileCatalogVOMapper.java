@@ -12,4 +12,6 @@ import com.zsbatech.baasKettleManager.vo.FileCatalogVO;
 public interface FileCatalogVOMapper {
 
     int insert(FileCatalogVO fileContentVO);
+
+    FileCatalogVO select(FileCatalogVO fileCatalogVO);
 }

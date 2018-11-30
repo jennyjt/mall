@@ -81,12 +81,12 @@ public class FTPUtil {
                 FTPFile[] files = client.listFiles(fileCatalog);
                 for(FTPFile file1:files){
                     String fileName= file1.getName();
-                    fielList.add(fileName.substring(fileName.lastIndexOf('/')));
+                    fielList.add(fileName);
                 }
                 filesVOMap.put(fileCatalog,fielList);
             }else {
                 FTPFile[] files = client.listFiles(fileCatalog);
-                fielList.add(file.substring(file.lastIndexOf('/')));
+                fielList.add(file);
                 filesVOMap.put(fileCatalog,fielList);
             }
         } catch (IOException e) {

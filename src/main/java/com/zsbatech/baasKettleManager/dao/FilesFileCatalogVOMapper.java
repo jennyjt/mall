@@ -1,5 +1,8 @@
 package com.zsbatech.baasKettleManager.dao;
 
+
+import com.zsbatech.baasKettleManager.vo.FilesFileCatalogVO;
+
 import java.util.List;
 
 /**
@@ -10,5 +13,7 @@ import java.util.List;
  */
 public interface FilesFileCatalogVOMapper {
 
-    int insertBatch(List<FilesFileCatalogVOMapper> filesFileCatalogVOList);
+    int insertBatch(List<FilesFileCatalogVO> filesFileCatalogVOList);
+
+     int insert(FilesFileCatalogVO filesFileCatalogVO);
 }

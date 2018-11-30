@@ -1,9 +1,11 @@
-package com.zsbatech.baasDeployManager;
+package com.zsbatech.baasTestManager;
 
+import com.zsbatech.baasKettleManager.dao.FilesFileCatalogVOMapper;
 import com.zsbatech.baasKettleManager.service.*;
 import com.zsbatech.baasKettleManager.service.impl.SaveTransMetaServiceImpl;
 import com.zsbatech.baasKettleManager.util.FTPUtil;
 import com.zsbatech.baasKettleManager.vo.FTPDownLoadStepVO;
+import com.zsbatech.baasKettleManager.vo.FilesFileCatalogVO;
 import com.zsbatech.baasKettleManager.vo.JobStartStepVO;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -28,9 +30,6 @@ import org.pentaho.di.trans.steps.tableinput.TableInputMeta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -170,7 +169,7 @@ public class ApplicationTests {
 
     @Test
     public void testmaet() {
-        //saveTransMetaService.saveTransData("C:\\Users\\zhang\\Desktop\\jdbc.ktr",8,8);
+//        saveTransMetaService.saveTransData("C:\\Users\\zhang\\Desktop\\jdbc.ktr",8,8);
         saveJobMetaService.saveTransJobData("C:\\Users\\zhang\\Desktop\\cads.kjb");
     }
 
@@ -207,5 +206,10 @@ public class ApplicationTests {
     @Test
     public void testStop() {
         jobExcuteService.stop("C:\\Users\\zhang\\Desktop\\cads.kjb");
+    }
+
+    @Test
+    public void testFileCatalog(){
+        fileSyncJobService.saveFileInfo(4,"00000000",null,null);
     }
 }

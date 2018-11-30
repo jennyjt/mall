@@ -8,16 +8,24 @@
     <result column="updatetime" property="updateTime" jdbcType="VARCHAR" />
     <result column="create_user" property="createUser" jdbcType="VARCHAR" />
     <result column="parent_id" property="parentId" jdbcType="INTEGER" />
-    <result column="layer" property="layer" jdbcType="INTEGER" />
+    <result column="layer" property="layer" jdbcType="TINYINT" />
   </resultMap>
   <sql id="Base_Column_List">
     id, source_catalog, createtime, updatetime,create_user,parent_id,layer
   </sql>
 
   <insert id="insert" parameterType="com.zsbatech.baasKettleManager.vo.FileCatalogVO" >
-    insert into trans_meta (id, source_catalog, createtime,
-      updatetime)
-    values (#{id,jdbcType=INTEGER}, #{sourceCatalog,jdbcType=VARCHAR},#{createTime,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR}))
+    insert into file_catalog (id, source_catalog, createtime, updatetime,create_user,parent_id,layer)
+    values (#{id,jdbcType=INTEGER}, #{sourceCatalog,jdbcType=VARCHAR},#{createTime,jdbcType=VARCHAR},
+    #{updateTime,jdbcType=VARCHAR},#{createUser,jdbcType=VARCHAR},#{parentId,jdbcType=INTEGER},#{layer,jdbcType=TINYINT})
   </insert>
 
+  <select id="select" resultMap="BaseResultMap" parameterType="com.zsbatech.baasKettleManager.vo.FileCatalogVO" >
+    select
+    <include refid="Base_Column_List" />
+    from file_catalog
+    where source_catalog = #{sourceCatalog,jdbcType=VARCHAR} AND
+           layer = #{layer,jdbcType=TINYINT}
+    limit 1
+  </select>
 </mapper>
