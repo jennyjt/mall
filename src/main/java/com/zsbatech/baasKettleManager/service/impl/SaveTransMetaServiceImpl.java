@@ -152,11 +152,8 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
                     transHopMetaVOList.add(transHopMetaVO);
                 }
             }
-//            if (transHopMetaVOMapper.insertHopBatch(transHopMetaVOList) > 0) {
-//                return true;
-//            }
         }
-        return false;
+        return true;
     }
 
     /**
@@ -289,8 +286,6 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
             transMeta.addStep(tableInputStepMeta);
             transMeta.addTransHop(new TransHopMeta(tableInputStepMeta,tableOutputStepMeta));
         }
-        save(transMeta, DBTransUrl+name+".ktr", true);
-        return true;
+       return save(transMeta, DBTransUrl+name+".ktr", true);
     }
-
 }

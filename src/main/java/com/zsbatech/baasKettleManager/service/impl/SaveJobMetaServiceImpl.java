@@ -206,7 +206,9 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
                 jobHopMetaVO.setCreateTime(new Date());
                 jobHopMetaVO.setUpdateTime(new Date());
             }
-            jobHopMetaVOMapper.insert(jobHopMetaVO);
+            if(jobHopMetaVOMapper.insert(jobHopMetaVO) == 0){
+                return false;
+            }
         }
         return true;
     }
