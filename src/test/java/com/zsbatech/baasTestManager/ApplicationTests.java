@@ -4,9 +4,12 @@ import com.zsbatech.baasKettleManager.dao.FilesFileCatalogVOMapper;
 import com.zsbatech.baasKettleManager.service.*;
 import com.zsbatech.baasKettleManager.service.impl.SaveTransMetaServiceImpl;
 import com.zsbatech.baasKettleManager.util.FTPUtil;
+import com.zsbatech.baasKettleManager.util.StopJobUtil;
 import com.zsbatech.baasKettleManager.vo.FTPDownLoadStepVO;
 import com.zsbatech.baasKettleManager.vo.FilesFileCatalogVO;
 import com.zsbatech.baasKettleManager.vo.JobStartStepVO;
+import com.zsbatech.base.constants.RequestField;
+import com.zsbatech.base.utils.JWTUtils;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.junit.Test;
@@ -30,6 +33,7 @@ import org.pentaho.di.trans.steps.tableinput.TableInputMeta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.w3c.dom.Node;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -157,7 +161,7 @@ public class ApplicationTests {
     @Test
     public void testJob() throws Exception {
         KettleEnvironment.init();
-        JobMeta jobMeta = new JobMeta("C:\\Users\\zhang\\Desktop\\cads.kjb", null);
+        JobMeta jobMeta = new JobMeta("C:\\Users\\zhang\\Desktop\\aaa.kjb", null);
         Job job = new Job(null, jobMeta);
         job.start();
         Thread.currentThread().setName("cads");
@@ -204,12 +208,13 @@ public class ApplicationTests {
     }
 
     @Test
-    public void testStop() {
-        jobExcuteService.stop("C:\\Users\\zhang\\Desktop\\cads.kjb");
+    public void testStop() throws Exception{
+        new StopJobUtil().stopJob("C:\\Users\\zhang\\Desktop\\aaa.kjb","C:\\Users\\zhang\\Desktop\\aaa.kjb");
     }
 
     @Test
     public void testFileCatalog(){
         fileSyncJobService.saveFileInfo(4,"00000000",null,null);
+        JWTUtils.validateToken(RequestField.TOKEN).getUsername();
     }
 }
