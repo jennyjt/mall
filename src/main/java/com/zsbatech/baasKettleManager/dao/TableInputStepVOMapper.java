@@ -14,7 +14,7 @@ import java.util.List;
 @Repository
 public interface TableInputStepVOMapper {
 
-    int insert(List<TableInputStepVO> tableInputStepVOList);
+    int insertBatch(List<TableInputStepVO> tableInputStepVOList);
 
     List<TableInputStepVO> selectTableInputStepVO(List<String> stepNameList);
 

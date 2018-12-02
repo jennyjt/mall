@@ -20,6 +20,8 @@ import org.pentaho.di.job.entries.special.JobEntrySpecial;
 import org.pentaho.di.job.entries.trans.JobEntryTrans;
 import org.pentaho.di.job.entry.JobEntryCopy;
 import org.pentaho.di.job.entry.JobEntryInterface;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +41,8 @@ import java.util.List;
 public class SaveJobMetaServiceImpl implements SaveJobMetaService {
 
     private String DBTransUrl = ConfigUtil.getPropertyValue("file.jobMetaUrl");
+
+    private static Logger logger = LoggerFactory.getLogger(SaveJobMetaServiceImpl.class);
 
     @Autowired
     private JobHopMetaVOMapper jobHopMetaVOMapper;
@@ -89,6 +93,7 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
         return saved;
     }
 
+    @Transactional
     public boolean saveFTPJobData(String fileName) {
         try {
             KettleEnvironment.init();
@@ -104,31 +109,31 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
         JobStartStepVO jobStartStepVO = null;
         FTPPutStepVO ftpPutStepVO = null;
         FTPDownLoadStepVO ftpDownLoadStepVO = null;
+        List<JobHopMetaVO> jobHopMetaVOList = new ArrayList<>();
         if (jobMetaVOMapper.selectTransMetaVO(jobMeta.getName()) != null) {
             return true;
         } else if (jobMetaVOMapper.insert(getJobMetaVO(jobMeta)) != 0) {
-            int jobMetaId = new JobMetaVO().getId();
+            int jobMetaId = jobMetaVOMapper.selectTransMetaVO(jobMeta.getName()).getId();
             jobStartStepVO = getJobStartStepVO(jobMeta);
             jobStartStepVO.setJobMetaId(jobMetaId);
             int jobStartStepId = 0;
             int ftpPutStepId = 0;
             int ftpDownLoadStepId = 0;
             if (jobStartStepVOMapper.insert(jobStartStepVO) != 0) {
-                jobStartStepId = new JobStartStepVO().getId();
+                jobStartStepId = jobStartStepVOMapper.selectByName(jobStartStepVO.getStepName()).getId();
             }
             ftpPutStepVO = getFTPPutStepVO(jobMeta);
             ftpPutStepVO.setJobMetaId(jobMetaId);
-            if (ftpPutStepVOMapper.insert(ftpPutStepVO) != 0) {
-                ftpPutStepId = new FTPPutStepVO().getId();
+            if (ftpPutStepVO.getStepName() != null && ftpPutStepVOMapper.insert(ftpPutStepVO) != 0) {
+                ftpPutStepId = ftpDownLoadStepVOMapper.selectByName(ftpPutStepVO.getStepName()).getId();
             }
             ftpDownLoadStepVO = getFTPDownLoadStepVO(jobMeta);
             ftpDownLoadStepVO.setJobMetaId(jobMetaId);
-            if (ftpDownLoadStepVOMapper.insert(ftpDownLoadStepVO) != 0) {
-                ftpDownLoadStepId = new FTPDownLoadStepVO().getId();
+            if (ftpDownLoadStepVO.getStepName() != null && ftpDownLoadStepVOMapper.insert(ftpDownLoadStepVO) != 0) {
+                ftpDownLoadStepId = ftpDownLoadStepVOMapper.selectByName(ftpDownLoadStepVO.getStepName()).getId();
             }
-            List<JobHopMetaVO> jobHopMetaVOList = new ArrayList<>();
             List<JobHopMeta> jobHopMetaList = jobMeta.getJobhops();
-            if(jobHopMetaList.size() < 2){
+            if (jobHopMetaList.size() < 2) {
 
             }
             for (JobHopMeta jobHopMeta : jobHopMetaList) {
@@ -162,7 +167,12 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
                 }
             }
         }
-        return true;
+        if (jobHopMetaVOMapper.insertBatch(jobHopMetaVOList) > 0) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     @Transactional
@@ -179,17 +189,21 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
             e.printStackTrace();
         }
         JobStartStepVO jobStartStepVO = null;
+        JobHopMetaVO jobHopMetaVO = new JobHopMetaVO();
         JobEntryTrans jobEntryTrans = getJobEntryTrans(jobMeta);
         String transName = jobEntryTrans.getName();
         int transMetaId = 0;
-        if(transMetaVOMapper.selectTransMetaVO(transName) != null) {
+        if (transMetaVOMapper.selectTransMetaVO(transName) != null) {
             transMetaId = transMetaVOMapper.selectTransMetaVO(transName).getId();
+        }else {
+            logger.info("job中对应的转换不存在！！！！！");
+            return false;
         }
         getJobMetaVO(jobMeta).setTransMetaId(transMetaId);
         if (jobMetaVOMapper.selectTransMetaVO(jobMeta.getName()) != null) {
             return true;
         } else if (jobMetaVOMapper.insert(getJobMetaVO(jobMeta)) != 0) {
-            int jobMetaId =jobMetaVOMapper.selectTransMetaVO(jobMeta.getName()).getId();
+            int jobMetaId = jobMetaVOMapper.selectTransMetaVO(jobMeta.getName()).getId();
             jobStartStepVO = getJobStartStepVO(jobMeta);
             jobStartStepVO.setJobMetaId(jobMetaId);
             int fromStepId = 0;
@@ -198,19 +212,19 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
                 fromStepId = jobStartStepVOMapper.selectJobStartStepVO(jobStartStepVO.getJobMetaId()).getId();
             }
             toStepId = transMetaId;
-            JobHopMetaVO jobHopMetaVO = new JobHopMetaVO();
-            if(fromStepId != 0 && toStepId != 0){
+            if (fromStepId != 0 && toStepId != 0) {
                 jobHopMetaVO.setFromStepId(fromStepId);
                 jobHopMetaVO.setToStepId(toStepId);
-                jobHopMetaVO.setCondition((short)0);
+                jobHopMetaVO.setCondition((short) 0);
                 jobHopMetaVO.setCreateTime(new Date());
                 jobHopMetaVO.setUpdateTime(new Date());
             }
-            if(jobHopMetaVOMapper.insert(jobHopMetaVO) == 0){
-                return false;
-            }
         }
-        return true;
+        if (jobHopMetaVOMapper.insert(jobHopMetaVO) > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public JobMetaVO getJobMetaVO(JobMeta jobMeta) {
@@ -219,7 +233,7 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
         jobMetaVO.setFileName(jobMeta.getFilename());
         jobMetaVO.setCreateTime(new Date());
         jobMetaVO.setUpdateTime(new Date());
-        jobMetaVO.setExecuteStatus((short)0);
+        jobMetaVO.setExecuteStatus((short) 0);
         return jobMetaVO;
     }
 
@@ -266,6 +280,7 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
                 ftpDownLoadStepVO.setFtpDirectory(((JobEntryFTP) jobEntryInterface).getFtpDirectory());
                 ftpDownLoadStepVO.setFtpFileName(((JobEntryFTP) jobEntryInterface).getWildcard());
                 ftpDownLoadStepVO.setTargetDirectory(((JobEntryFTP) jobEntryInterface).getTargetDirectory());
+                ftpDownLoadStepVO.setStepName(((JobEntryFTP) jobEntryInterface).getName());
                 ftpDownLoadStepVO.setCreateTime(new Date());
                 ftpDownLoadStepVO.setUpdateTime(new Date());
             }
@@ -278,17 +293,18 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
         List<JobEntryCopy> jobEntryCopyList = jobMeta.getJobCopies();
         for (JobEntryCopy jobEntryCopy : jobEntryCopyList) {
             JobEntryInterface jobEntryInterface = jobEntryCopy.getEntry();
-            if (jobEntryInterface instanceof JobEntryFTP) {
-                ftpPutStepVO.setTimeout(((JobEntryFTP) jobEntryInterface).getTimeout());
-                if (((JobEntryFTP) jobEntryInterface).isBinaryMode() == true) {
+            if (jobEntryInterface instanceof JobEntryFTPPUT) {
+                ftpPutStepVO.setTimeout(((JobEntryFTPPUT) jobEntryInterface).getTimeout());
+                if (((JobEntryFTPPUT) jobEntryInterface).isBinaryMode() == true) {
                     ftpPutStepVO.setBinaryMode((short) 1);
                 } else {
                     ftpPutStepVO.setBinaryMode((short) 0);
                 }
-                ftpPutStepVO.setControlEncoding(((JobEntryFTP) jobEntryInterface).getControlEncoding());
-                ftpPutStepVO.setFtpDirectory(((JobEntryFTP) jobEntryInterface).getFtpDirectory());
-                ftpPutStepVO.setPutFileName(((JobEntryFTP) jobEntryInterface).getWildcard());
-                ftpPutStepVO.setTargetDirectory(((JobEntryFTP) jobEntryInterface).getTargetDirectory());
+                ftpPutStepVO.setControlEncoding(((JobEntryFTPPUT) jobEntryInterface).getControlEncoding());
+                ftpPutStepVO.setFtpDirectory(((JobEntryFTPPUT) jobEntryInterface).getRemoteDirectory());
+                ftpPutStepVO.setPutFileName(((JobEntryFTPPUT) jobEntryInterface).getWildcard());
+                ftpPutStepVO.setTargetDirectory(((JobEntryFTPPUT) jobEntryInterface).getLocalDirectory());
+                ftpPutStepVO.setStepName(((JobEntryFTPPUT) jobEntryInterface).getName());
                 ftpPutStepVO.setCreateTime(new Date());
                 ftpPutStepVO.setUpdateTime(new Date());
             }
@@ -321,9 +337,9 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
         jobMeta.setName(jobMetaVO.getJobName());
         JobEntrySpecial jobEntrySpecial = new JobEntrySpecial();
         jobEntrySpecial.setName(jobStartStepVO.getStepName());
-        if(jobStartStepVO.getIsRepeat() == 1) {
+        if (jobStartStepVO.getIsRepeat() == 1) {
             jobEntrySpecial.setRepeat(true);
-        }else {
+        } else {
             jobEntrySpecial.setRepeat(false);
         }
         jobEntrySpecial.setSchedulerType(jobStartStepVO.getTimingType());
@@ -342,14 +358,14 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
         specialCopy.setDrawn(true);
         jobMeta.addJobEntry(specialCopy);
         JobEntryTrans jobEntryTrans = new JobEntryTrans(transMetaVO.getTransName());
-        jobEntryTrans.setFileName(DBTransUrl+transMetaVO.getFileName());
+        jobEntryTrans.setFileName(DBTransUrl + transMetaVO.getFileName());
         JobEntryCopy transJob = new JobEntryCopy(jobEntryTrans);
         transJob.setLocation(200, 20);
         transJob.setDrawn(true);
         jobMeta.addJobEntry(transJob);
-        JobHopMeta jobHopMeta = new JobHopMeta(specialCopy,transJob);
+        JobHopMeta jobHopMeta = new JobHopMeta(specialCopy, transJob);
         jobHopMeta.setUnconditional(true);
         jobMeta.addJobHop(jobHopMeta);
-        return save(jobMeta,DBTransUrl+jobMetaVO.getFileName(),true);
+        return save(jobMeta, DBTransUrl + jobMetaVO.getFileName(), true);
     }
 }

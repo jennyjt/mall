@@ -21,4 +21,13 @@
             #{condition,jdbcType=TINYINT},#{createTime,jdbcType=VARCHAR},#{updateTime,jdbcType=VARCHAR}
             )
     </insert>
+
+    <insert id="insertBatch" parameterType="com.zsbatech.baasKettleManager.vo.JobHopMetaVO">
+        insert into job_hop (id, from_step_id, to_step_id,
+        hop_sequence,cndition,createtime, updatetime)
+        values <foreach collection="list" item="item" index="index" separator=",">
+        (#{item.id,jdbcType=INTEGER}, #{item.fromStepId,jdbcType=INTEGER},#{item.toStepId,jdbcType=INTEGER},#{item.hopSequence,jdbcType=TINYINT},
+            #{item.condition,jdbcType=TINYINT},#{item.createTime,jdbcType=VARCHAR},#{item.updateTime,jdbcType=VARCHAR})
+    </foreach>
+    </insert>
 </mapper>

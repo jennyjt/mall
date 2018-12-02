@@ -15,4 +15,6 @@ public interface JobStartStepVOMapper {
     int insert(JobStartStepVO startStepVO);
 
     JobStartStepVO selectJobStartStepVO(Integer jobMetaId);
+
+    JobStartStepVO selectByName(String name);
 }
