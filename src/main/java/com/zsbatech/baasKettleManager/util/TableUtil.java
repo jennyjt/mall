@@ -164,7 +164,7 @@ public class TableUtil {
             pk = pk.substring(0, pk.length() - 1);
 
             sqlddl = "CREATE TABLE IF NOT EXISTS " + tableName + "  " + sql +",\n PRIMARY KEY (" + pk + ")\n" + ");";
-            System.out.println("sqlddlpk: " + sqlddl);
+
             return  sqlddl;
         }
 
