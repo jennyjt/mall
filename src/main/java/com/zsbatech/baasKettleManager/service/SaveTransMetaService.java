@@ -1,5 +1,6 @@
 package com.zsbatech.baasKettleManager.service;
 
+import com.zsbatech.baasKettleManager.vo.InsertUpdateStepVO;
 import com.zsbatech.baasKettleManager.vo.TableOutputMetaVO;
 import com.zsbatech.baasKettleManager.vo.TableInputStepVO;
 import com.zsbatech.baasKettleManager.vo.TransMetaVO;
@@ -30,6 +31,8 @@ public interface SaveTransMetaService {
     List<TransHopMeta> getTransHopMetas(TransMeta transMeta);
 
     TableOutputMetaVO getTableOutputMetaVO(TransMeta transMeta);
+
+    InsertUpdateStepVO getInsertUpdateStepVO(TransMeta transMeta);
 
     boolean saveByDB(String name , String[] fields);
 }

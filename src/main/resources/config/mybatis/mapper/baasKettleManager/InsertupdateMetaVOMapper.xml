@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zsbatech.baasKettleManager.dao.InsertUpdateStepVOMapper">
+    <resultMap id="BaseResultMap" type="com.zsbatech.baasKettleManager.vo.InsertUpdateStepVO">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="trans_meta_id" property="transMetaId" jdbcType="INTEGER"/>
+        <result column="db_management_id" property="dBManageMentId" jdbcType="INTEGER"/>
+        <result column="step_name" property="stepName" jdbcType="VARCHAR"/>
+        <result column="update_lookup" property="updateLookUp" jdbcType="VARCHAR"/>
+        <result column="time_stamp_column" property="timeStampColumn" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="VARCHAR"/>
+        <result column="update_time" property="updateTime" jdbcType="VARCHAR"/>
+        <result column="exc_sql" property="excSql" jdbcType="VARCHAR"/>
+        <result column="target_table" property="targetTable" jdbcType="VARCHAR"/>
+        <result column="is_update" property="isUpdate" jdbcType="TINYINT"/>
+
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, trans_meta_id, db_management_id, step_name, update_lookup,time_stamp_column,create_time,update_time,exc_sql,target_table,is_update
+  </sql>
+
+    <insert id="insert" parameterType="com.zsbatech.baasKettleManager.vo.InsertUpdateStepVO">
+    insert into insert_update_step (id, trans_meta_id, db_management_id, step_name, update_lookup,time_stamp_column,
+    create_time,update_time,exc_sql,target_table,is_update)
+    values (#{id,jdbcType=INTEGER},#{transMetaId,jdbcType=INTEGER},#{dBManageMentId,jdbcType=INTEGER},
+     #{stepName,jdbcType=VARCHAR},#{updateLookUp,jdbcType=VARCHAR},#{timeStampColumn,jdbcType=VARCHAR},
+    #{createTime,jdbcType=INTEGER},#{updateTime,jdbcType=INTEGER},#{excSql,jdbcType=VARCHAR},
+    #{targetTable,jdbcType=VARCHAR},#{isUpdate,jdbcType=TINYINT})
+  </insert>
+
+    <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from insert_update_step
+        where step_name = #{stepName,jdbcType=VARCHAR}
+        limit 1
+    </select>
+
+    <select id="selectByTransMetaId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from insert_update_step
+        where trans_meta_id = #{transMetaId,jdbcType=INTEGER}
+        limit 1
+    </select>
+</mapper>

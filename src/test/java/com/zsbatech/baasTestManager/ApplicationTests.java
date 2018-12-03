@@ -33,7 +33,6 @@ import org.pentaho.di.trans.steps.tableinput.TableInputMeta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.w3c.dom.Node;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -68,15 +67,16 @@ public class ApplicationTests {
         databaseMeta.setUsername("root");
         databaseMeta.setPassword("root");
         databaseMeta.setName("sample");
+        transMeta.addDatabase(databaseMeta);
         //registry是给每个步骤生成一个标识Id用
         PluginRegistry registry = PluginRegistry.getInstance();
         //第一个表输入步骤(TableInputMeta)
         TableInputMeta tableInput = new TableInputMeta();
         String tableInputPluginId = registry.getPluginId(StepPluginType.class, tableInput);
         //给表输入添加一个DatabaseMeta连接数据库
-        DatabaseMeta database_bjdt = transMeta.findDatabase("bjdt");
+        DatabaseMeta database_bjdt = transMeta.findDatabase(databaseMeta.getName());
         tableInput.setDatabaseMeta(database_bjdt);
-        String select_sql = "SELECT * FROM " + "user";
+        String select_sql = "SELECT * FROM " + "users";
         tableInput.setSQL(select_sql);
         //添加TableInputMeta到转换中
         StepMeta tableInputMetaStep = new StepMeta(tableInputPluginId, "步骤名", tableInput);
@@ -88,7 +88,7 @@ public class ApplicationTests {
         InsertUpdateMeta insertUpdateMeta = new InsertUpdateMeta();
         String insertUpdateMetaPluginId = registry.getPluginId(StepPluginType.class, insertUpdateMeta);
         //添加数据库连接
-        DatabaseMeta database_kettle = transMeta.findDatabase("kettle");
+        DatabaseMeta database_kettle = transMeta.findDatabase(databaseMeta.getName());
         insertUpdateMeta.setDatabaseMeta(database_kettle);
         //设置操作的表
         insertUpdateMeta.setTableName("countuse");
@@ -98,9 +98,9 @@ public class ApplicationTests {
         insertUpdateMeta.setKeyStream2(new String[]{""});//一定要加上
         insertUpdateMeta.setKeyCondition(new String[]{"="});
         //设置要更新的字段
-        String[] updatelookup = {"ID", "dept_no", "dept_name", "dept_sex", "dept_addr"};
-        String[] updateStream = {"id", "dept_no", "dept_name", "dept_sex", "dept_addr"};
-        Boolean[] updateOrNot = {false, true, true, true, true, true, true};
+        String[] updatelookup = {"ID", "user"};
+        String[] updateStream = {"id", "user"};
+        Boolean[] updateOrNot = {false, true};
         insertUpdateMeta.setUpdateLookup(updatelookup);
         insertUpdateMeta.setUpdateStream(updateStream);
         insertUpdateMeta.setUpdate(updateOrNot);
@@ -113,7 +113,8 @@ public class ApplicationTests {
         //添加hop把两个步骤关联起来
         transMeta.addTransHop(new TransHopMeta(tableInputMetaStep, insertUpdateStep));
 
-        new SaveTransMetaServiceImpl().save(transMeta, "C:\\Users\\zhang\\Desktop\\aaa.ktr", true);
+//        new SaveTransMetaServiceImpl().save(transMeta, "C:\\Users\\zhang\\Desktop\\aaa.ktr", true);
+        saveTransMetaService.saveTransData("C:\\Users\\zhang\\Desktop\\aaa.ktr",8,8);
     }
 
     @Test
@@ -179,7 +180,8 @@ public class ApplicationTests {
 
     @Test
     public void testSaveByDB() {
-        saveTransMetaService.saveByDB("jdbc", new String[]{"id", "name"});
+//        saveTransMetaService.saveByDB("jdbc", new String[]{"id", "name"});
+//        saveJobMetaService.saveTransJobData("C:\\Users\\zhang\\Desktop\\cads.kjb");
     }
 
     @Test

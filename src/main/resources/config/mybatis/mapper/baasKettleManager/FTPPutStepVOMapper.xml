@@ -4,47 +4,48 @@
     <resultMap id="BaseResultMap" type="com.zsbatech.baasKettleManager.vo.FTPPutStepVO">
         <id column="id" property="id" jdbcType="INTEGER"/>
         <result column="ftp_source_id" property="ftpSourceId" jdbcType="INTEGER"/>
-        <result column="time_out" property="timeOut" jdbcType="INTEGER"/>
+        <result column="time_out" property="timeout" jdbcType="INTEGER"/>
         <result column="binary_mode" property="binaryMode" jdbcType="INTEGER"/>
         <result column="control_encoding" property="controlEncoding" jdbcType="VARCHAR"/>
         <result column="ftp_directory" property="ftpDirectory" jdbcType="VARCHAR"/>
-        <result column="put_ftp_name" property="putFtpName" jdbcType="VARCHAR"/>
+        <result column="put_file_name" property="putFtpName" jdbcType="VARCHAR"/>
         <result column="target_directory" property="targetDirectory" jdbcType="VARCHAR"/>
         <result column="job_meta_id" property="jobMetaId" jdbcType="INTEGER"/>
-        <result column="createtime" property="createTime" jdbcType="VARCHAR"/>
-        <result column="updatetime" property="updateTime" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="VARCHAR"/>
+        <result column="update_time" property="updateTime" jdbcType="VARCHAR"/>
+        <result column="step_name" property="stepName" jdbcType="VARCHAR"/>
     </resultMap>
     <sql id="Base_Column_List">
-    id, ftp_source_id, time_out,binary_mode,control_encoding,ftp_directory,put_ftp_name, target_directory,job_meta_id,createtime, updatetime
+    id, ftp_source_id, time_out,binary_mode,control_encoding,ftp_directory,put_file_name, target_directory,job_meta_id,create_time, update_time,step_name
   </sql>
 
-    <insert id="insert" parameterType="java.util.List">
-        insert into tableinput_step (id, ftp_source_id, time_out,binary_mode,control_encoding,
-        ftp_directory,put_ftp_name, target_directory,job_meta_id,createtime, updatetime)
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into ftp_put_step (id, ftp_source_id, time_out,binary_mode,control_encoding,
+        ftp_directory,put_file_name,target_directory,job_meta_id,create_time, update_time,step_name)
         values
         <foreach collection="list" item="item" index="index" separator=",">
-            (#{item.id,jdbcType=INTEGER}, #{item.ftpSourceId,jdbcType=INTEGER},#{item.timeOut,jdbcType=INTEGER},
-            #{item.binaryMode,jdbcType=INTEGER},#{item.controlEncoding,jdbcType=VARCHAR},#{item.ftpDirectory,jdbcType=VARCHAR},,#{item.putFtpName,jdbcType=VARCHAR},
-            #{item.targetDirectory,jdbcType=VARCHAR},#{item.jobMetaId,jdbcType=INTEGER}#{item.createTime,jdbcType=VARCHAR},
-            #{item.updateTime,jdbcType=VARCHAR})
+            (#{item.id,jdbcType=INTEGER}, #{item.ftpSourceId,jdbcType=INTEGER},#{item.timeout,jdbcType=INTEGER},
+            #{item.binaryMode,jdbcType=INTEGER},#{item.controlEncoding,jdbcType=VARCHAR},#{item.ftpDirectory,jdbcType=VARCHAR},#{item.putFtpName,jdbcType=VARCHAR},
+            #{item.targetDirectory,jdbcType=VARCHAR},#{item.jobMetaId,jdbcType=INTEGER},#{item.createTime,jdbcType=VARCHAR},
+            #{item.updateTime,jdbcType=VARCHAR},#{item.stepName,jdbcType=VARCHAR})
         </foreach>
     </insert>
 
-    <select id="selectTableInputStepVO" resultMap="BaseResultMap" parameterType="java.util.List">
-        select
-        <include refid="Base_Column_List"/>
-        from ftp_put_step
-        <where> id in
-            <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
-                #{item,jdbcType=INTEGER}
-            </foreach>
-        </where>
-    </select>
+    <insert id="insert" parameterType="java.util.List">
+        insert into ftp_put_step (id, ftp_source_id, time_out,binary_mode,control_encoding,
+        ftp_directory,put_file_name, target_directory,job_meta_id,create_time, update_time,step_name)
+        values
+            (#{id,jdbcType=INTEGER}, #{ftpSourceId,jdbcType=INTEGER},#{timeout,jdbcType=INTEGER},
+            #{binaryMode,jdbcType=INTEGER},#{controlEncoding,jdbcType=VARCHAR},#{ftpDirectory,jdbcType=VARCHAR},#{putFtpName,jdbcType=VARCHAR},
+            #{targetDirectory,jdbcType=VARCHAR},#{jobMetaId,jdbcType=INTEGER},#{createTime,jdbcType=VARCHAR},
+            #{updateTime,jdbcType=VARCHAR},#{stepName,jdbcType=VARCHAR})
+    </insert>
 
-    <select id="selectTableInputStepVOS" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+    <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
         select
-        <include refid="Base_Column_List"/>
-        from tableinput_step
-        where trans_meta_id = #{transMetaId,jdbcType=INTEGER}
+        <include refid="Base_Column_List" />
+        from ftp_put_step
+        where step_name = #{stepName,jdbcType=INTEGER}
+        limit 1
     </select>
 </mapper>

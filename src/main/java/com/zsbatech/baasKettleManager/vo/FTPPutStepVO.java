@@ -46,6 +46,12 @@ public class FTPPutStepVO {
 
     private  String putFileName;
 
+    private String stepName;
+
+    private int ftpSourceId;
+
+    private String putFtpName;
+
     public int getId() {
         return id;
     }
@@ -118,6 +124,18 @@ public class FTPPutStepVO {
         return putFileName;
     }
 
+    public String getStepName() {
+        return stepName;
+    }
+
+    public int getFtpSourceId() {
+        return ftpSourceId;
+    }
+
+    public String getPutFtpName() {
+        return putFtpName;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -188,5 +206,17 @@ public class FTPPutStepVO {
 
     public void setPutFileName(String putFileName) {
         this.putFileName = putFileName;
+    }
+
+    public void setStepName(String stepName) {
+        this.stepName = stepName;
+    }
+
+    public void setFtpSourceId(int ftpSourceId) {
+        this.ftpSourceId = ftpSourceId;
+    }
+
+    public void setPutFtpName(String putFtpName) {
+        this.putFtpName = putFtpName;
     }
 }

@@ -68,7 +68,7 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
      * @param fileName
      * @return
      */
-    public boolean createDownloadJobMeta(JobStartStepVO jobStartStepVO, FTPDownLoadStepVO ftpDownLoadStepVO, String fileName) {
+    public String createDownloadJobMeta(JobStartStepVO jobStartStepVO, FTPDownLoadStepVO ftpDownLoadStepVO, String fileName) {
         try {
             KettleEnvironment.init();
         } catch (KettleException e) {
@@ -131,7 +131,11 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         JobHopMeta jobHopMeta = new JobHopMeta(jobEntrySpecialCopy, jobEntryFTPCopy);
         jobHopMeta.setUnconditional(true);
         jobMeta.addJobHop(jobHopMeta);
-        return saveJobMetaService.save(jobMeta, ftpJobUrl + fileName + ".kjb", true);
+        if(saveJobMetaService.save(jobMeta, ftpJobUrl + fileName + ".kjb", true)){
+            return ftpJobUrl + fileName +".kjb";
+        }else {
+            return null;
+        }
     }
 
     /**
@@ -142,7 +146,7 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
      * @param fileName
      * @return
      */
-    public boolean createPutJobMeta(JobStartStepVO jobStartStepVO, FTPPutStepVO ftpPutStepVO, String fileName) {
+    public String createPutJobMeta(JobStartStepVO jobStartStepVO, FTPPutStepVO ftpPutStepVO, String fileName) {
         try {
             KettleEnvironment.init();
         } catch (KettleException e) {
@@ -205,7 +209,11 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         JobHopMeta jobHopMeta = new JobHopMeta(jobEntrySpecialCopy, jobEntryFTPCopy);
         jobHopMeta.setUnconditional(true);
         jobMeta.addJobHop(jobHopMeta);
-        return saveJobMetaService.save(jobMeta, ftpJobUrl + fileName + ".kjb", true);
+        if(saveJobMetaService.save(jobMeta, ftpJobUrl + fileName + ".kjb", true)){
+            return ftpJobUrl + fileName + ".kjb";
+        }else {
+            return null;
+        }
     }
 
     /**
@@ -217,7 +225,7 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
      * @param fileName
      * @return
      */
-    public boolean fileSyncFtpToFtpJobMeta(JobStartStepVO jobStartStepVO, FTPPutStepVO ftpPutStepVO, FTPDownLoadStepVO ftpDownLoadStepVO, String fileName) {
+    public String fileSyncFtpToFtpJobMeta(JobStartStepVO jobStartStepVO, FTPPutStepVO ftpPutStepVO, FTPDownLoadStepVO ftpDownLoadStepVO, String fileName) {
         try {
             KettleEnvironment.init();
         } catch (KettleException e) {
@@ -310,7 +318,11 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         JobHopMeta jobHopFtpMeta = new JobHopMeta(jobEntryFTPCopy, jobEntryFtpToFtpCopy);
         jobHopFtpMeta.setUnconditional(false);
         jobMeta.addJobHop(jobHopFtpMeta);
-        return saveJobMetaService.save(jobMeta, ftpJobUrl + fileName + ".kjb", true);
+        if(saveJobMetaService.save(jobMeta, ftpJobUrl + fileName + ".kjb", true)){
+            return ftpJobUrl + fileName + ".kjb";
+        }else {
+            return null;
+        }
     }
 
     /**
