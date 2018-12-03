@@ -6,7 +6,7 @@
         <result column="trans_meta_id" property="transMetaId" jdbcType="INTEGER"/>
         <result column="db_management_id" property="dBManageMentId" jdbcType="INTEGER"/>
         <result column="step_name" property="stepName" jdbcType="VARCHAR"/>
-        <result column="update_lookup" property="updateLookUp" jdbcType="VARCHAR"/>
+        <result column="update_lookup" property="updateLookup" jdbcType="VARCHAR"/>
         <result column="time_stamp_column" property="timeStampColumn" jdbcType="VARCHAR"/>
         <result column="create_time" property="createTime" jdbcType="VARCHAR"/>
         <result column="update_time" property="updateTime" jdbcType="VARCHAR"/>
@@ -29,7 +29,7 @@
     insert into insert_update_step (id, trans_meta_id, db_management_id, step_name, update_lookup,time_stamp_column,
     create_time,update_time,key_lookup,target_table,is_update,,key_stream,key_stream2,key_condition,update_stream,update_or_not)
     values (#{id,jdbcType=INTEGER},#{transMetaId,jdbcType=INTEGER},#{dBManageMentId,jdbcType=INTEGER},
-     #{stepName,jdbcType=VARCHAR},#{updateLookUp,jdbcType=VARCHAR},#{timeStampColumn,jdbcType=VARCHAR},
+     #{stepName,jdbcType=VARCHAR},#{updateLookup,jdbcType=VARCHAR},#{timeStampColumn,jdbcType=VARCHAR},
     #{createTime,jdbcType=INTEGER},#{updateTime,jdbcType=INTEGER},#{keyLookup,jdbcType=VARCHAR},
     #{targetTable,jdbcType=VARCHAR},#{isUpdate,jdbcType=TINYINT},#{keyStream,jdbcType=VARCHAR},#{keyStream2,jdbcType=VARCHAR},
     #{keyCondition,jdbcType=VARCHAR},#{update_stream,jdbcType=VARCHAR},#{update_or_not,jdbcType=VARCHAR})
