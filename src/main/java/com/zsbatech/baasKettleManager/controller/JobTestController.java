@@ -24,7 +24,7 @@ public class JobTestController {
         public ResponseData<String> createMigration(@RequestBody DataMig dataMig) {
             ResponseData<String> responseData = new ResponseData<>();
             System.out.println(dataMig.getSrcTable());
-           jobExcuteService.stop(dataMig.getSrcTable(),dataMig.getTransName());
+           jobExcuteService.stop(dataMig.getSrcTable(),dataMig.getCycleTime());
            responseData.setOK(200,"success","success");
             return responseData;
         }
