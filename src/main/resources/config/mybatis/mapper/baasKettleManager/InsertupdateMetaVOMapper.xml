@@ -27,7 +27,7 @@
 
     <insert id="insert" parameterType="com.zsbatech.baasKettleManager.vo.InsertUpdateStepVO">
     insert into insert_update_step (id, trans_meta_id, db_management_id, step_name, update_lookup,time_stamp_column,
-    create_time,update_time,key_lookup,target_table,is_update,,key_stream,key_stream2,key_condition,update_stream,update_or_not)
+    create_time,update_time,key_lookup,target_table,is_update,key_stream,key_stream2,key_condition,update_stream,update_or_not)
     values (#{id,jdbcType=INTEGER},#{transMetaId,jdbcType=INTEGER},#{dBManageMentId,jdbcType=INTEGER},
      #{stepName,jdbcType=VARCHAR},#{updateLookup,jdbcType=VARCHAR},#{timeStampColumn,jdbcType=VARCHAR},
     #{createTime,jdbcType=INTEGER},#{updateTime,jdbcType=INTEGER},#{keyLookup,jdbcType=VARCHAR},
