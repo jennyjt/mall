@@ -121,7 +121,7 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
             TransMetaVO transMetaVO = transMetaVOMapper.selectTransMetaVO(transMeta.getName());
             InsertUpdateStepVO insertUpdateStepVO = getInsertUpdateStepVO(transMeta);
             TableOutputMetaVO tableOutputMetaVO = null;
-            if (insertUpdateStepVO != null) {
+            if (insertUpdateStepVO.getStepName() != null) {
                 insertUpdateStepVO.setTransMetaId(transMetaVO.getId());
                 insertUpdateStepVO.setdBManageMentId(dstDbConnId);
             } else {
@@ -138,7 +138,7 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
             }
             TableOutputMetaVO tableOutputMeta = null;
             InsertUpdateStepVO insertUpdateMeta = null;
-            if (insertUpdateStepVO != null && insertUpdateStepVOMapper.insert(insertUpdateStepVO) > 0) {
+            if (insertUpdateStepVO.getStepName() != null && insertUpdateStepVOMapper.insert(insertUpdateStepVO) > 0) {
                 insertUpdateMeta = insertUpdateStepVOMapper.selectByName(insertUpdateStepVO.getStepName());
             } else if (tableOutputMetaVOMapper.insert(tableOutputMetaVO) > 0) {
                 tableOutputMeta = tableOutputMetaVOMapper.selectTableOutputMetaVO(tableOutputMetaVO.getStepName());
@@ -157,9 +157,9 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
                     if (hop != null && map.get(hop.getFromStep().getName()) != null) {
                         transHopMetaVO.setFromStepId(map.get(hop.getFromStep().getName()).getId());
                     }
-                    if(insertUpdateMeta != null &&(hop != null && hop.getToStep().getName().equals(insertUpdateMeta.getStepName()))){
+                    if(insertUpdateMeta != null && hop != null && hop.getToStep().getName().equals(insertUpdateMeta.getStepName())){
                         transHopMetaVO.setToStepId(insertUpdateMeta.getId());
-                    }else if (insertUpdateMeta == null && (hop != null && hop.getToStep().getName().equals(tableOutputMeta.getStepName()))) {
+                    }else if (insertUpdateMeta == null && hop != null && hop.getToStep().getName().equals(tableOutputMeta.getStepName())) {
                         transHopMetaVO.setToStepId(tableOutputMeta.getId());
                     }
                     transHopMetaVOList.add(transHopMetaVO);

@@ -22,7 +22,7 @@
      entry_id,createtime,updatetime,trans_meta_id,db_management_id)
     values (#{id,jdbcType=INTEGER}, #{stepName,jdbcType=VARCHAR},#{dbConnectionName,jdbcType=VARCHAR},#{targetTable,jdbcType=VARCHAR}, #{isBatchInsert,jdbcType=INTEGER},
 
-    #{entryId,jdbcType=INTEGER},#{createTime,jdbcType=INTEGER},#{updateTime,jdbcType=INTEGER},#{transMetaId,jdbcType=INTEGER},#{item.dBManagerMentId,jdbcType=INTEGER})
+    #{entryId,jdbcType=INTEGER},#{createTime,jdbcType=INTEGER},#{updateTime,jdbcType=INTEGER},#{transMetaId,jdbcType=INTEGER},#{dBManageMentId,jdbcType=INTEGER})
 
   </insert>
 
