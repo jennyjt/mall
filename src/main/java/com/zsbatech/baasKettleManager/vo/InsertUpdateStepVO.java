@@ -18,11 +18,11 @@ public class InsertUpdateStepVO {
 
     private String stepName;
 
-    private String updateLookUp;
+    private String updateLookup;
 
     private Date timeStampColumn;
 
-    private String excSql;
+    private String keyLookup;
 
     private Date createTime;
 
@@ -31,6 +31,16 @@ public class InsertUpdateStepVO {
     private String targetTable;
 
     private short isUpdate;
+
+    private String keyStream;
+
+    private String keyStream2;
+
+    private String keyCondition;
+
+    private String updateStream;
+
+    private String updateOrNot;
 
     public int getId() {
         return id;
@@ -48,16 +58,12 @@ public class InsertUpdateStepVO {
         return stepName;
     }
 
-    public String getUpdateLookUp() {
-        return updateLookUp;
+    public String getUpdateLookup() {
+        return updateLookup;
     }
 
     public Date getTimeStampColumn() {
         return timeStampColumn;
-    }
-
-    public String getExcSql() {
-        return excSql;
     }
 
     public Date getCreateTime() {
@@ -76,6 +82,30 @@ public class InsertUpdateStepVO {
         return isUpdate;
     }
 
+    public String getKeyLookup() {
+        return keyLookup;
+    }
+
+    public String getKeyStream() {
+        return keyStream;
+    }
+
+    public String getKeyStream2() {
+        return keyStream2;
+    }
+
+    public String getKeyCondition() {
+        return keyCondition;
+    }
+
+    public String getUpdateStream() {
+        return updateStream;
+    }
+
+    public String getUpdateOrNot() {
+        return updateOrNot;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -92,16 +122,12 @@ public class InsertUpdateStepVO {
         this.stepName = stepName;
     }
 
-    public void setUpdateLookUp(String updateLookUp) {
-        this.updateLookUp = updateLookUp;
+    public void setUpdateLookup(String updateLookup) {
+        this.updateLookup = updateLookup;
     }
 
     public void setTimeStampColumn(Date timeStampColumn) {
         this.timeStampColumn = timeStampColumn;
-    }
-
-    public void setExcSql(String excSql) {
-        this.excSql = excSql;
     }
 
     public void setCreateTime(Date createTime) {
@@ -118,5 +144,29 @@ public class InsertUpdateStepVO {
 
     public void setIsUpdate(short isUpdate) {
         this.isUpdate = isUpdate;
+    }
+
+    public void setKeyLookup(String keyLookup) {
+        this.keyLookup = keyLookup;
+    }
+
+    public void setKeyStream(String keyStream) {
+        this.keyStream = keyStream;
+    }
+
+    public void setKeyStream2(String keyStream2) {
+        this.keyStream2 = keyStream2;
+    }
+
+    public void setKeyCondition(String keyCondition) {
+        this.keyCondition = keyCondition;
+    }
+
+    public void setUpdateStream(String updateStream) {
+        this.updateStream = updateStream;
+    }
+
+    public void setUpdateOrNot(String updateOrNot) {
+        this.updateOrNot = updateOrNot;
     }
 }

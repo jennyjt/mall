@@ -4,6 +4,7 @@ import com.zsbatech.baasKettleManager.dao.*;
 import com.zsbatech.baasKettleManager.model.DbManagement;
 import com.zsbatech.baasKettleManager.service.SaveTransMetaService;
 import com.zsbatech.baasKettleManager.util.ConfigUtil;
+import com.zsbatech.baasKettleManager.util.StringUtil;
 import com.zsbatech.baasKettleManager.vo.*;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.EngineMetaInterface;
@@ -249,9 +250,19 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
             StepMetaInterface stepMetaInterface = stepMeta.getStepMetaInterface();
             if (stepMetaInterface instanceof InsertUpdateMeta) {
                 insertUpdateStepVO.setStepName(((InsertUpdateMeta) stepMetaInterface).getDatabaseMeta().getName());
+                insertUpdateStepVO.setKeyLookup(StringUtil.toString(((InsertUpdateMeta) stepMetaInterface).getKeyLookup()));
+                insertUpdateStepVO.setKeyStream(StringUtil.toString((((InsertUpdateMeta) stepMetaInterface).getKeyStream())));
+                insertUpdateStepVO.setKeyStream2(StringUtil.toString((((InsertUpdateMeta) stepMetaInterface).getKeyStream2())));//一定要加上
+                insertUpdateStepVO.setKeyCondition(StringUtil.toString((((InsertUpdateMeta) stepMetaInterface).getKeyCondition())));
+                //设置要更新的字段
+                String[] updatelookup = {"ID", "user"};
+                String[] updateStream = {"id", "user"};
+                Boolean[] updateOrNot = {false, true};
+                insertUpdateStepVO.setUpdateLookup(StringUtil.toString(((InsertUpdateMeta) stepMetaInterface).getUpdateLookup()));
+                insertUpdateStepVO.setUpdateStream(StringUtil.toString(((InsertUpdateMeta) stepMetaInterface).getUpdateStream()));
+                insertUpdateStepVO.setUpdateOrNot(StringUtil.toString(((InsertUpdateMeta) stepMetaInterface).getUpdate()));
                 insertUpdateStepVO.setCreateTime(new Date());
                 insertUpdateStepVO.setUpdateTime(new Date());
-                insertUpdateStepVO.setUpdateLookUp(((InsertUpdateMeta) stepMetaInterface).getUpdateLookup().toString());
                 insertUpdateStepVO.setTimeStampColumn(new Date());
                 insertUpdateStepVO.setTargetTable(((InsertUpdateMeta) stepMetaInterface).getTableName());
                 if (((InsertUpdateMeta) stepMetaInterface).isUpdateBypassed()) {
@@ -259,7 +270,6 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
                 } else {
                     insertUpdateStepVO.setIsUpdate((short) 0);
                 }
-//                insertUpdateStepVO.setExcSql();
                 break;
             }
         }
@@ -360,18 +370,19 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
             transMeta.addDatabase(insertDatabaseMeta);
             InsertUpdateMeta insertUpdateMeta = new InsertUpdateMeta();
             insertUpdateMeta.setTableName(insertUpdateMeta.getTableName());
-            insertUpdateMeta.setKeyLookup(insertUpdateStepVO.getUpdateLookUp().split(","));
+            insertUpdateMeta.setKeyLookup(insertUpdateStepVO.getKeyLookup().split(","));
+            insertUpdateMeta.setKeyStream(insertUpdateStepVO.getKeyStream().split(","));
+            insertUpdateMeta.setKeyStream2(insertUpdateStepVO.getKeyStream2().split(","));//一定要加上
+            insertUpdateMeta.setKeyCondition(insertUpdateStepVO.getKeyCondition().split(","));
+            insertUpdateMeta.setUpdateStream(insertUpdateStepVO.getUpdateStream().split(","));
+            insertUpdateMeta.setUpdate(new Boolean[]{false,true});
+            insertUpdateMeta.setUpdateLookup(insertUpdateStepVO.getUpdateLookup().split(","));
             if(insertUpdateStepVO.getIsUpdate() == 1) {
                 insertUpdateMeta.setUpdateBypassed(true);
             }else {
                 insertUpdateMeta.setUpdateBypassed(false);
             }
             PluginRegistry registry = PluginRegistry.getInstance();
-            if (insertUpdateStepVO.getIsUpdate() == 1) {
-                insertUpdateMeta.setUpdateBypassed(true);
-            } else {
-                insertUpdateMeta.setUpdateBypassed(false);
-            }
             insertUpdateMeta.setDatabaseMeta(transMeta.findDatabase(insertDatabaseMeta.getName()));
             String insertUpdatePluginId = registry.getPluginId(StepPluginType.class, insertUpdateMeta);
             StepMeta insertUpdateStepMeta = new StepMeta(insertUpdatePluginId, insertUpdateStepVO.getStepName(), insertUpdateMeta);

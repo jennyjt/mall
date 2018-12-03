@@ -57,7 +57,7 @@ public class ApplicationTests {
         KettleEnvironment.init();
         TransMeta transMeta = new TransMeta();
         //设置转换的名称
-        transMeta.setName("转换名称");
+        transMeta.setName("aaa");
         //添加转换的数据库连接
         DatabaseMeta databaseMeta = new DatabaseMeta();
         databaseMeta.setDatabaseType("MySQL");
@@ -113,14 +113,14 @@ public class ApplicationTests {
         //添加hop把两个步骤关联起来
         transMeta.addTransHop(new TransHopMeta(tableInputMetaStep, insertUpdateStep));
 
-//        new SaveTransMetaServiceImpl().save(transMeta, "C:\\Users\\zhang\\Desktop\\aaa.ktr", true);
+        new SaveTransMetaServiceImpl().save(transMeta, "C:\\Users\\zhang\\Desktop\\aaa.ktr", true);
         saveTransMetaService.saveTransData("C:\\Users\\zhang\\Desktop\\aaa.ktr",8,8);
     }
 
     @Test
     public void test() throws Exception {
         KettleEnvironment.init();
-        TransMeta transMeta = new TransMeta("C:\\Users\\zhang\\Desktop\\jdee.ktr");
+        TransMeta transMeta = new TransMeta("C:\\Users\\zhang\\Desktop\\aaa.ktr");
         Trans trans = new Trans(transMeta);
         trans.prepareExecution(null);
         trans.startThreads();
@@ -180,7 +180,7 @@ public class ApplicationTests {
 
     @Test
     public void testSaveByDB() {
-//        saveTransMetaService.saveByDB("jdbc", new String[]{"id", "name"});
+        saveTransMetaService.saveByDB("aaa", new String[]{"id", "name"});
 //        saveJobMetaService.saveTransJobData("C:\\Users\\zhang\\Desktop\\cads.kjb");
     }
 
