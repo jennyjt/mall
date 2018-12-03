@@ -19,9 +19,9 @@ public interface FilesVOMapper {
 
     FilesVO selectByName(String fileName);
 
-    FilesVO queryFile(@Param("fileName")String fileName,@Param("createUser")String createUser);
+    List<FilesVO> queryFile(@Param("createUser")String createUser,@Param("fileName")String fileName);
 
-    List<FilesVO> queryFiles(@Param("fileNames")List<String> fileNames,@Param("createUser")String code);
+    List<FilesVO>  queryFiles(@Param("fileCatalog") String fileCatalog,@Param("createUser")String code);
 
     FilesVO getFileByFileId(@Param("id") Integer fileId);
 

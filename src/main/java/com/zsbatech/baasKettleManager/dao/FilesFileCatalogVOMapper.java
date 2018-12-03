@@ -17,5 +17,5 @@ public interface FilesFileCatalogVOMapper {
 
      int insert(FilesFileCatalogVO filesFileCatalogVO);
 
-     List<FilesFileCatalogVO> queryByFileId(Integer id);
+     List<FilesFileCatalogVO> queryByFileId(Integer fileId);
 }

@@ -23,10 +23,10 @@
         </foreach>
     </insert>
     <select id="queryByFileId" resultMap="BaseResultMap" parameterType="java.util.List">
-    select
-    <include refid="Base_Column_List"/>
-    from files_file_catalog
-    where file_id = #{id,jdbcType=INTEGER}
+        select
+        <include refid="Base_Column_List"/>
+        from files_file_catalog
+        where file_id = #{fileId,jdbcType=INTEGER}
     </select>
 
 </mapper>

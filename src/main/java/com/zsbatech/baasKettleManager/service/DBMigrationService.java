@@ -1,13 +1,10 @@
 package com.zsbatech.baasKettleManager.service;
 
 import com.zsbatech.baasKettleManager.model.DataMig;
-import com.zsbatech.baasKettleManager.model.DbResponse;
 import com.zsbatech.baasKettleManager.model.JobMeta;
 import com.zsbatech.base.common.Pagination;
 import com.zsbatech.base.common.ResponseData;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * @author Caohuaijie@zsbatech.com

@@ -10,20 +10,20 @@ import java.util.List;
  */
 public class FileQueryVO {
 
-    private List<String> fileName;
+    private String fileCatalog;
 
     private String code;
 
-    public List<String> getFileName() {
-        return fileName;
+    public String getFileCatalog() {
+        return fileCatalog;
     }
 
     public String getCode() {
         return code;
     }
 
-    public void setFileName(List<String> fileName) {
-        this.fileName = fileName;
+    public void setFileCatalog(String fileCatalog) {
+        this.fileCatalog = fileCatalog;
     }
 
     public void setCode(String code) {

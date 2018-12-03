@@ -19,9 +19,9 @@ public interface CatalogManageService {
 
     Map<String, List<String>> deleteCatalogs(List<String> fileCatalogs);
 
-    List<String> queryFiles(List<String> fileNames,String code);
+    List<String> queryFiles(String fileCatalog,String code);
 
-    Map<String,List<String>> queryCataLog(String fileName,String code);
+    Map<String,List<String>> queryCataLog(String code,String fileName);
 
     int saveFiles(List<String> files);
 
