@@ -22,13 +22,11 @@
             ( #{item.id,jdbcType=INTEGER}, #{item.fileId,jdbcType=INTEGER},#{item.fileCatalogId,jdbcType=INTEGER})
         </foreach>
     </insert>
-    <!--<select id="queryFilesByfileName" resultMap="BaseResultMap" parameterType="java.util.List">-->
-    <!--select-->
-    <!--<include refid="Base_Column_List"/>-->
-    <!--from files_file_catalog-->
-    <!--where file_name in-->
-    <!--<foreach collection="list" index="index" item="item" open="(" separator="," close=")">-->
-    <!--#{item}-->
-    <!--</foreach>-->
-    <!--</select>-->
+    <select id="queryByFileId" resultMap="BaseResultMap" parameterType="java.util.List">
+    select
+    <include refid="Base_Column_List"/>
+    from files_file_catalog
+    where file_id = #{id,jdbcType=INTEGER}
+    </select>
+
 </mapper>

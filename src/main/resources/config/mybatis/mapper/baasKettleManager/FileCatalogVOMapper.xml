@@ -28,4 +28,15 @@
            layer = #{layer,jdbcType=TINYINT}
     limit 1
   </select>
+
+  <select id="queryCatalogById" resultMap="BaseResultMap" parameterType="java.util.List" >
+    select
+    <include refid="Base_Column_List" />
+    from file_catalog
+    where id in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
 </mapper>
