@@ -32,7 +32,7 @@
      #{stepName,jdbcType=VARCHAR},#{updateLookup,jdbcType=VARCHAR},#{timeStampColumn,jdbcType=VARCHAR},
     #{createTime,jdbcType=INTEGER},#{updateTime,jdbcType=INTEGER},#{keyLookup,jdbcType=VARCHAR},
     #{targetTable,jdbcType=VARCHAR},#{isUpdate,jdbcType=TINYINT},#{keyStream,jdbcType=VARCHAR},#{keyStream2,jdbcType=VARCHAR},
-    #{keyCondition,jdbcType=VARCHAR},#{update_stream,jdbcType=VARCHAR},#{update_or_not,jdbcType=VARCHAR})
+    #{keyCondition,jdbcType=VARCHAR},#{updateStream,jdbcType=VARCHAR},#{updateOrNot,jdbcType=VARCHAR})
   </insert>
 
     <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String">
