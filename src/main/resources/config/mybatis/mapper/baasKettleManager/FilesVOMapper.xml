@@ -14,7 +14,7 @@
     id, file_name, file_catalog,origin_name,createtime, updatetime,create_user
   </sql>
 
-  <insert id="insert" parameterType="com.zsbatech.baasKettleManager.vo.FilesVO" >
+  <insert id="insert" parameterType="com.zsbatech.baasKettleManager.vo.FilesVO" useGeneratedKeys="true" keyProperty="id">
     insert into files (id, file_name, file_catalog,origin_name,
       createtime, updatetime,create_user)
     values

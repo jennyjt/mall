@@ -22,5 +22,5 @@ public interface FileUpDownloadService {
      * @param fileId
      * @param response
      */
-    boolean fileDownload(Integer fileId, HttpServletResponse response);
+    boolean fileDownload(Integer fileId, HttpServletResponse response, String issuer);
 }
