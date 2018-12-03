@@ -61,7 +61,7 @@ public class FileUpDownloadController {
     @ApiResponses({@ApiResponse(code = Response.OK, message = "下载成功"),})
     @ApiImplicitParams(
             value = {
-                    @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
+                    @ApiImplicitParam(paramType = "query", name = "file_id", dataType = "String", required = true, value = "文件id")
             }
     )
     @RequestMapping(value = "/download", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)

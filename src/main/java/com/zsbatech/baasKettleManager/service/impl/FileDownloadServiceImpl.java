@@ -15,6 +15,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 文件上传下载接口实现类
@@ -35,7 +38,9 @@ public class FileDownloadServiceImpl implements FileUpDownloadService {
         File targetFile = new File(path + File.separator + newFileName);
         //如果目标文件路径不存在就新建
         if(!targetFile.getParentFile().exists()){
-            targetFile.getParentFile().mkdirs();
+            List<String> paths = new ArrayList<>();
+            paths.add(path);
+            Map<String, List<String>> createCatalogsResult = catalogManageService.createCatalogs(paths);
         }
         try {
             //文件复制
@@ -81,6 +86,7 @@ public class FileDownloadServiceImpl implements FileUpDownloadService {
             response.addHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(fileInfo.getOriginName(), "UTF-8"));
             response.addHeader("Pargam", "no-cache");
             response.addHeader("Cache-Control", "no-cache");
+            response.addHeader("file-name", URLEncoder.encode(fileInfo.getOriginName(), "UTF-8"));
 
             //copyUtil里面关闭流
             FileCopyUtils.copy(new FileInputStream(file), response.getOutputStream());
