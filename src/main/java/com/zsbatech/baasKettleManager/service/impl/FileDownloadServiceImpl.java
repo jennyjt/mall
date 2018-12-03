@@ -1,5 +1,7 @@
 package com.zsbatech.baasKettleManager.service.impl;
 
+import com.zsbatech.baasKettleManager.dao.UpdownloadLogMapper;
+import com.zsbatech.baasKettleManager.model.UpdownloadLog;
 import com.zsbatech.baasKettleManager.service.CatalogManageService;
 import com.zsbatech.baasKettleManager.service.FileUpDownloadService;
 import com.zsbatech.baasKettleManager.util.ConfigUtil;
@@ -25,8 +27,15 @@ import java.util.Map;
 @Service
 public class FileDownloadServiceImpl implements FileUpDownloadService {
 
+    private byte UPLOAD_OPERATION = 0;
+
+    private byte DOWNLOAD_OPERATION = 1;
+
     @Autowired
     private CatalogManageService catalogManageService;
+
+    @Autowired
+    private UpdownloadLogMapper updownloadLogMapper;
 
     @Override
     public boolean fileUpload(MultipartFile file, String userId) {
@@ -56,6 +65,12 @@ public class FileDownloadServiceImpl implements FileUpDownloadService {
             if(!result){
                 return false;
             }
+            UpdownloadLog log = new UpdownloadLog();
+            log.setFileId(filesVO.getId());
+            log.setOperation(UPLOAD_OPERATION);
+            log.setCreateTime(DateUtils.currentDateTime());
+            log.setCreateUser(userId);
+            updownloadLogMapper.insert(log);
         } catch (IllegalStateException e) {
             e.printStackTrace();
             return false;
@@ -67,7 +82,7 @@ public class FileDownloadServiceImpl implements FileUpDownloadService {
     }
 
     @Override
-    public boolean fileDownload(Integer fileId, HttpServletResponse response) {
+    public boolean fileDownload(Integer fileId, HttpServletResponse response, String issuer) {
         FilesVO fileInfo = catalogManageService.getFileInfoById(fileId);
         if (fileInfo == null){
             return false;
@@ -78,6 +93,13 @@ public class FileDownloadServiceImpl implements FileUpDownloadService {
             if(!file.exists()) {
                 return false;
             }
+
+            UpdownloadLog log = new UpdownloadLog();
+            log.setFileId(fileId);
+            log.setOperation(DOWNLOAD_OPERATION);
+            log.setCreateTime(DateUtils.currentDateTime());
+            log.setCreateUser(issuer);
+            updownloadLogMapper.insert(log);
 
             response.setContentType("application/octet-stream");
             response.setCharacterEncoding("UTF-8");
