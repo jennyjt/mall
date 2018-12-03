@@ -61,16 +61,18 @@ public class FileUpDownloadController {
     @ApiResponses({@ApiResponse(code = Response.OK, message = "下载成功"),})
     @ApiImplicitParams(
             value = {
-                    @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
+                    @ApiImplicitParam(paramType = "query", name = "file_id", dataType = "String", required = true, value = "文件id"),
+                    @ApiImplicitParam(paramType = "query", name = "issuer", dataType = "String", required = true, value = "用户")
             }
     )
     @RequestMapping(value = "/download", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public ResponseData<String> fileDownload(HttpServletRequest request, HttpServletResponse response,
-                             @RequestParam(name = "file_id", required = true) Integer fileId) {
+                                             @RequestParam(name = "file_id", required = true) Integer fileId,
+                                             @RequestParam(name = "issuer", required = true) String issuer) {
         //UniToken uniToken = JWTUtils.validateToken(request);
         ResponseData<String> responseData = new ResponseData<>();
-        boolean result = fileService.fileDownload(fileId, response);
+        boolean result = fileService.fileDownload(fileId, response, issuer);
         if(result) {
             responseData.setOK("success", "success");
         }else{

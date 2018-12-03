@@ -1,5 +1,7 @@
 package com.zsbatech.baasKettleManager.service.impl;
 
+import com.zsbatech.baasKettleManager.dao.UpdownloadLogMapper;
+import com.zsbatech.baasKettleManager.model.UpdownloadLog;
 import com.zsbatech.baasKettleManager.service.CatalogManageService;
 import com.zsbatech.baasKettleManager.service.FileUpDownloadService;
 import com.zsbatech.baasKettleManager.util.ConfigUtil;
@@ -15,6 +17,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * 文件上传下载接口实现类
@@ -22,8 +27,15 @@ import java.net.URLEncoder;
 @Service
 public class FileDownloadServiceImpl implements FileUpDownloadService {
 
+    private byte UPLOAD_OPERATION = 0;
+
+    private byte DOWNLOAD_OPERATION = 1;
+
     @Autowired
     private CatalogManageService catalogManageService;
+
+    @Autowired
+    private UpdownloadLogMapper updownloadLogMapper;
 
     @Override
     public boolean fileUpload(MultipartFile file, String userId) {
@@ -35,7 +47,9 @@ public class FileDownloadServiceImpl implements FileUpDownloadService {
         File targetFile = new File(path + File.separator + newFileName);
         //如果目标文件路径不存在就新建
         if(!targetFile.getParentFile().exists()){
-            targetFile.getParentFile().mkdirs();
+            List<String> paths = new ArrayList<>();
+            paths.add(path);
+            Map<String, List<String>> createCatalogsResult = catalogManageService.createCatalogs(paths);
         }
         try {
             //文件复制
@@ -51,6 +65,12 @@ public class FileDownloadServiceImpl implements FileUpDownloadService {
             if(!result){
                 return false;
             }
+            UpdownloadLog log = new UpdownloadLog();
+            log.setFileId(filesVO.getId());
+            log.setOperation(UPLOAD_OPERATION);
+            log.setCreateTime(DateUtils.currentDateTime());
+            log.setCreateUser(userId);
+            updownloadLogMapper.insert(log);
         } catch (IllegalStateException e) {
             e.printStackTrace();
             return false;
@@ -62,7 +82,7 @@ public class FileDownloadServiceImpl implements FileUpDownloadService {
     }
 
     @Override
-    public boolean fileDownload(Integer fileId, HttpServletResponse response) {
+    public boolean fileDownload(Integer fileId, HttpServletResponse response, String issuer) {
         FilesVO fileInfo = catalogManageService.getFileInfoById(fileId);
         if (fileInfo == null){
             return false;
@@ -74,6 +94,13 @@ public class FileDownloadServiceImpl implements FileUpDownloadService {
                 return false;
             }
 
+            UpdownloadLog log = new UpdownloadLog();
+            log.setFileId(fileId);
+            log.setOperation(DOWNLOAD_OPERATION);
+            log.setCreateTime(DateUtils.currentDateTime());
+            log.setCreateUser(issuer);
+            updownloadLogMapper.insert(log);
+
             response.setContentType("application/octet-stream");
             response.setCharacterEncoding("UTF-8");
             //设置文件响应大小
@@ -81,6 +108,7 @@ public class FileDownloadServiceImpl implements FileUpDownloadService {
             response.addHeader("Content-Disposition", "attachment; filename=" + URLEncoder.encode(fileInfo.getOriginName(), "UTF-8"));
             response.addHeader("Pargam", "no-cache");
             response.addHeader("Cache-Control", "no-cache");
+            response.addHeader("file-name", URLEncoder.encode(fileInfo.getOriginName(), "UTF-8"));
 
             //copyUtil里面关闭流
             FileCopyUtils.copy(new FileInputStream(file), response.getOutputStream());
