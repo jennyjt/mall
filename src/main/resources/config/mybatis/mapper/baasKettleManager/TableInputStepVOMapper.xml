@@ -15,7 +15,7 @@
     id, trans_step_name, db_connection_name,exc_sql,trans_meta_id, createtime, updatetime,db_management_id
   </sql>
 
-    <insert id="insert" parameterType="java.util.List">
+    <insert id="insertBatch" parameterType="java.util.List">
         insert into tableinput_step (id, trans_step_name, db_connection_name,exc_sql,trans_meta_id,
         createtime, updatetime,db_management_id)
         values

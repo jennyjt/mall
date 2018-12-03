@@ -17,9 +17,15 @@ public interface FilesVOMapper {
 
     int insertBatch(List<FilesVO> filesVOList);
 
-    List<FilesVO> queryFilesByfileName(List<String> fileNames);
+    FilesVO selectByName(String fileName);
+
+    FilesVO queryFile(@Param("fileName")String fileName,@Param("createUser")String createUser);
+
+    List<FilesVO> queryFiles(@Param("fileNames")List<String> fileNames,@Param("createUser")String code);
 
     FilesVO getFileByFileId(@Param("id") Integer fileId);
 
     List<FilesVO> getFilesByFileIds(@Param("ids") List<Integer> fileIds);
+
+    List<FilesVO> selectFilesVOByName(List<String> FileName);
 }

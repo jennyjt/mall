@@ -54,7 +54,7 @@ public class TableInputStepVO {
         return transMetaId;
     }
 
-    public int getDBManageMentId() {
+    public int getdBManageMentId() {
         return dBManageMentId;
     }
 
@@ -90,7 +90,7 @@ public class TableInputStepVO {
         this.excSql = excSql;
     }
 
-    public void setDBManageMentId(int dBManageMentId) {
-        dBManageMentId = dBManageMentId;
+    public void setdBManageMentId(int dBManageMentId) {
+        this.dBManageMentId = dBManageMentId;
     }
 }

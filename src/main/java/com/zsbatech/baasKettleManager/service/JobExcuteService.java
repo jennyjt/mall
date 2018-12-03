@@ -9,7 +9,7 @@ package com.zsbatech.baasKettleManager.service;
 public interface JobExcuteService {
     void excute(String fileName);
 
-    void stop(String fileName);
+    void stop(String transMeta,String carteObjectId);
 
     void stopAll();
 

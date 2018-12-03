@@ -1,6 +1,7 @@
 package com.zsbatech.baasKettleManager.controller;
 
 import com.zsbatech.baasKettleManager.service.FileSyncJobService;
+import com.zsbatech.baasKettleManager.service.SaveJobMetaService;
 import com.zsbatech.baasKettleManager.vo.FTPSyncSetp;
 import com.zsbatech.base.common.ResponseData;
 import com.zsbatech.base.constants.RequestField;
@@ -26,6 +27,9 @@ public class FileSyncJobController {
     private static Logger logger = LoggerFactory.getLogger(FileSyncJobController.class);
 
     @Autowired
+    private SaveJobMetaService saveJobMetaService;
+
+    @Autowired
     private FileSyncJobService fileSyncJobService;
 
     @ApiOperation(value = "创建文件下载同步job", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -39,10 +43,15 @@ public class FileSyncJobController {
     @ResponseBody
     public ResponseData<String> createDownloadJobMeta(@RequestBody FTPSyncSetp ftpSyncSetp) {
         ResponseData<String> responseData = new ResponseData<>();
-        if(fileSyncJobService.createDownloadJobMeta(ftpSyncSetp.getJobStartStepVO(),ftpSyncSetp.getFtpDownLoadStepVO(),ftpSyncSetp.getFileName())){
-            responseData.setOK(200,"创建文件同步job成功","success");
-        }else {
-            responseData.setError("fail");
+        String fileName = fileSyncJobService.createDownloadJobMeta(ftpSyncSetp.getJobStartStepVO(), ftpSyncSetp.getFtpDownLoadStepVO(), ftpSyncSetp.getFileName());
+        if (fileName != null) {
+            if (saveJobMetaService.saveFTPJobData(fileName)) {
+                responseData.setOK(200, "创建文件同步job成功", "success");
+            }else {
+                responseData.setError("创建文件同步job失败");
+            }
+        } else {
+            responseData.setError("创建文件同步job失败");
         }
         return responseData;
     }
@@ -58,13 +67,19 @@ public class FileSyncJobController {
     @ResponseBody
     public ResponseData<String> createPutJobMeta(@RequestBody FTPSyncSetp ftpSyncSetp) {
         ResponseData<String> responseData = new ResponseData<>();
-        if(fileSyncJobService.createPutJobMeta(ftpSyncSetp.getJobStartStepVO(),ftpSyncSetp.getFtpPutStepVO(),ftpSyncSetp.getFileName())){
-            responseData.setOK(200,"创建文件上传同步job成功","SUCCESS");
-        }else {
+        String fileName = fileSyncJobService.createPutJobMeta(ftpSyncSetp.getJobStartStepVO(), ftpSyncSetp.getFtpPutStepVO(), ftpSyncSetp.getFileName());
+        if(fileName != null) {
+            if(saveJobMetaService.saveFTPJobData(fileName)) {
+                responseData.setOK(200, "创建文件上传同步job成功", "SUCCESS");
+            }else {
+                responseData.setError("创建文件上传同步job失败");
+            }
+        } else {
             responseData.setError("创建文件上传同步job失败");
         }
         return responseData;
     }
+
     @ApiOperation(value = "ftp间文件同步job", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiResponses({@ApiResponse(code = Response.OK, message = "ftp间文件同步job"),})
     @ApiImplicitParams(
@@ -76,10 +91,15 @@ public class FileSyncJobController {
     @ResponseBody
     public ResponseData<String> fileSyncFtpToFtpJobMeta(@RequestBody FTPSyncSetp ftpSyncSetp) {
         ResponseData<String> responseData = new ResponseData<>();
-        if(fileSyncJobService.fileSyncFtpToFtpJobMeta(ftpSyncSetp.getJobStartStepVO(),ftpSyncSetp.getFtpPutStepVO(),ftpSyncSetp.getFtpDownLoadStepVO(),ftpSyncSetp.getFileName())){
-            responseData.setOK(200,"创建文件同步job成功","success");
-        }else {
-            responseData.setError("fail");
+        String fileName = fileSyncJobService.fileSyncFtpToFtpJobMeta(ftpSyncSetp.getJobStartStepVO(), ftpSyncSetp.getFtpPutStepVO(), ftpSyncSetp.getFtpDownLoadStepVO(), ftpSyncSetp.getFileName());
+        if(fileName != null){
+            if(saveJobMetaService.saveFTPJobData(fileName)) {
+                responseData.setOK(200, "创建ftp文件同步job成功", "success");
+            }else {
+                responseData.setError("创建ftp文件同步job失败");
+            }
+        } else {
+            responseData.setError("创建ftp文件同步job失败");
         }
         return responseData;
     }

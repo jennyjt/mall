@@ -2,6 +2,7 @@ package com.zsbatech.baasKettleManager.service.impl;
 
 import com.zsbatech.baasKettleManager.controller.ContentManageController;
 import com.zsbatech.baasKettleManager.service.JobExcuteService;
+import com.zsbatech.baasKettleManager.util.StopJobUtil;
 import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.job.Job;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class JobExcuteServiceImpl implements JobExcuteService {
+
 
     private static Logger logger = LoggerFactory.getLogger(ContentManageController.class);
 
@@ -37,16 +39,12 @@ public class JobExcuteServiceImpl implements JobExcuteService {
         }
     }
 
-    public void stop(String fileName) {
-        JobMeta jobMeta = null;
+    public void stop(String transMeta,String carteObjectId) {
         try {
-            KettleEnvironment.init();
-            jobMeta = new JobMeta("C:\\Users\\de\\Desktop\\job.kjb", null);
-        } catch (KettleException e) {
+            new StopJobUtil().stopJob(transMeta,carteObjectId);
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        Job job = new Job(null, jobMeta);
-        job.stopAll();
 //        ThreadGroup currentGroup = Thread.currentThread().getThreadGroup();
 //        while (currentGroup.getParent() != null) {
 //            currentGroup = currentGroup.getParent();

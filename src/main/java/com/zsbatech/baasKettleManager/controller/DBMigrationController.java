@@ -1,10 +1,6 @@
 package com.zsbatech.baasKettleManager.controller;
 
-
-
 import com.zsbatech.baasKettleManager.model.DataMig;
-import com.zsbatech.baasKettleManager.model.DbManagement;
-import com.zsbatech.baasKettleManager.model.DbResponse;
 import com.zsbatech.baasKettleManager.model.JobMeta;
 import com.zsbatech.baasKettleManager.service.DBMigrationService;
 import com.zsbatech.base.common.Pagination;
@@ -15,7 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
+
 
 @Controller
 @RequestMapping (value = "/database/migrate")

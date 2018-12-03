@@ -1,6 +1,7 @@
 package com.zsbatech.baasKettleManager.controller;
 
 import com.zsbatech.baasKettleManager.service.CatalogManageService;
+import com.zsbatech.baasKettleManager.vo.FileQueryVO;
 import com.zsbatech.base.common.ResponseData;
 import com.zsbatech.base.constants.RequestField;
 import com.zsbatech.base.constants.Response;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -100,13 +102,34 @@ public class ContentManageController {
     )
     @RequestMapping(value = "/queryFilesByfileName", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public ResponseData<List> queryFilesByfileName(@RequestBody List<String> fileNames) {
-        List<String> fileList = catalogManageService.queryFiles(fileNames);
+    public ResponseData<List> queryFilesByfileName(@RequestBody FileQueryVO fileQueryVO) {
+        FileQueryVO fileQueryVO1 = fileQueryVO;
+        List<String> fileList = catalogManageService.queryFiles(fileQueryVO.getFileName(), fileQueryVO.getCode());
         ResponseData<List> responseData = new ResponseData<>();
         if (fileList != null) {
-            responseData.setError("文件未找到");
+            responseData.setOK("查询成功", fileList);
         } else {
-            responseData.setOK("查询成功",fileList);
+            responseData.setError("文件未找到");
+        }
+        return responseData;
+    }
+
+    @ApiOperation(value = "查询目录", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiResponses({@ApiResponse(code = Response.OK, message = "查询目录"),})
+    @ApiImplicitParams(
+            value = {
+                    @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
+            }
+    )
+    @RequestMapping(value = "/queryCatalog", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseBody
+    public ResponseData<Map<String, List<String>>> queryCatalog(@RequestParam(name = "fileName")String fileName, @RequestParam(name = "code") String code) {
+        Map<String, List<String>> cataLogMap = catalogManageService.queryCataLog(fileName, code);
+        ResponseData<Map<String, List<String>>> responseData = new ResponseData<>();
+        if (cataLogMap != null) {
+            responseData.setOK(200, "查询成功", cataLogMap);
+        } else {
+            responseData.setError("查询失败");
         }
         return responseData;
     }

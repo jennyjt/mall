@@ -9,6 +9,7 @@ import com.zsbatech.baasKettleManager.model.JobMetaExample;
 import com.zsbatech.baasKettleManager.service.DBMigrationService;
 import com.zsbatech.baasKettleManager.service.SaveJobMetaService;
 import com.zsbatech.baasKettleManager.service.SaveTransMetaService;
+import com.zsbatech.baasKettleManager.util.ConfigUtil;
 import com.zsbatech.baasKettleManager.util.TableUtil;
 import com.zsbatech.base.common.Pagination;
 import com.zsbatech.base.common.ResponseData;
@@ -55,8 +56,8 @@ public class DBMigrationServiceImpl implements DBMigrationService {
     @Autowired
     SaveJobMetaService saveJobMetaService;
 
-
-    private String path = "C:\\Users\\de\\Desktop\\";
+    private String DbMigTransUrl = ConfigUtil.getPropertyValue("dbmig.transMetaUrl");
+    private String DbMigJobUrl = ConfigUtil.getPropertyValue("file.jobMetaUrl");
     private String ktrpath;
 
 
@@ -140,10 +141,10 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             //hop
             transMeta.addTransHop(new TransHopMeta(tableInputMetaStep,tableOutputMetaStep));
 
-            if (saveTransMetaService.save(transMeta,path + dataMig.getTransName()+ ".ktr",true)) {
-//                saveTransMetaService.saveTransData(path + dataMig.getTransName()+ ".ktr");
+            if (saveTransMetaService.save(transMeta,DbMigTransUrl + dataMig.getTransName()+ ".ktr",true)) {
+               saveTransMetaService.saveTransData(DbMigTransUrl + dataMig.getTransName()+ ".ktr",2,3);
 
-            TransMeta transMeta1 = new TransMeta(path + dataMig.getTransName()+ ".ktr");
+            TransMeta transMeta1 = new TransMeta(DbMigTransUrl + dataMig.getTransName()+ ".ktr");
             Trans trans = new Trans(transMeta1);
             trans.prepareExecution(null);
             trans.startThreads();
@@ -159,13 +160,8 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             responseData.setError(500,"fail","fail");
         }
 
-//        Boolean bool = saveTransMetaService.saveTransData("C:\\Users\\de\\Desktop\\"+dataMig.getTransName()+ ".ktr");
-//        System.out.println(bool);
-
         return responseData;
     }
-
-
 
     public ResponseData<String> cycleMigration(DataMig dataMig) {
         ResponseData<String> responseData = new ResponseData<>();
@@ -173,7 +169,7 @@ public class DBMigrationServiceImpl implements DBMigrationService {
 
             KettleEnvironment.init();
 //            ktrpath = dataMig.getKtrString();
-            ktrpath = "C:\\Users\\de\\Desktop\\"+dataMig.getKtrString() ;
+            ktrpath = DbMigTransUrl+dataMig.getKtrString() ;
 
             JobMeta jobMeta = new JobMeta();
             jobMeta.setName(dataMig.getKtrString());
@@ -201,8 +197,8 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             jobHopMeta.setUnconditional(true);
             jobMeta.addJobHop(jobHopMeta);
 
-            saveJobMetaService.save(jobMeta,path+"job.kjb",true);
-            JobMeta jobMeta1 = new JobMeta(path+"job.kjb",null);
+            saveJobMetaService.save(jobMeta,DbMigJobUrl+"job.kjb",true);
+            JobMeta jobMeta1 = new JobMeta(DbMigJobUrl+"job.kjb",null);
             Job job = new Job(null,jobMeta1);
             job.start();
             Thread.currentThread().setName("aaa");
@@ -343,10 +339,10 @@ public class DBMigrationServiceImpl implements DBMigrationService {
 
             //hop
             transMeta.addTransHop(new TransHopMeta(tableInputMetaStep,tableOutputMetaStep));
-            System.out.println(path + dataMig.getTransName()+ ".ktr");
 
-            if (saveTransMetaService.save(transMeta,path + dataMig.getTransName()+ ".ktr",true)) {
-                org.pentaho.di.trans.TransMeta transMeta1 = new TransMeta(path + dataMig.getTransName()+ ".ktr");
+            if (saveTransMetaService.save(transMeta,DbMigTransUrl + dataMig.getTransName()+ ".ktr",true)) {
+                saveTransMetaService.saveTransData(DbMigTransUrl + dataMig.getTransName()+ ".ktr",2,3);
+                org.pentaho.di.trans.TransMeta transMeta1 = new TransMeta(DbMigTransUrl + dataMig.getTransName()+ ".ktr");
                 Trans trans = new Trans(transMeta1);
                 trans.prepareExecution(null);
                 trans.startThreads();
@@ -358,9 +354,6 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             e.printStackTrace();
             responseData.setError(500,"fail","fail");
         }
-
-//        Boolean bool = saveTransMetaService.saveTransData("C:\\Users\\de\\Desktop\\"+dataMig.getTransName()+ ".ktr");
-//        System.out.println(bool);
 
         return responseData;
     }

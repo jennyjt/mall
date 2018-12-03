@@ -1,7 +1,11 @@
 package com.zsbatech.baasKettleManager.service.impl;
 
+import com.zsbatech.baasKettleManager.dao.FileCatalogVOMapper;
+import com.zsbatech.baasKettleManager.dao.FilesFileCatalogVOMapper;
 import com.zsbatech.baasKettleManager.dao.FilesVOMapper;
 import com.zsbatech.baasKettleManager.service.CatalogManageService;
+import com.zsbatech.baasKettleManager.vo.FileCatalogVO;
+import com.zsbatech.baasKettleManager.vo.FilesFileCatalogVO;
 import com.zsbatech.baasKettleManager.vo.FilesVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +25,12 @@ public class CatalogManageServiceImpl implements CatalogManageService {
 
     @Autowired
     private FilesVOMapper filesVOMapper;
+
+    @Autowired
+    private FileCatalogVOMapper fileCatalogVOMapper;
+
+    @Autowired
+    private FilesFileCatalogVOMapper filesFileCatalogVOMapper;
 
     /**
      * 创建本地目录
@@ -112,20 +122,49 @@ public class CatalogManageServiceImpl implements CatalogManageService {
     }
 
     /**
-     * 创建本地目录
+     * 查询文件
      *
      * @param fileNames
+     * @param code
      * @return
      */
-    public List<String> queryFiles(List<String> fileNames) {
+    public List<String> queryFiles(List<String> fileNames, String code) {
         List<String> fileList = new ArrayList<>();
-        List<FilesVO> files = filesVOMapper.queryFilesByfileName(fileNames);
+        List<FilesVO> files = filesVOMapper.queryFiles(fileNames, code);
         if (files != null) {
             for (FilesVO file : files) {
                 fileList.add(file.toString());
             }
         }
         return fileList;
+    }
+
+    /**
+     * 查询目录
+     *
+     * @param fileName
+     * @param code
+     * @return
+     */
+    public Map<String, List<String>> queryCataLog(String fileName, String code) {
+        Map<String, List<String>> map = new HashMap<>();
+        List<String> sourceCatalog = new ArrayList<>();
+        FilesVO filesVO = filesVOMapper.queryFile(fileName, code);
+        List<FilesFileCatalogVO> filesFileCatalogVOList = filesFileCatalogVOMapper.queryByFileId(filesVO.getId());
+        List<Integer> cataLogIdList = new ArrayList<>();
+        for (FilesFileCatalogVO filesFileCatalogVO : filesFileCatalogVOList) {
+            cataLogIdList.add(filesFileCatalogVO.getFileCatalogId());
+        }
+        List<FileCatalogVO> fileCatalogVOList = fileCatalogVOMapper.queryCatalogById(cataLogIdList);
+
+        StringBuilder stringBuilder = new StringBuilder();
+        if (fileCatalogVOList != null && fileCatalogVOList.size() != 0) {
+            for (FileCatalogVO fileCatalogVO : fileCatalogVOList) {
+                sourceCatalog.add(fileCatalogVO.getSourceCatalog());
+            }
+            map.put(filesVO.getFileCatalog(), sourceCatalog);
+        }
+        return map;
     }
 
     /**
@@ -151,9 +190,9 @@ public class CatalogManageServiceImpl implements CatalogManageService {
     @Override
     public boolean saveFile(FilesVO filesVO) {
         int result = filesVOMapper.insert(filesVO);
-        if(result > 0) {
+        if (result > 0) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
