@@ -3,6 +3,7 @@ package com.zsbatech.baasKettleManager.controller;
 import com.zsbatech.baasKettleManager.model.DataMig;
 import com.zsbatech.baasKettleManager.service.DBMigrationService;
 import com.zsbatech.baasKettleManager.service.JobExcuteService;
+import com.zsbatech.baasKettleManager.service.SaveTransMetaService;
 import com.zsbatech.base.common.ResponseData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,7 +18,8 @@ public class JobTestController {
 
         @Autowired
         private JobExcuteService jobExcuteService;
-
+        @Autowired
+        SaveTransMetaService saveTransMetaService;
 
         @RequestMapping(value = "/test",method = RequestMethod.POST)
         @ResponseBody
@@ -28,4 +30,14 @@ public class JobTestController {
            responseData.setOK(200,"success","success");
             return responseData;
         }
+
+    @RequestMapping(value = "/job",method = RequestMethod.POST)
+    @ResponseBody
+    public ResponseData<String> saveByDb(@RequestBody DataMig dataMig) {
+        ResponseData<String> responseData = new ResponseData<>();
+//        System.out.println(dataMig.getSrcTable());
+         saveTransMetaService.saveByDB("mytrans",new String[]{"id","name","age","sex","create_time","update_time"});
+        responseData.setOK(200,"success","success");
+        return responseData;
+    }
 }

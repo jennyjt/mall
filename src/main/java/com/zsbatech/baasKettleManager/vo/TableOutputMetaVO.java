@@ -65,8 +65,8 @@ public class TableOutputMetaVO {
         this.entryId = entryId;
     }
 
-    public void setDBManageMentId(int dBManageMentId) {
-        dBManageMentId = dBManageMentId;
+    public void setdBManageMentId(int dBManageMentId) {
+        this.dBManageMentId = dBManageMentId;
     }
 
     public int getId() {
@@ -105,7 +105,7 @@ public class TableOutputMetaVO {
         return entryId;
     }
 
-    public int getDBManageMentId() {
+    public int getdBManageMentId() {
         return dBManageMentId;
     }
 }

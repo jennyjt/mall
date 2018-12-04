@@ -127,7 +127,7 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
             } else {
                 tableOutputMetaVO = getTableOutputMetaVO(transMeta);
                 tableOutputMetaVO.setTransMetaId(transMetaVO.getId());
-                tableOutputMetaVO.setDBManageMentId(dstDbConnId);
+                tableOutputMetaVO.setdBManageMentId(dstDbConnId);
             }
             List<TableInputStepVO> tableInputStepVOList = getTableInputStepVO(transMeta);
             List<String> stepNameList = new ArrayList<>();
@@ -255,9 +255,6 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
                 insertUpdateStepVO.setKeyStream2(StringUtil.toString((((InsertUpdateMeta) stepMetaInterface).getKeyStream2())));//一定要加上
                 insertUpdateStepVO.setKeyCondition(StringUtil.toString((((InsertUpdateMeta) stepMetaInterface).getKeyCondition())));
                 //设置要更新的字段
-                String[] updatelookup = {"ID", "user"};
-                String[] updateStream = {"id", "user"};
-                Boolean[] updateOrNot = {false, true};
                 insertUpdateStepVO.setUpdateLookup(StringUtil.toString(((InsertUpdateMeta) stepMetaInterface).getUpdateLookup()));
                 insertUpdateStepVO.setUpdateStream(StringUtil.toString(((InsertUpdateMeta) stepMetaInterface).getUpdateStream()));
                 insertUpdateStepVO.setUpdateOrNot(StringUtil.toString(((InsertUpdateMeta) stepMetaInterface).getUpdate()));
@@ -310,7 +307,7 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
         List<TableInputStepVO> tableInputStepVOList = tableInputStepVOMapper.selectTableInputStepVOS(transMetaVO.getId());
         TransMeta transMeta = new TransMeta();
         if(insertUpdateStepVO == null) {
-            DbManagement outputDbManagement = dbManagementMapper.selectByPrimaryKey(tableOutputMetaVO.getDBManageMentId());
+            DbManagement outputDbManagement = dbManagementMapper.selectByPrimaryKey(tableOutputMetaVO.getdBManageMentId());
             DatabaseMeta outputDatabaseMeta = new DatabaseMeta();
             outputDatabaseMeta.setDatabaseType(outputDbManagement.getDbType());
             outputDatabaseMeta.setDBName(outputDbManagement.getDbName());
@@ -322,6 +319,7 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
             transMeta.setName(transMetaVO.getTransName());
             transMeta.addDatabase(outputDatabaseMeta);
             TableOutputMeta tableOutputMeta = new TableOutputMeta();
+            tableOutputMeta.setDatabaseMeta(transMeta.findDatabase(outputDbManagement.getLinkName()));
             tableOutputMeta.setTableName(tableOutputMetaVO.getTargetTable());
             String[] fieldsStream = fields;
             tableOutputMeta.setTableNameInTable(true);
@@ -333,7 +331,6 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
             } else {
                 tableOutputMeta.setUseBatchUpdate(false);
             }
-            tableOutputMeta.setDatabaseMeta(transMeta.findDatabase("sample"));
             String tableOutputPluginId = registry.getPluginId(StepPluginType.class, tableOutputMeta);
             StepMeta tableOutputStepMeta = new StepMeta(tableOutputPluginId, tableOutputMetaVO.getStepName(), tableOutputMeta);
             transMeta.addStep(tableOutputStepMeta);
@@ -349,8 +346,8 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
                 inputDatabaseMeta.setName(inputDbManagement.getLinkName());
                 transMeta.addDatabase(inputDatabaseMeta);
                 TableInputMeta tableInputMeta = new TableInputMeta();
-                tableInputMeta.setSQL(tableInputStepVO.getExcSql());
                 tableInputMeta.setDatabaseMeta(transMeta.findDatabase(tableInputStepVO.getDbConnectionName()));
+                tableInputMeta.setSQL(tableInputStepVO.getExcSql());
                 String tableInputPluginId = registry.getPluginId(StepPluginType.class, tableInputMeta);
                 StepMeta tableInputStepMeta = new StepMeta(tableInputPluginId, tableInputStepVO.getStepName(), tableInputMeta);
                 transMeta.addStep(tableInputStepMeta);
@@ -369,13 +366,24 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
             transMeta.setName(transMetaVO.getTransName());
             transMeta.addDatabase(insertDatabaseMeta);
             InsertUpdateMeta insertUpdateMeta = new InsertUpdateMeta();
-            insertUpdateMeta.setTableName(insertUpdateMeta.getTableName());
+            insertUpdateMeta.setDatabaseMeta(transMeta.findDatabase(insertDbManagement.getLinkName()));
+            insertUpdateMeta.setDatabaseMeta(insertDatabaseMeta);
+            insertUpdateMeta.setTableName(insertUpdateStepVO.getTargetTable());
             insertUpdateMeta.setKeyLookup(insertUpdateStepVO.getKeyLookup().split(","));
             insertUpdateMeta.setKeyStream(insertUpdateStepVO.getKeyStream().split(","));
-            insertUpdateMeta.setKeyStream2(insertUpdateStepVO.getKeyStream2().split(","));//一定要加上
+            if(insertUpdateStepVO.getKeyStream2() != null) {
+                insertUpdateMeta.setKeyStream2(insertUpdateStepVO.getKeyStream2().split(","));//一定要加上
+            }else {
+                insertUpdateMeta.setKeyStream2(new String[]{""});
+            }
             insertUpdateMeta.setKeyCondition(insertUpdateStepVO.getKeyCondition().split(","));
             insertUpdateMeta.setUpdateStream(insertUpdateStepVO.getUpdateStream().split(","));
-            insertUpdateMeta.setUpdate(new Boolean[]{false,true});
+            String [] strings = insertUpdateStepVO.getUpdateOrNot().split(",");
+            Boolean [] booleans = new Boolean[strings.length];
+            for(int i = 0; i < strings.length ; i++){
+                booleans[i] = Boolean.valueOf(strings[i]);
+            }
+            insertUpdateMeta.setUpdate(booleans);
             insertUpdateMeta.setUpdateLookup(insertUpdateStepVO.getUpdateLookup().split(","));
             if(insertUpdateStepVO.getIsUpdate() == 1) {
                 insertUpdateMeta.setUpdateBypassed(true);

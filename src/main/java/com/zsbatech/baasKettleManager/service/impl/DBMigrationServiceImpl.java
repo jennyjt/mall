@@ -142,7 +142,7 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             transMeta.addTransHop(new TransHopMeta(tableInputMetaStep,tableOutputMetaStep));
 
             if (saveTransMetaService.save(transMeta,DbMigTransUrl + dataMig.getTransName()+ ".ktr",true)) {
-               saveTransMetaService.saveTransData(DbMigTransUrl + dataMig.getTransName()+ ".ktr",2,3);
+               saveTransMetaService.saveTransData(DbMigTransUrl + dataMig.getTransName()+ ".ktr",dataMig.getSrcDbconnId(),dataMig.getDstDbconnId());
 
             TransMeta transMeta1 = new TransMeta(DbMigTransUrl + dataMig.getTransName()+ ".ktr");
             Trans trans = new Trans(transMeta1);
@@ -341,7 +341,7 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             transMeta.addTransHop(new TransHopMeta(tableInputMetaStep,tableOutputMetaStep));
 
             if (saveTransMetaService.save(transMeta,DbMigTransUrl + dataMig.getTransName()+ ".ktr",true)) {
-                saveTransMetaService.saveTransData(DbMigTransUrl + dataMig.getTransName()+ ".ktr",2,3);
+                saveTransMetaService.saveTransData(DbMigTransUrl + dataMig.getTransName()+ ".ktr",dataMig.getSrcDbconnId(),dataMig.getDstDbconnId());
                 org.pentaho.di.trans.TransMeta transMeta1 = new TransMeta(DbMigTransUrl + dataMig.getTransName()+ ".ktr");
                 Trans trans = new Trans(transMeta1);
                 trans.prepareExecution(null);
