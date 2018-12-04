@@ -172,7 +172,7 @@ public class StringUtil {
     /**
      * 是否可转化为数字
      *
-     * @param o
+     * @param obj
      * @return
      */
     public static boolean isNum(Object obj) {
@@ -190,7 +190,7 @@ public class StringUtil {
     /**
      * 转化为int型数字, 不可转化时返回0
      *
-     * @param o
+     * @param obj
      * @return
      */
     public static int toInt(Object obj) {
@@ -202,7 +202,7 @@ public class StringUtil {
     }
 
     /**
-     * 字符数组转换成字符串
+     * 字符串数组转换成字符串
      *
      * @param strings
      * @return
@@ -232,5 +232,25 @@ public class StringUtil {
     public static String toString(String arg, char ch) {
         String string = ch + arg;
         return string;
+    }
+    /**
+     * bollean数组转换成字符串
+     *
+     * @param booleans
+     * @return
+     */
+    public static String toString(Boolean [] booleans) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for(int i = 0; i < booleans.length ; i++){
+            if(booleans.length == 1){
+                return booleans[i].toString();
+            }
+            if(i > 0) {
+                stringBuilder = stringBuilder.append(","+booleans[i]);
+            }else {
+                stringBuilder =stringBuilder.append(booleans[i]);
+            }
+        }
+        return  stringBuilder.toString();
     }
 }
