@@ -34,7 +34,7 @@ public class JobLogController {
             value = {
                     @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
                     @ApiImplicitParam(paramType = "query", name = "job_id", dataType = "Integer", required = false, value = "任务id"),
-                    @ApiImplicitParam(paramType = "query", name = "user_id", dataType = "String", required = false, value = "用户id"),
+                    @ApiImplicitParam(paramType = "query", name = "user_id", dataType = "String", required = true, value = "用户id"),
                     @ApiImplicitParam(paramType = "query", name = "job_date_from", dataType = "String", required = false, value = "查询起始日期"),
                     @ApiImplicitParam(paramType = "query", name = "job_date_end", dataType = "String", required = false, value = "查询结束日期")
             }
@@ -43,7 +43,7 @@ public class JobLogController {
     @ResponseBody
     public ResponseData<List<JobLog>> queryLogInfo(HttpServletRequest request,
                                                  @RequestParam(name = "job_id", required = false) Integer jobId,
-                                                 @RequestParam(name = "user_id", required = false) String createUser,
+                                                 @RequestParam(name = "user_id", required = true) String createUser,
                                                  @RequestParam(name = "job_date_from", required = false) String jobDateFrom,
                                                  @RequestParam(name = "job_date_end", required = false) String jobDateEnd) {
         ResponseData<List<JobLog>> responseData = new ResponseData<>();
