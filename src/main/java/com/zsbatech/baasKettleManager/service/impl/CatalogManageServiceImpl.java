@@ -128,12 +128,12 @@ public class CatalogManageServiceImpl implements CatalogManageService {
      * @param code
      * @return
      */
-    public List<String> queryFiles(String fileCatalog, String code) {
-        List<String> fileList = new ArrayList<>();
+    public List<FilesVO> queryFiles(String fileCatalog, String code) {
+        List<FilesVO> fileList = new ArrayList<>();
         List<FilesVO> files = filesVOMapper.queryFiles(fileCatalog, code);
         if (files != null) {
             for (FilesVO file : files) {
-                fileList.add(file.toString());
+                fileList.add(file);
             }
         }
         return fileList;

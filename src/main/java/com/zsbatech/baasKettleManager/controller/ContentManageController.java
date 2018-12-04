@@ -2,6 +2,7 @@ package com.zsbatech.baasKettleManager.controller;
 
 import com.zsbatech.baasKettleManager.service.CatalogManageService;
 import com.zsbatech.baasKettleManager.vo.FileQueryVO;
+import com.zsbatech.baasKettleManager.vo.FilesVO;
 import com.zsbatech.base.common.ResponseData;
 import com.zsbatech.base.constants.RequestField;
 import com.zsbatech.base.constants.Response;
@@ -103,7 +104,7 @@ public class ContentManageController {
     @RequestMapping(value = "/queryFilesByfileName", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public ResponseData<List> queryFilesByfileName(@RequestBody FileQueryVO fileQueryVO) {
-        List<String> fileList = catalogManageService.queryFiles(fileQueryVO.getFileCatalog(), fileQueryVO.getCode());
+        List<FilesVO> fileList = catalogManageService.queryFiles(fileQueryVO.getFileCatalog(), fileQueryVO.getCode());
         ResponseData<List> responseData = new ResponseData<>();
         if (fileList != null) {
             responseData.setOK("查询成功", fileList);
