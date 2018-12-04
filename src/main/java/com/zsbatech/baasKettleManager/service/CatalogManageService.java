@@ -21,7 +21,7 @@ public interface CatalogManageService {
 
     List<FilesVO> queryFiles(String fileCatalog,String code);
 
-    Map<String,List<String>> queryCataLog(String code,String fileName);
+    List<String> queryCataLog(String code,String fileName);
 
     int saveFiles(List<String> files);
 

@@ -147,7 +147,7 @@ public class CatalogManageServiceImpl implements CatalogManageService {
      * @param code
      * @return
      */
-    public Map<String, List<String>> queryCataLog(String code, String fileName) {
+    public List<String> queryCataLog(String code, String fileName) {
         Map<String, List<String>> map = new HashMap<>();
         Set<String> strings = new HashSet<>();
         List<FilesVO> filesVOList = filesVOMapper.queryFile(code, fileName);
@@ -163,9 +163,8 @@ public class CatalogManageServiceImpl implements CatalogManageService {
                 cataLog = cataLog+ StringUtil.toString(fileCatalogVO.getSourceCatalog(),'/');
                 strings.add(cataLog);
             }
-            map.put(filesVO.getFileCatalog(), new ArrayList<String>(strings));
         }
-        return map;
+        return new ArrayList<>(strings);
     }
 
     /**

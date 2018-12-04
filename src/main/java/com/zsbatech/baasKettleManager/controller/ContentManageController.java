@@ -107,9 +107,11 @@ public class ContentManageController {
         List<FilesVO> fileList = catalogManageService.queryFiles(fileQueryVO.getFileCatalog(), fileQueryVO.getCode());
         ResponseData<List> responseData = new ResponseData<>();
         if (fileList != null && fileList.size() != 0) {
-            responseData.setOK("查询成功", fileList);
-        } else {
-            responseData.setError("文件未找到");
+            responseData.setOK(200,"查询成功", fileList);
+        } else if(fileList == null && fileList.size() == 0) {
+            responseData.setOK(200,"文件不存在",null);
+        }else {
+            responseData.setError("查询错误");
         }
         return responseData;
     }
@@ -123,13 +125,15 @@ public class ContentManageController {
     )
     @RequestMapping(value = "/queryCatalog", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public ResponseData<Map<String, List<String>>> queryCatalog( @RequestParam(name = "code") String code,@RequestParam(name = "fileName",required = false) String fileName) {
-        Map<String, List<String>> cataLogMap = catalogManageService.queryCataLog( code,fileName);
-        ResponseData<Map<String, List<String>>> responseData = new ResponseData<>();
-        if (cataLogMap != null && cataLogMap.size() != 0) {
-            responseData.setOK(200, "查询成功", cataLogMap);
-        } else {
-            responseData.setError("查询失败");
+    public ResponseData<List<String>> queryCatalog( @RequestParam(name = "code") String code,@RequestParam(name = "fileName",required = false) String fileName) {
+        List<String> catalogList = catalogManageService.queryCataLog( code,fileName);
+        ResponseData<List<String>> responseData = new ResponseData<>();
+        if (catalogList != null && catalogList.size() != 0) {
+            responseData.setOK(200, "查询成功", catalogList);
+        } else if(catalogList ==null && catalogList.size() == 0){
+            responseData.setOK(200,"目录不存在",catalogList);
+        }else {
+            responseData.setError("查询错误");
         }
         return responseData;
     }
