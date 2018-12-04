@@ -207,18 +207,30 @@ public class StringUtil {
      * @param strings
      * @return
      */
-    public static String toString(String [] strings) {
+    public static String toString(String[] strings) {
         StringBuilder stringBuilder = new StringBuilder();
-		for(int i = 0; i < strings.length ; i++){
-		    if(strings.length == 1){
-		        return strings[i];
+        for (int i = 0; i < strings.length; i++) {
+            if (strings.length == 1) {
+                return strings[i];
             }
-		    if(i > 0) {
-                stringBuilder = stringBuilder.append(","+strings[i]);
-            }else {
-		        stringBuilder =stringBuilder.append(strings[i]);
+            if (i > 0) {
+                stringBuilder = stringBuilder.append("," + strings[i]);
+            } else {
+                stringBuilder = stringBuilder.append(strings[i]);
             }
         }
-        return  stringBuilder.toString();
+        return stringBuilder.toString();
+    }
+
+    /**
+     * 生成新字符串
+     *
+     * @param arg
+     * @param ch
+     * @return
+     */
+    public static String toString(String arg, char ch) {
+        String string = ch + arg;
+        return string;
     }
 }

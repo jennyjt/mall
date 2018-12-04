@@ -4,6 +4,7 @@ import com.zsbatech.baasKettleManager.dao.FileCatalogVOMapper;
 import com.zsbatech.baasKettleManager.dao.FilesFileCatalogVOMapper;
 import com.zsbatech.baasKettleManager.dao.FilesVOMapper;
 import com.zsbatech.baasKettleManager.service.CatalogManageService;
+import com.zsbatech.baasKettleManager.util.StringUtil;
 import com.zsbatech.baasKettleManager.vo.FileCatalogVO;
 import com.zsbatech.baasKettleManager.vo.FilesFileCatalogVO;
 import com.zsbatech.baasKettleManager.vo.FilesVO;
@@ -157,8 +158,10 @@ public class CatalogManageServiceImpl implements CatalogManageService {
                 cataLogIdList.add(filesFileCatalogVO.getFileCatalogId());
             }
             List<FileCatalogVO> fileCatalogVOList = fileCatalogVOMapper.queryCatalogById(cataLogIdList);
+            String cataLog  = new String();
             for (FileCatalogVO fileCatalogVO : fileCatalogVOList) {
-                strings.add(fileCatalogVO.getSourceCatalog());
+                cataLog = cataLog+ StringUtil.toString(fileCatalogVO.getSourceCatalog(),'/');
+                strings.add(cataLog);
             }
             map.put(filesVO.getFileCatalog(), new ArrayList<String>(strings));
         }
