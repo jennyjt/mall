@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
-@RequestMapping(value = "/dataCenter/job/test")
+@RequestMapping(value = "/data_center/job/test")
 public class JobTestController {
 
 

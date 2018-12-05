@@ -23,9 +23,9 @@ import java.util.Map;
  * User: Zhangys
  * Date: 2018/11/20
  */
-@Api(protocols = "http,https", tags = {"CatalogManage"}, value = "/dataCenter/catalog", description = "文件目录管理接口")
+@Api(protocols = "http,https", tags = {"CatalogManage"}, value = "/data_center/catalog", description = "文件目录管理接口")
 @RestController
-@RequestMapping(value = "/dataCenter/catalog")
+@RequestMapping(value = "/data_center/catalog")
 public class ContentManageController {
 
     private static Logger logger = LoggerFactory.getLogger(ContentManageController.class);
