@@ -16,7 +16,7 @@ public interface SaveJobMetaService {
 
     boolean saveMeta(EngineMetaInterface meta, String filename);
 
-    boolean saveFTPJobData(String fileName);
+    boolean saveFTPJobData(String fileName,int upFtpSourceId,int downFtpSourceId);
 
     boolean saveTransJobData(String fileName);
 
@@ -31,4 +31,6 @@ public interface SaveJobMetaService {
     JobEntryTrans getJobEntryTrans(JobMeta jobMeta);
 
     boolean saveIncrJobByDB(String jobName);
+
+    boolean saveFtpIncrJobByDB(String jobName);
 }

@@ -24,4 +24,6 @@ public interface FileSyncJobService {
     boolean saveFileInfo(int ftpSourceId,String createCode, String fileCatalog , String fileList);
 
     List<FileCatalogVO> saveFileCatalogInfo(List<FileCatalogVO> fileCatalogVOList);
+
+    String selectByJobName(String jobName);
 }

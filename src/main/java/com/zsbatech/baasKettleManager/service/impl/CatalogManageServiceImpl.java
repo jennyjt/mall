@@ -51,8 +51,8 @@ public class CatalogManageServiceImpl implements CatalogManageService {
                 file1.mkdir();
                 newCreateContentList.add(file);
             }
-            map.put("已存在目录", fileList);
-            map.put("新创建目录", newCreateContentList);
+            map.put("exist catalog", fileList);
+            map.put("new create catalog", newCreateContentList);
         }
         return map;
     }
@@ -75,8 +75,8 @@ public class CatalogManageServiceImpl implements CatalogManageService {
             } else {
                 newCreateFileList.add(file);
             }
-            map.put("删除文件", fileList);
-            map.put("已删除文件", newCreateFileList);
+            map.put("non-existent files", fileList);
+            map.put("deleted files", newCreateFileList);
         }
         return map;
     }
@@ -116,8 +116,8 @@ public class CatalogManageServiceImpl implements CatalogManageService {
             } else {
                 newCreateFileList.add(file);
             }
-            map.put("删除目录", fileList);
-            map.put("已删除目录", newCreateFileList);
+            map.put("existent catalog", fileList);
+            map.put("deleted catalog", newCreateFileList);
         }
         return map;
     }

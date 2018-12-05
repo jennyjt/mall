@@ -94,6 +94,7 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
             meta.clearChanged();
         } catch (Exception e) {
             e.printStackTrace();
+            saved = false;
         }
         return saved;
     }

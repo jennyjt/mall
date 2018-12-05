@@ -48,4 +48,12 @@
         where step_name = #{stepName,jdbcType=INTEGER}
         limit 1
     </select>
+
+    <select id="selectFTPDownLoadStepVOById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select
+        <include refid="Base_Column_List" />
+        from ftp_download_step
+        where job_meta_id = #{jobMetaId,jdbcType=INTEGER}
+        limit 1
+    </select>
 </mapper>
