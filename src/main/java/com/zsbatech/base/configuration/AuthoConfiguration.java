@@ -34,6 +34,7 @@ public class AuthoConfiguration extends WebMvcConfigurationSupport {
         // 需要验证登陆状态的接口
         ArrayList<String> includeUrls = new ArrayList<>();
         //includeUrls.add("/dataCenter/**");
+        includeUrls.add("/deploy/**");
         includeUrlsArray1 = includeUrls.toArray(new String[0]);
 
      

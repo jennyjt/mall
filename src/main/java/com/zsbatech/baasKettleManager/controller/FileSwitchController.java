@@ -5,7 +5,6 @@ import com.zsbatech.baasKettleManager.service.FileUpDownloadService;
 import com.zsbatech.baasKettleManager.vo.FileQueryVO;
 import com.zsbatech.baasKettleManager.vo.FilesVO;
 import com.zsbatech.base.common.ResponseData;
-import com.zsbatech.base.constants.RequestField;
 import com.zsbatech.base.constants.Response;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
@@ -47,7 +46,6 @@ public class FileSwitchController {
     public ResponseData<String> fileDownload(HttpServletRequest request, HttpServletResponse response,
                                              @RequestParam(name = "file_id", required = true) Integer fileId,
                                              @RequestParam(name = "issuer", required = true) String issuer) {
-        //UniToken uniToken = JWTUtils.validateToken(request);
         ResponseData<String> responseData = new ResponseData<>();
         boolean result = fileService.fileDownload(fileId, response, issuer);
         if(result) {
@@ -63,7 +61,6 @@ public class FileSwitchController {
     @ApiResponses({@ApiResponse(code = Response.OK, message = "查询文件"),})
     @ApiImplicitParams(
             value = {
-                    @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
             }
     )
     @RequestMapping(value = "/queryFiles", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -85,7 +82,8 @@ public class FileSwitchController {
     @ApiResponses({@ApiResponse(code = Response.OK, message = "查询目录"),})
     @ApiImplicitParams(
             value = {
-                    @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
+                    @ApiImplicitParam(paramType = "query", name = "code", dataType = "String", required = true, value = "机构号"),
+                    @ApiImplicitParam(paramType = "query", name = "fileName", dataType = "String", required = false, value = "文件名")
             }
     )
     @RequestMapping(value = "/queryCatalogs", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
