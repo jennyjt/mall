@@ -1,5 +1,7 @@
 package com.zsbatech.baasKettleManager.model;
 
+import io.swagger.models.auth.In;
+
 import java.util.List;
 
 /**
@@ -16,6 +18,7 @@ public class DataMig extends DataMigration {
     private String cycleTime;
     private String jobName;
     private String ktrString;
+    private Integer schedulerType;
     //transmeta
     private String transName;
     private String fileName;
@@ -117,7 +120,13 @@ public class DataMig extends DataMigration {
         this.srcDbconnId = srcDbconnId;
     }
 
+    public Integer getSchedulerType() {
+        return schedulerType;
+    }
 
+    public void setSchedulerType(Integer schedulerType) {
+        this.schedulerType = schedulerType;
+    }
 
     public String getSrcTable() {
         return srcTable;

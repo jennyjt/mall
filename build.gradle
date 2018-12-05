@@ -157,6 +157,9 @@ dependencies {
         exclude module: 'logback-classic'
     }
     compile fileTree(dir: 'libs', include: ['*.jar'])
+    compile(
+            'kettle-data-center:postgresql:8.3'
+    )
 
     runtime('org.springframework.boot:spring-boot-devtools')
 
