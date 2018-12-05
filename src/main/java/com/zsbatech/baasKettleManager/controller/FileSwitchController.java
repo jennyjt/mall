@@ -21,9 +21,9 @@ import java.util.List;
 /**
  * 文件交换管理
  */
-@Api(protocols = "http,https", tags = {"FileSwitch"}, value = "/file", description = "文件交换管理")
+@Api(protocols = "http,https", tags = {"FileSwitch"}, value = "/fileSwitch", description = "文件交换管理")
 @RestController
-@RequestMapping(value = "/file")
+@RequestMapping(value = "/fileSwitch")
 public class FileSwitchController {
 
     private static Logger logger = LoggerFactory.getLogger(FileSwitchController.class);
