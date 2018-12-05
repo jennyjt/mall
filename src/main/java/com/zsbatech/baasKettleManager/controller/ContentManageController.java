@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,9 +23,9 @@ import java.util.Map;
  * User: Zhangys
  * Date: 2018/11/20
  */
-@Api(protocols = "http,https", tags = {"CatalogManage"}, value = "/catalog", description = "文件目录管理接口")
+@Api(protocols = "http,https", tags = {"CatalogManage"}, value = "/dataCenter/catalog", description = "文件目录管理接口")
 @RestController
-@RequestMapping(value = "/catalog")
+@RequestMapping(value = "/dataCenter/catalog")
 public class ContentManageController {
 
     private static Logger logger = LoggerFactory.getLogger(ContentManageController.class);

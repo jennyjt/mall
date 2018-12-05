@@ -82,7 +82,7 @@ public class FileDownloadServiceImpl implements FileUpDownloadService {
     }
 
     @Override
-    public boolean fileDownload(Integer fileId, HttpServletResponse response, String issuer) {
+    public boolean fileDownload(Integer fileId, HttpServletResponse response, String userId) {
         FilesVO fileInfo = catalogManageService.getFileInfoById(fileId);
         if (fileInfo == null){
             return false;
@@ -98,7 +98,7 @@ public class FileDownloadServiceImpl implements FileUpDownloadService {
             log.setFileId(fileId);
             log.setOperation(DOWNLOAD_OPERATION);
             log.setCreateTime(DateUtils.currentDateTime());
-            log.setCreateUser(issuer);
+            log.setCreateUser(userId);
             updownloadLogMapper.insert(log);
 
             response.setContentType("application/octet-stream");

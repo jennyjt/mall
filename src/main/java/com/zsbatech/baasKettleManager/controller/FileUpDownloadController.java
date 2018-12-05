@@ -18,9 +18,9 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 文件上传下载管理
  */
-@Api(protocols = "http,https", tags = {"FileUpDownload"}, value = "/file", description = "文件上传下载管理")
+@Api(protocols = "http,https", tags = {"FileUpDownload"}, value = "/dataCenter/file", description = "文件上传下载管理")
 @RestController
-@RequestMapping(value = "/file")
+@RequestMapping(value = "/dataCenter/file")
 public class FileUpDownloadController {
 
     private static Logger logger = LoggerFactory.getLogger(FileUpDownloadController.class);
@@ -62,17 +62,17 @@ public class FileUpDownloadController {
     @ApiImplicitParams(
             value = {
                     @ApiImplicitParam(paramType = "query", name = "file_id", dataType = "String", required = true, value = "文件id"),
-                    @ApiImplicitParam(paramType = "query", name = "issuer", dataType = "String", required = true, value = "用户")
+                    @ApiImplicitParam(paramType = "query", name = "user_id", dataType = "String", required = true, value = "用户")
             }
     )
     @RequestMapping(value = "/download", method = RequestMethod.GET, produces = MediaType.APPLICATION_OCTET_STREAM_VALUE)
     @ResponseBody
     public ResponseData<String> fileDownload(HttpServletRequest request, HttpServletResponse response,
                                              @RequestParam(name = "file_id", required = true) Integer fileId,
-                                             @RequestParam(name = "issuer", required = true) String issuer) {
+                                             @RequestParam(name = "user_id", required = true) String userId) {
         //UniToken uniToken = JWTUtils.validateToken(request);
         ResponseData<String> responseData = new ResponseData<>();
-        boolean result = fileService.fileDownload(fileId, response, issuer);
+        boolean result = fileService.fileDownload(fileId, response, userId);
         if(result) {
             responseData.setOK("success", "success");
         }else{
