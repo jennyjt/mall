@@ -18,9 +18,9 @@ import java.util.List;
 /**
  * 任务执行日志管理
  */
-@Api(protocols = "http,https", tags = {"JobLog"}, value = "/log", description = "任务执行日志管理")
+@Api(protocols = "http,https", tags = {"JobLog"}, value = "/dataCenter/log", description = "任务执行日志管理")
 @RestController
-@RequestMapping(value = "/log")
+@RequestMapping(value = "/dataCenter/log")
 public class JobLogController {
 
     private static Logger logger = LoggerFactory.getLogger(JobLogController.class);

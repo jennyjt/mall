@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @Controller
-@RequestMapping(value = "/jobtrans/modify")
+@RequestMapping(value = "/dataCenter/jobtrans/modify")
 public class JobTransController {
 
         @Autowired

@@ -18,9 +18,9 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * 数据源管理
  */
-@Api(protocols = "http,https", tags = {"DataSource"}, value = "/datasource", description = "数据源管理")
+@Api(protocols = "http,https", tags = {"DataSource"}, value = "/dataCenter/datasource", description = "数据源管理")
 @RestController
-@RequestMapping(value = "/datasource")
+@RequestMapping(value = "/dataCenter/datasource")
 public class DataSourceController {
 
     private static Logger logger = LoggerFactory.getLogger(DataSourceController.class);

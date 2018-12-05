@@ -1,7 +1,6 @@
 package com.zsbatech.baasKettleManager.controller;
 
 import com.zsbatech.baasKettleManager.model.DataMig;
-import com.zsbatech.baasKettleManager.service.DBMigrationService;
 import com.zsbatech.baasKettleManager.service.JobExcuteService;
 import com.zsbatech.baasKettleManager.service.SaveTransMetaService;
 import com.zsbatech.base.common.ResponseData;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
-@RequestMapping(value = "/job/test")
+@RequestMapping(value = "/dataCenter/job/test")
 public class JobTestController {
 
 

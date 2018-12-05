@@ -19,9 +19,9 @@ import org.springframework.web.bind.annotation.*;
  * User: Zhangys
  * Date: 2018-09-11
  */
-@Api(protocols = "http,https", tags = {"FileSync"}, value = "/fileSync", description = "ftp文件同步接口")
+@Api(protocols = "http,https", tags = {"FileSync"}, value = "/dataCenter/fileSync", description = "ftp文件同步接口")
 @RestController
-@RequestMapping(value = "/fileSync")
+@RequestMapping(value = "/dataCenter/fileSync")
 public class FileSyncJobController {
 
     private static Logger logger = LoggerFactory.getLogger(FileSyncJobController.class);

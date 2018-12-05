@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 
 
 @Controller
-@RequestMapping (value = "/database/migrate")
+@RequestMapping (value = "/dataCenter/migrate")
 public class DBMigrationController {
 
     @Autowired
