@@ -1,7 +1,6 @@
 package com.zsbatech.baasKettleManager.util;
 
 import com.zsbatech.baasKettleManager.model.DbManagement;
-import org.apache.tomcat.util.buf.StringUtils;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.database.Database;
@@ -10,10 +9,6 @@ import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.row.RowMetaInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class TableUtil {
     private static Logger logger = LoggerFactory.getLogger(HttpUtils.class);
