@@ -18,9 +18,9 @@ import javax.servlet.http.HttpServletResponse;
 /**
  * 文件上传下载管理
  */
-@Api(protocols = "http,https", tags = {"FileUpDownload"}, value = "/dataCenter/file", description = "文件上传下载管理")
+@Api(protocols = "http,https", tags = {"FileUpDownload"}, value = "/data_center/file", description = "文件上传下载管理")
 @RestController
-@RequestMapping(value = "/dataCenter/file")
+@RequestMapping(value = "/data_center/file")
 public class FileUpDownloadController {
 
     private static Logger logger = LoggerFactory.getLogger(FileUpDownloadController.class);
