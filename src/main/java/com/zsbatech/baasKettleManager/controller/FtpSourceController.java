@@ -18,9 +18,9 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * FTP数据源管理
  */
-@Api(protocols = "http,https", tags = {"FtpSource"}, value = "/ftpsource", description = "FTP数据源管理")
+@Api(protocols = "http,https", tags = {"FtpSource"}, value = "/data_center/ftpsource", description = "FTP数据源管理")
 @RestController
-@RequestMapping(value = "/ftpsource")
+@RequestMapping(value = "/data_center/ftpsource")
 public class FtpSourceController {
 
     private static Logger logger = LoggerFactory.getLogger(FtpSourceController.class);

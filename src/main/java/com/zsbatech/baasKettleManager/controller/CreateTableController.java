@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping(value = "/database")
+@RequestMapping(value = "/data_center/database")
 public class CreateTableController {
     @Autowired
     private CreateTableService createTableService;
