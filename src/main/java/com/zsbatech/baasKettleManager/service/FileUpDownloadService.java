@@ -15,7 +15,7 @@ public interface FileUpDownloadService {
      * @param userId
      * @return
      */
-    boolean fileUpload(MultipartFile file, String userId, String fileDirectory);
+    boolean fileUpload(MultipartFile file, String userId, String fileDirectory, Integer catalogId);
 
     /**
      * 文件下载

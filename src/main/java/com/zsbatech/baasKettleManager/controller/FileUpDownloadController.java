@@ -40,7 +40,8 @@ public class FileUpDownloadController {
     public ResponseData<String> fileUpload(HttpServletRequest request,
                                            @RequestParam(name = "file", required = true) MultipartFile file,
                                            @RequestParam(name = "org_id", required = true) String orgNo,
-                                           @RequestParam(name = "file_directory", required = true) String fileDirectory) {
+                                           @RequestParam(name = "file_directory", required = true) String fileDirectory,
+                                           @RequestParam(name = "catalog_id", required = true) Integer catalogId) {
         ResponseData<String> responseData = new ResponseData<>();
         //UniToken uniToken = JWTUtils.validateToken(request);
 
@@ -49,7 +50,7 @@ public class FileUpDownloadController {
             return responseData;
         }
 
-        boolean result = fileService.fileUpload(file, orgNo, fileDirectory);
+        boolean result = fileService.fileUpload(file, orgNo, fileDirectory, catalogId);
         if(result) {
             responseData.setOK("success", "success");
         }else{
