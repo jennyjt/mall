@@ -14,5 +14,6 @@ public interface JobMetaVOMapper {
 
     int insert(JobMetaVO jobMetaVO);
 
-    JobMetaVO selectTransMetaVO(String jobName);
+    JobMetaVO selectByJobName(String jobName);
+
 }

@@ -149,10 +149,12 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             trans.prepareExecution(null);
             trans.startThreads();
             trans.waitUntilFinished();
-            responseData.setOK(200,"success","success");
-
+            if (trans.getErrors()!= 0 ){
+                responseData.setError(500,"同步失败，请尝试增量同步","fail");
             }else {
-                responseData.setError(500,"fail","fail");
+                responseData.setOK(200,"success",DbMigTransUrl + dataMig.getTransName()+ ".ktr");
+            }
+
             }
 
         } catch (Exception e) {
@@ -168,7 +170,6 @@ public class DBMigrationServiceImpl implements DBMigrationService {
         try {
 
             KettleEnvironment.init();
-//            ktrpath = dataMig.getKtrString();
             ktrpath = DbMigTransUrl+dataMig.getKtrString() ;
 
             JobMeta jobMeta = new JobMeta();
@@ -176,11 +177,26 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             JobEntrySpecial jobEntrySpecial = new JobEntrySpecial();
             jobEntrySpecial.setName("start");
             jobEntrySpecial.setRepeat(true);
-            jobEntrySpecial.setSchedulerType(1);
-            jobEntrySpecial.setIntervalSeconds(10);
-            jobEntrySpecial.setIntervalMinutes(0);
-//            jobEntrySpecial.setWeekDay(1);
-//            jobEntrySpecial.setDayOfMonth(1);
+
+           ;//todo log  记录时间 看运行时间差异
+
+            switch (dataMig.getSchedulerType()){
+                case 2:
+                    jobEntrySpecial.setSchedulerType(2);
+                    jobEntrySpecial.setHour(12);
+                case 3:
+                    jobEntrySpecial.setSchedulerType(3);
+                    jobEntrySpecial.setWeekDay(1);
+                case 4:
+                    jobEntrySpecial.setSchedulerType(4);
+                    jobEntrySpecial.setDayOfMonth(1);
+                    default:
+                        jobEntrySpecial.setSchedulerType(1);
+                        jobEntrySpecial.setIntervalSeconds(10);
+                        jobEntrySpecial.setIntervalMinutes(0);
+            }
+
+
             jobEntrySpecial.setStart(true);
             JobEntryCopy specialCopy = new JobEntryCopy(jobEntrySpecial);
             specialCopy.setLocation(30,30);
@@ -197,18 +213,19 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             jobHopMeta.setUnconditional(true);
             jobMeta.addJobHop(jobHopMeta);
 
-            saveJobMetaService.save(jobMeta,DbMigJobUrl+"job.kjb",true);
-            JobMeta jobMeta1 = new JobMeta(DbMigJobUrl+"job.kjb",null);
+            saveJobMetaService.save(jobMeta,DbMigJobUrl+dataMig.getJobName()+".kjb",true);
+            JobMeta jobMeta1 = new JobMeta(DbMigJobUrl+dataMig.getJobName()+".kjb",null);
             Job job = new Job(null,jobMeta1);
             job.start();
             Thread.currentThread().setName("aaa");
             job.waitUntilFinished();
 
-            if(job.getErrors() != 0){
 
+            if (job.getErrors() != 0 ){
+                responseData.setError(500,"任务失败，请确认输入参数是否正确","fail");
+            }else {
+                responseData.setOK(200,"success",DbMigJobUrl+dataMig.getJobName()+".kjb");
             }
-
-            responseData.setOK(200,"success","success");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -280,7 +297,7 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             //给表输入添加一个DatabaseMeta连接数据库
             DatabaseMeta database_in = transMeta.findDatabase(srcdbManagement.getLinkName());
             tableInputMeta.setDatabaseMeta(database_in);
-            String select_sql = "SELECT * FROM " + dataMig.getSrcTable()+ " where "+ dataMig.getTimeStamp() + " > " +"\""+dataMig.getUpdatetime()+"\"";
+            String  select_sql = "SELECT * FROM " + dataMig.getSrcTable()+ " where "+ dataMig.getTimeStamp() + " > " +"\""+dataMig.getUpdatetime()+"\"";
 
             tableInputMeta.setSQL(select_sql);
 
@@ -347,7 +364,12 @@ public class DBMigrationServiceImpl implements DBMigrationService {
                 trans.prepareExecution(null);
                 trans.startThreads();
                 trans.waitUntilFinished();
-                responseData.setOK(200,"success","success");
+//                trans.getCounters();
+                if (trans.getErrors()!= 0 ){
+                    responseData.setError(500,"同步失败，请确认输入是否正确","fail");
+                }else {
+                    responseData.setOK(200,"success",DbMigTransUrl + dataMig.getTransName()+ ".ktr");
+                }
             }
 
         } catch (Exception e) {

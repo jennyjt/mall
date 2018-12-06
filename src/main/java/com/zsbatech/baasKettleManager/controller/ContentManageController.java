@@ -107,7 +107,7 @@ public class ContentManageController {
         ResponseData<List> responseData = new ResponseData<>();
         if (fileList != null && fileList.size() != 0) {
             responseData.setOK(200,"查询成功", fileList);
-        } else if(fileList == null && fileList.size() == 0) {
+        } else if(fileList == null || fileList.size() == 0) {
             responseData.setOK(200,"文件不存在",null);
         }else {
             responseData.setError("查询错误");
@@ -129,7 +129,7 @@ public class ContentManageController {
         ResponseData<List<String>> responseData = new ResponseData<>();
         if (catalogList != null && catalogList.size() != 0) {
             responseData.setOK(200, "查询成功", catalogList);
-        } else if(catalogList ==null && catalogList.size() == 0){
+        } else if(catalogList == null || catalogList.size() == 0){
             responseData.setOK(200,"目录不存在",catalogList);
         }else {
             responseData.setError("查询错误");

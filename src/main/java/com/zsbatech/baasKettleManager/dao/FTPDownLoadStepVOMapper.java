@@ -13,4 +13,6 @@ public interface FTPDownLoadStepVOMapper {
     int insert(FTPDownLoadStepVO ftpDownLoadStepVO);
 
     FTPDownLoadStepVO selectByName(String stepName);
+
+    FTPDownLoadStepVO selectFTPDownLoadStepVOById(Integer jobMetaId);
 }

@@ -13,4 +13,6 @@ public interface FTPPutStepVOMapper {
     int insert(FTPPutStepVO ftpPutStepVO);
 
     FTPPutStepVO selectByName(String stepName);
+
+    FTPPutStepVO selectFTPPutStepVOById(Integer jobMetaId);
 }

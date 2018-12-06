@@ -30,4 +30,12 @@
             #{item.condition,jdbcType=TINYINT},#{item.createTime,jdbcType=VARCHAR},#{item.updateTime,jdbcType=VARCHAR})
     </foreach>
     </insert>
+
+    <select id="selectJobHopMetaVOById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select
+        <include refid="Base_Column_List" />
+        from job_hop
+        where from_step_id = #{fromStepId,jdbcType=INTEGER} and to_step_id = #{toStepId,jdbcType=INTEGER}
+        limit 1
+    </select>
 </mapper>

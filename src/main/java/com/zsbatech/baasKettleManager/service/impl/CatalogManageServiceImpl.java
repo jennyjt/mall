@@ -51,8 +51,8 @@ public class CatalogManageServiceImpl implements CatalogManageService {
                 file1.mkdir();
                 newCreateContentList.add(file);
             }
-            map.put("已存在目录", fileList);
-            map.put("新创建目录", newCreateContentList);
+            map.put("exist catalog", fileList);
+            map.put("new create catalog", newCreateContentList);
         }
         return map;
     }
@@ -75,8 +75,8 @@ public class CatalogManageServiceImpl implements CatalogManageService {
             } else {
                 newCreateFileList.add(file);
             }
-            map.put("删除文件", fileList);
-            map.put("已删除文件", newCreateFileList);
+            map.put("non-existent files", fileList);
+            map.put("deleted files", newCreateFileList);
         }
         return map;
     }
@@ -116,8 +116,8 @@ public class CatalogManageServiceImpl implements CatalogManageService {
             } else {
                 newCreateFileList.add(file);
             }
-            map.put("删除目录", fileList);
-            map.put("已删除目录", newCreateFileList);
+            map.put("existent catalog", fileList);
+            map.put("deleted catalog", newCreateFileList);
         }
         return map;
     }
@@ -132,7 +132,7 @@ public class CatalogManageServiceImpl implements CatalogManageService {
     public List<FilesVO> queryFiles(String fileCatalog, String code) {
         List<FilesVO> fileList = new ArrayList<>();
         List<FilesVO> files = filesVOMapper.queryFiles(fileCatalog, code);
-        if (files != null) {
+        if (files != null && files.size() != 0) {
             for (FilesVO file : files) {
                 fileList.add(file);
             }
@@ -148,21 +148,23 @@ public class CatalogManageServiceImpl implements CatalogManageService {
      * @return
      */
     public List<String> queryCataLog(String code, String fileName) {
-        Map<String, List<String>> map = new HashMap<>();
         Set<String> strings = new HashSet<>();
         List<FilesVO> filesVOList = filesVOMapper.queryFile(code, fileName);
-        for (FilesVO filesVO : filesVOList) {
-            List<FilesFileCatalogVO> filesFileCatalogVOList = filesFileCatalogVOMapper.queryByFileId(filesVO.getId());
-            List<Integer> cataLogIdList = new ArrayList<>();
-            for (FilesFileCatalogVO filesFileCatalogVO : filesFileCatalogVOList) {
-                cataLogIdList.add(filesFileCatalogVO.getFileCatalogId());
+        if (filesVOList != null && filesVOList.size() != 0) {
+            for (FilesVO filesVO : filesVOList) {
+                List<FilesFileCatalogVO> filesFileCatalogVOList = filesFileCatalogVOMapper.queryByFileId(filesVO.getId());
+                List<Integer> cataLogIdList = new ArrayList<>();
+                for (FilesFileCatalogVO filesFileCatalogVO : filesFileCatalogVOList) {
+                    cataLogIdList.add(filesFileCatalogVO.getFileCatalogId());
+                }
+                List<FileCatalogVO> fileCatalogVOList = fileCatalogVOMapper.queryCatalogById(cataLogIdList);
+                String cataLog = new String();
+                for (FileCatalogVO fileCatalogVO : fileCatalogVOList) {
+                    cataLog = cataLog + StringUtil.toString(fileCatalogVO.getSourceCatalog(), '/');
+                    strings.add(cataLog);
+                }
             }
-            List<FileCatalogVO> fileCatalogVOList = fileCatalogVOMapper.queryCatalogById(cataLogIdList);
-            String cataLog  = new String();
-            for (FileCatalogVO fileCatalogVO : fileCatalogVOList) {
-                cataLog = cataLog+ StringUtil.toString(fileCatalogVO.getSourceCatalog(),'/');
-                strings.add(cataLog);
-            }
+
         }
         return new ArrayList<>(strings);
     }
