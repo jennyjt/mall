@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.DataOutputStream;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -189,7 +190,8 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
         JobStartStepVO jobStartStepVO = null;
         JobHopMetaVO jobHopMetaVO = new JobHopMetaVO();
         JobEntryTrans jobEntryTrans = getJobEntryTrans(jobMeta);
-        String transName = jobEntryTrans.getName();
+        File file= new File(jobEntryTrans.getFilename());
+        String transName =file.getName().replaceAll(".ktr","");
         int transMetaId = 0;
         if (transMetaVOMapper.selectTransMetaVO(transName) != null) {
             transMetaId = transMetaVOMapper.selectTransMetaVO(transName).getId();
@@ -197,10 +199,11 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
             logger.info("job中对应的转换不存在！！！！！");
             return false;
         }
-        getJobMetaVO(jobMeta).setTransMetaId(transMetaId);
+        JobMetaVO jobMetaVO = getJobMetaVO(jobMeta);
+        jobMetaVO.setTransMetaId(transMetaId);
         if (jobMetaVOMapper.selectByJobName(jobMeta.getName()) != null) {
             return true;
-        } else if (jobMetaVOMapper.insert(getJobMetaVO(jobMeta)) != 0) {
+        } else if (jobMetaVOMapper.insert(jobMetaVO) != 0) {
             int jobMetaId = jobMetaVOMapper.selectByJobName(jobMeta.getName()).getId();
             jobStartStepVO = getJobStartStepVO(jobMeta);
             jobStartStepVO.setJobMetaId(jobMetaId);
@@ -342,7 +345,8 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
         }
         jobEntrySpecial.setSchedulerType(jobStartStepVO.getTimingType());
         if (jobStartStepVO.getTimingType() == 1) {
-            jobEntrySpecial.setIntervalMinutes(jobStartStepVO.getTimingTime());
+            jobEntrySpecial.setIntervalMinutes(0);
+            jobEntrySpecial.setIntervalSeconds(jobStartStepVO.getTimingTime());
         } else if (jobStartStepVO.getTimingType() == 2) {
             jobEntrySpecial.setHour(jobStartStepVO.getTimingTime());
         } else if (jobStartStepVO.getTimingType() == 3) {
@@ -364,7 +368,7 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
         JobHopMeta jobHopMeta = new JobHopMeta(specialCopy, transJob);
         jobHopMeta.setUnconditional(true);
         jobMeta.addJobHop(jobHopMeta);
-        return save(jobMeta, DBTransUrl + jobMetaVO.getFileName(), true);
+        return save(jobMeta, DBTransUrl + jobMetaVO.getJobName()+".kjb", true);
     }
 
     public boolean saveFtpIncrJobByDB(String jobName) {
