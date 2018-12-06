@@ -1,9 +1,11 @@
 package com.zsbatech.baasKettleManager.service.impl;
 
+import com.zsbatech.baasKettleManager.dao.FilesFileCatalogVOMapper;
 import com.zsbatech.baasKettleManager.dao.UpdownloadLogMapper;
 import com.zsbatech.baasKettleManager.model.UpdownloadLog;
 import com.zsbatech.baasKettleManager.service.CatalogManageService;
 import com.zsbatech.baasKettleManager.service.FileUpDownloadService;
+import com.zsbatech.baasKettleManager.vo.FilesFileCatalogVO;
 import com.zsbatech.baasKettleManager.vo.FilesVO;
 import com.zsbatech.base.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,9 +18,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * 文件上传下载接口实现类
@@ -36,24 +35,25 @@ public class FileDownloadServiceImpl implements FileUpDownloadService {
     @Autowired
     private UpdownloadLogMapper updownloadLogMapper;
 
+    @Autowired
+    private FilesFileCatalogVOMapper filesFileCatalogVOMapper;
+
     @Override
-    public boolean fileUpload(MultipartFile file, String userId, String fileDirectory) {
+    public boolean fileUpload(MultipartFile file, String userId, String fileDirectory, Integer catalogId) {
         //文件要上传的路径
         String path = fileDirectory;
         String oldFileName = file.getOriginalFilename();
         String newFileName = DateUtils.currentTimestamp() + oldFileName.substring(oldFileName.lastIndexOf("."));
 
         File targetFile = new File(path + File.separator + newFileName);
-        //如果目标文件路径不存在就新建
+        //如果目标文件路径不存在就报错
         if(!targetFile.getParentFile().exists()){
-            List<String> paths = new ArrayList<>();
-            paths.add(path);
-            Map<String, List<String>> createCatalogsResult = catalogManageService.createCatalogs(paths);
+            return false;
         }
         try {
             //文件复制
             file.transferTo(targetFile);
-
+            //文件表插入数据
             FilesVO filesVO = new FilesVO();
             filesVO.setOriginName(oldFileName);
             filesVO.setCreateTime(DateUtils.currentDateTime());
@@ -64,6 +64,13 @@ public class FileDownloadServiceImpl implements FileUpDownloadService {
             if(!result){
                 return false;
             }
+            //文件关联表插入一条数据
+            FilesFileCatalogVO filesRelateInfo =  new FilesFileCatalogVO();
+            filesRelateInfo.setFileId(filesVO.getId());
+            filesRelateInfo.setFileCatalogId(catalogId);
+            filesFileCatalogVOMapper.insert(filesRelateInfo);
+
+            //插入一条日志信息
             UpdownloadLog log = new UpdownloadLog();
             log.setFileId(filesVO.getId());
             log.setOperation(UPLOAD_OPERATION);
@@ -92,7 +99,7 @@ public class FileDownloadServiceImpl implements FileUpDownloadService {
             if(!file.exists()) {
                 return false;
             }
-
+            //插入一条日志信息
             UpdownloadLog log = new UpdownloadLog();
             log.setFileId(fileId);
             log.setOperation(DOWNLOAD_OPERATION);
