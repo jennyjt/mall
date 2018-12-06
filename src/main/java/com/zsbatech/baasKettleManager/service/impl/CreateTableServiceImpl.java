@@ -91,4 +91,29 @@ public class CreateTableServiceImpl implements CreateTableService {
         return responseData;
     }
 
+    public ResponseData<String> getTables(DataMig dataMig) {
+        ResponseData<String> responseData = new ResponseData<>();
+
+        DbManagement  dbManagementsrc = dbManagementMapper.selectByPrimaryKey(dataMig.getSrcDbconnId());
+
+        try {
+            KettleEnvironment.init();
+
+            DatabaseMeta sourceDbMeta = new DatabaseMeta(TableUtil.getXmlByDbManagement(dbManagementsrc));
+
+            Database db = new Database(sourceDbMeta);
+
+            db.connect();
+            String[] tablenames =db.getTablenames();
+
+            db.disconnect();
+            responseData.set(200,"success",Arrays.toString(tablenames));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            responseData.setError(500,"get table fail!","fail!");
+        }
+        return responseData;
+    }
+
 }

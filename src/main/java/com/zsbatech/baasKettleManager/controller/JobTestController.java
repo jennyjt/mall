@@ -38,7 +38,8 @@ public class JobTestController {
     @ResponseBody
     public ResponseData<String> saveByDb(@RequestBody DataMig dataMig) {
         ResponseData<String> responseData = new ResponseData<>();
-        saveJobMetaService.saveFtpIncrJobByDB(dataMig.getJobName());
+//        saveJobMetaService.saveFtpIncrJobByDB(dataMig.getJobName());
+        saveJobMetaService.saveIncrJobByDB("job");
         responseData.setOK(200, "success", "success");
         return responseData;
     }
