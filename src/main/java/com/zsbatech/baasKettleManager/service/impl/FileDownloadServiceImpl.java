@@ -4,7 +4,6 @@ import com.zsbatech.baasKettleManager.dao.UpdownloadLogMapper;
 import com.zsbatech.baasKettleManager.model.UpdownloadLog;
 import com.zsbatech.baasKettleManager.service.CatalogManageService;
 import com.zsbatech.baasKettleManager.service.FileUpDownloadService;
-import com.zsbatech.baasKettleManager.util.ConfigUtil;
 import com.zsbatech.baasKettleManager.vo.FilesVO;
 import com.zsbatech.base.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,9 +37,9 @@ public class FileDownloadServiceImpl implements FileUpDownloadService {
     private UpdownloadLogMapper updownloadLogMapper;
 
     @Override
-    public boolean fileUpload(MultipartFile file, String userId) {
+    public boolean fileUpload(MultipartFile file, String userId, String fileDirectory) {
         //文件要上传的路径
-        String path = ConfigUtil.getPropertyValue("file.httpDirectory");
+        String path = fileDirectory;
         String oldFileName = file.getOriginalFilename();
         String newFileName = DateUtils.currentTimestamp() + oldFileName.substring(oldFileName.lastIndexOf("."));
 
