@@ -5,17 +5,13 @@ import com.zsbatech.baasKettleManager.service.JobExcuteService;
 import com.zsbatech.baasKettleManager.util.StopJobUtil;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.pentaho.di.core.KettleEnvironment;
-import org.pentaho.di.core.exception.JobStoppedException;
 import org.pentaho.di.core.exception.KettleException;
-import org.pentaho.di.core.exception.KettleJobException;
 import org.pentaho.di.core.logging.KettleLogStore;
 import org.pentaho.di.job.Job;
-import org.pentaho.di.job.JobListener;
 import org.pentaho.di.job.JobMeta;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
 import java.util.UUID;
 
 /**
@@ -48,6 +44,7 @@ public class JobExcuteServiceImpl implements JobExcuteService {
             logger.error("JobExcuteServiceImpl.excute:"+uuid+" failure! Error："+job.getErrors());
             String[] errMsgList = KettleLogStore.getAppender().getBuffer(job.getLogChannelId(), false).toString().split("\n\r\n");
             String errMsg=errMsgList[0];
+
             logger.error(errMsg);
         }else {
             logger.error("JobExcuteServiceImpl.excute:"+uuid+" success!");
@@ -58,7 +55,7 @@ public class JobExcuteServiceImpl implements JobExcuteService {
         try {
             new StopJobUtil().stopJob(transMeta,carteObjectId);
         } catch (Exception e) {
-            e.printStackTrace();
+            logger.error("JobExcuteServiceImpl.stop error:"+ ExceptionUtils.getFullStackTrace(e));
         }
 //        ThreadGroup currentGroup = Thread.currentThread().getThreadGroup();
 //        while (currentGroup.getParent() != null) {
@@ -80,14 +77,16 @@ public class JobExcuteServiceImpl implements JobExcuteService {
         try {
             KettleEnvironment.init();
         } catch (KettleException e) {
-            e.printStackTrace();
+            logger.error("JobExcuteServiceImpl.stopAll init error:"+ ExceptionUtils.getFullStackTrace(e));
         }
         JobMeta jobMeta = new JobMeta();
         Job job = new Job(null, jobMeta);
         job.stopAll();
         job.waitUntilFinished();
         if (job.getErrors() != 0) {
-            logger.info("job运行异常");
+            String[] errMsgList = KettleLogStore.getAppender().getBuffer(job.getLogChannelId(), false).toString().split("\n\r\n");
+            String errMsg=errMsgList[0];
+            logger.error("JobExcuteServiceImpl.stopAll error:"+ errMsg);
         }
     }
 }
