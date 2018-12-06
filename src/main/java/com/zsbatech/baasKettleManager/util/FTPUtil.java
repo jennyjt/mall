@@ -95,4 +95,16 @@ public class FTPUtil {
         return filesVOMap;
     }
 
+    //获取文件目录信息
+    public static boolean createCatalog(FTPClient client,String fileCatalog) {
+        try {
+            FTPFile[] ftpFile = client.listFiles(fileCatalog);
+            if(ftpFile == null && ftpFile.length == 0){
+                client.makeDirectory(fileCatalog);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return true;
+    }
 }
