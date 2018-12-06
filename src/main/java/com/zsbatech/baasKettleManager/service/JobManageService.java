@@ -9,4 +9,8 @@ package com.zsbatech.baasKettleManager.service;
 public interface JobManageService {
 
     int executeJob(String jobFile);
+
+    void stop(String transMeta,String carteObjectId);
+
+    void stopAll();
 }

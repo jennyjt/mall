@@ -1,7 +1,7 @@
 package com.zsbatech.baasKettleManager.controller;
 
 import com.zsbatech.baasKettleManager.model.DataMig;
-import com.zsbatech.baasKettleManager.service.JobExcuteService;
+import com.zsbatech.baasKettleManager.service.JobManageService;
 import com.zsbatech.baasKettleManager.service.SaveJobMetaService;
 import com.zsbatech.baasKettleManager.service.SaveTransMetaService;
 import com.zsbatech.base.common.ResponseData;
@@ -20,7 +20,7 @@ public class JobTestController {
     private SaveJobMetaService saveJobMetaService;
 
     @Autowired
-    private JobExcuteService jobExcuteService;
+    private JobManageService jobExcuteService;
     @Autowired
     SaveTransMetaService saveTransMetaService;
 
