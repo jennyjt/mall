@@ -37,4 +37,14 @@ public class CreateTableController {
         return responseData;
     }
 
+    @RequestMapping(value = "/gettables", method = RequestMethod.POST)
+    @ResponseBody
+    public  ResponseData<String> getTables(@RequestBody DataMig dataMig) {
+
+
+        ResponseData responseData = createTableService.getTables(dataMig);
+
+        return responseData;
+    }
+
 }

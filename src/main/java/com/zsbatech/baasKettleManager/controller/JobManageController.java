@@ -41,6 +41,7 @@ public class JobManageController {
     @ResponseBody
     public ResponseData<Boolean> stopJob(@RequestBody String jobName) {
         ResponseData<Boolean> responseData = new ResponseData<>();
+        jobManageService.stop(jobName,null);
         return responseData;
     }
 

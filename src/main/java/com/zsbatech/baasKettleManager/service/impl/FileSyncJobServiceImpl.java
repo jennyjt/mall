@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -192,12 +193,13 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         }
         jobEntryFTPPUT.setControlEncoding(ftpPutStepVO.getControlEncoding());
 
-        //创建目录
-        List<String> fileContents = new ArrayList<>();
-        fileContents.add(ftpPutStepVO.getFtpDirectory());
-        fileContents.add(ftpPutStepVO.getTargetDirectory());
-        catalogManageService.createCatalogs(fileContents);
-
+        FTPClient ftpClient = FTPUtil.loginFTP(ftpPutStepVO.getServerName(),Integer.valueOf(ftpPutStepVO.getPort()),ftpPutStepVO.getUserName(),ftpPutStepVO.getPassword());
+        try {
+           ftpClient.makeDirectory(ftpPutStepVO.getFtpDirectory());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
         jobEntryFTPPUT.setRemoteDirectory(ftpPutStepVO.getFtpDirectory());
         jobEntryFTPPUT.setLocalDirectory(ftpPutStepVO.getTargetDirectory());
         jobEntryFTPPUT.setWildcard(ftpPutStepVO.getPutFileName());

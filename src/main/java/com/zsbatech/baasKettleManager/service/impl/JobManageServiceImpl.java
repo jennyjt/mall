@@ -1,6 +1,7 @@
 package com.zsbatech.baasKettleManager.service.impl;
 
 import com.zsbatech.baasKettleManager.service.JobManageService;
+import com.zsbatech.baasKettleManager.util.StopJobUtil;
 import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.job.Job;
@@ -37,5 +38,42 @@ public class JobManageServiceImpl implements JobManageService {
             logger.info(job.getName());
         }
         return job.getErrors();
+    }
+
+    public void stop(String transMeta,String carteObjectId) {
+        try {
+            new StopJobUtil().stopJob(transMeta,carteObjectId);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+//        ThreadGroup currentGroup = Thread.currentThread().getThreadGroup();
+//        while (currentGroup.getParent() != null) {
+//            currentGroup = currentGroup.getParent();
+//        }
+//        currentGroup.interrupt();
+//        int noThreads = currentGroup.activeCount();
+//        Thread[] lstThreads = new Thread[noThreads];
+//        currentGroup.enumerate(lstThreads);
+//        for (Thread thread : lstThreads) {
+//            if (thread.getName().equals(fileName)) {
+//                thread.interrupt();
+//
+//            }
+//        }
+    }
+
+    public void stopAll() {
+        try {
+            KettleEnvironment.init();
+        } catch (KettleException e) {
+            e.printStackTrace();
+        }
+        JobMeta jobMeta = new JobMeta();
+        Job job = new Job(null, jobMeta);
+        job.stopAll();
+        job.waitUntilFinished();
+        if (job.getErrors() != 0) {
+            logger.info("job运行异常");
+        }
     }
 }
