@@ -5,8 +5,10 @@ import com.github.pagehelper.page.PageMethod;
 import com.zsbatech.baasKettleManager.dao.*;
 import com.zsbatech.baasKettleManager.model.DataMig;
 import com.zsbatech.baasKettleManager.model.DbManagement;
+import com.zsbatech.baasKettleManager.model.JobLog;
 import com.zsbatech.baasKettleManager.model.JobMetaExample;
 import com.zsbatech.baasKettleManager.service.DBMigrationService;
+import com.zsbatech.baasKettleManager.service.JobLogService;
 import com.zsbatech.baasKettleManager.service.SaveJobMetaService;
 import com.zsbatech.baasKettleManager.service.SaveTransMetaService;
 import com.zsbatech.baasKettleManager.util.ConfigUtil;
@@ -35,7 +37,9 @@ import org.pentaho.di.trans.steps.tableoutput.TableOutputMeta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Time;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 
@@ -55,6 +59,8 @@ public class DBMigrationServiceImpl implements DBMigrationService {
     SaveTransMetaService saveTransMetaService;
     @Autowired
     SaveJobMetaService saveJobMetaService;
+    @Autowired
+    JobLogService jobLogService;
 
     private String DbMigTransUrl = ConfigUtil.getPropertyValue("dbmig.transMetaUrl");
     private String DbMigJobUrl = ConfigUtil.getPropertyValue("file.jobMetaUrl");
@@ -167,18 +173,18 @@ public class DBMigrationServiceImpl implements DBMigrationService {
 
     public ResponseData<String> cycleMigration(DataMig dataMig) {
         ResponseData<String> responseData = new ResponseData<>();
+        JobLog jobLog = new JobLog();
         try {
 
             KettleEnvironment.init();
             ktrpath = DbMigTransUrl+dataMig.getKtrString() ;
 
             JobMeta jobMeta = new JobMeta();
-            jobMeta.setName(dataMig.getKtrString());
+            jobMeta.setName(dataMig.getJobName());
             JobEntrySpecial jobEntrySpecial = new JobEntrySpecial();
             jobEntrySpecial.setName("start");
             jobEntrySpecial.setRepeat(true);
 
-           ;//todo log  记录时间 看运行时间差异
 
             switch (dataMig.getSchedulerType()){
                 case 2:
@@ -214,24 +220,37 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             jobMeta.addJobHop(jobHopMeta);
 
             saveJobMetaService.save(jobMeta,DbMigJobUrl+dataMig.getJobName()+".kjb",true);
+            saveJobMetaService.saveTransJobData(DbMigJobUrl+dataMig.getJobName()+".kjb");
             JobMeta jobMeta1 = new JobMeta(DbMigJobUrl+dataMig.getJobName()+".kjb",null);
             Job job = new Job(null,jobMeta1);
+            jobLog.setStartTime(new Date());
             job.start();
             Thread.currentThread().setName("aaa");
-            job.waitUntilFinished();
+//            job.waitUntilFinished();
+            jobLog.setEndTime(new Date());
+            jobLog.setJobName(dataMig.getJobName());
+            jobLog.setStatus((byte)2);
 
-
-            if (job.getErrors() != 0 ){
-                responseData.setError(500,"任务失败，请确认输入参数是否正确","fail");
+            Thread.sleep(11000);
+            if (job.getErrors() > 0 ){
+                jobLog.setStatus((byte)3);
+                jobLog.setErrors(job.getErrors());
+                jobLog.setLogField("执行失败");
+                responseData.setError(500,"任务失败，请确认输入参数是否正确","失败任务："+DbMigJobUrl+dataMig.getJobName()+".kjb");
             }else {
+                jobLog.setStatus((byte)3);
+                jobLog.setLogField("success");
                 responseData.setOK(200,"success",DbMigJobUrl+dataMig.getJobName()+".kjb");
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            responseData.setError(500,"fail","fail");
+            jobLog.setLogField("执行失败");
+            jobLog.setLogField(e.toString());
+            responseData.setError(500,"任务异常，请确认输入参数是否正确","失败任务："+DbMigJobUrl+dataMig.getJobName()+".kjb");
         }
 
+        jobLogService.addJobLog(jobLog);
         return responseData;
     }
 
