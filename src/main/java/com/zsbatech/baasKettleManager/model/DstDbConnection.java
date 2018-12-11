@@ -13,6 +13,8 @@ public class DstDbConnection {
 
     private String dstTable;
 
+    private String dstTableCh;
+
     private Date created;
 
     private Date updated;
@@ -59,6 +61,14 @@ public class DstDbConnection {
 
     public void setDstTable(String dstTable) {
         this.dstTable = dstTable == null ? null : dstTable.trim();
+    }
+
+    public String getDstTableCh() {
+        return dstTableCh;
+    }
+
+    public void setDstTableCh(String dstTableCh) {
+        this.dstTableCh = dstTableCh == null ? null : dstTableCh.trim();
     }
 
     public Date getCreated() {
