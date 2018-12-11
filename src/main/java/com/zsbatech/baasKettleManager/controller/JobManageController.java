@@ -37,11 +37,11 @@ public class JobManageController {
                     @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
             }
     )
-    @RequestMapping(value = "/stopJob", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/stopJob", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public ResponseData<Boolean> stopJob(@RequestBody String jobName) {
+    public ResponseData<Boolean> stopJob(@RequestParam String jobName) {
         ResponseData<Boolean> responseData = new ResponseData<>();
-        jobManageService.stop(jobName,null);
+        jobManageService.stop(jobName);
         return responseData;
     }
 
@@ -82,6 +82,21 @@ public class JobManageController {
     @ResponseBody
     public ResponseData<String> modifyJob(@RequestParam String jobName) {
         ResponseData<String> responseData = new ResponseData<>();
+        return responseData;
+    }
+
+    @ApiOperation(value = "停止job", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiResponses({@ApiResponse(code = Response.OK, message = "停止job成功"),})
+    @ApiImplicitParams(
+            value = {
+                    @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
+            }
+    )
+    @RequestMapping(value = "/stopAll", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseBody
+    public ResponseData<Boolean> stopAll() {
+        ResponseData<Boolean> responseData = new ResponseData<>();
+        jobManageService.stopAll();
         return responseData;
     }
 }

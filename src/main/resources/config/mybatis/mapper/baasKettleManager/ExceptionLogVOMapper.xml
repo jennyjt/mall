@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zsbatech.baasKettleManager.dao.ExceptionLogVOMapper">
+    <resultMap id="BaseResultMap" type="com.zsbatech.baasKettleManager.vo.ExceptionLogVO">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="exception_info" property="exceptionInfo" jdbcType="VARCHAR"/>
+        <result column="occur_time" property="occurTime" jdbcType="VARCHAR"/>
+        <result column="job_name" property="jobName" jdbcType="VARCHAR"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, exception_info, occur_time
+  </sql>
+
+    <insert id="insert" parameterType="com.zsbatech.baasKettleManager.vo.ExceptionLogVO">
+    insert into exception_log (id, exception_info, occur_time,job_name)
+    values (#{id,jdbcType=INTEGER}, #{exceptionInfo,jdbcType=VARCHAR},#{occurTime,jdbcType=VARCHAR},#{jobName,jdbcType=VARCHAR})
+    </insert>
+</mapper>

@@ -310,7 +310,14 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         }
         jobEntryFTPPUT.setControlEncoding(ftpPutStepVO.getControlEncoding());
 
-        jobEntryFTPPUT.setRemoteDirectory(ftpPutStepVO.getFtpDirectory());
+        FTPClient ftpClient = FTPUtil.loginFTP(ftpPutStepVO.getServerName(),Integer.valueOf(ftpPutStepVO.getPort()),ftpPutStepVO.getUserName(),ftpPutStepVO.getPassword());
+        try {
+            ftpClient.makeDirectory(ftpPutStepVO.getFtpDirectory());
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        jobEntryFTPPUT.setRemoteDirectory(ftpDownLoadStepVO.getFtpDirectory());
         jobEntryFTPPUT.setLocalDirectory(ftpDownLoadStepVO.getTargetDirectory());
         jobEntryFTPPUT.setWildcard(ftpDownLoadStepVO.getFtpFileName());
         JobEntryCopy jobEntryFtpToFtpCopy = new JobEntryCopy(jobEntryFTPPUT);

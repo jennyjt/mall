@@ -1,5 +1,6 @@
 package com.zsbatech.baasKettleManager.util;
 
+import javafx.scene.control.TreeItem;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.methods.HttpGet;
 import org.pentaho.di.core.Const;
@@ -9,12 +10,12 @@ import org.pentaho.di.core.variables.VariableSpace;
 import org.pentaho.di.core.variables.Variables;
 import org.pentaho.di.core.xml.XMLHandler;
 import org.pentaho.di.repository.ObjectId;
-import org.pentaho.di.www.SslConfiguration;
-import org.pentaho.di.www.StopJobServlet;
-import org.pentaho.di.www.WebResult;
+import org.pentaho.di.trans.Trans;
+import org.pentaho.di.www.*;
 import org.w3c.dom.Node;
 
 import java.net.URLEncoder;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -56,6 +57,8 @@ public class StopJobUtil {
     private ObjectId id;
 
     private boolean sslMode;
+
+    private TreeItem jobParentItem;
 
     private SslConfiguration sslConfig;
 
@@ -154,6 +157,10 @@ public class StopJobUtil {
 
     public void setSslMode(boolean sslMode) {
         this.sslMode = sslMode;
+    }
+
+    public SlaveServerJobStatus getCarteObjectId(String jobName, String id){
+         return new SlaveServerStatus().findJobStatus(jobName ,id);
     }
 
     public WebResult stopJob(String transName, String carteObjectId) throws Exception {

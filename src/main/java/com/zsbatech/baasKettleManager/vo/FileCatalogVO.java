@@ -25,6 +25,8 @@ public class FileCatalogVO {
 
     private short layer;
 
+    private String aliasName;
+
     public int getId() {
         return id;
     }
@@ -53,6 +55,9 @@ public class FileCatalogVO {
         return layer;
     }
 
+    public String getAliasName() {
+        return aliasName;
+    }
 
     public void setId(int id) {
         this.id = id;
@@ -80,5 +85,9 @@ public class FileCatalogVO {
 
     public void setLayer(short layer) {
         this.layer = layer;
+    }
+
+    public void setAliasName(String aliasName) {
+        this.aliasName = aliasName;
     }
 }

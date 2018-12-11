@@ -10,7 +10,7 @@ public interface JobManageService {
 
     int executeJob(String jobFile);
 
-    void stop(String transMeta,String carteObjectId);
+    void stop(String jobName);
 
     void stopAll();
 }
