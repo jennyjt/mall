@@ -22,7 +22,7 @@ public class TableUtil {
      * @return 建表sql（String）
      * @throws KettleException
      */
-    public static String getCreateTableDDL(DbManagement sourceDM, DbManagement destDM, String tableName) throws KettleException {
+    public static String getCreateTableDDL(DbManagement sourceDM, String tableName, DbManagement destDM,String dstTableName) throws KettleException {
         KettleEnvironment.init();
 
         DatabaseMeta sourceDbMeta = new DatabaseMeta(getXmlByDbManagement(sourceDM));
@@ -39,7 +39,7 @@ public class TableUtil {
 
         String sqlddl = db.getDDLCreationTable(tableName, rowMetaInterface);
 
-        return addPrimaryKey(primaryKeys, sqlddl, tableName);
+        return addPrimaryKey(primaryKeys, sqlddl, tableName,dstTableName);
 
     }
 
@@ -146,9 +146,12 @@ public class TableUtil {
         return null;
     }
 
-    private static String addPrimaryKey(String[] strings, String sqlddl, String tableName) {
+    private static String addPrimaryKey(String[] strings, String sqlddl, String tableName, String dstTableName) {
 
         String sql = sqlddl.substring(13 + tableName.length(), sqlddl.lastIndexOf(")"));
+        if (dstTableName == null|| dstTableName.trim()==""){
+            dstTableName = tableName;
+        }
 
         String pk = "";
         if (strings != null && strings.length != 0) {
@@ -158,12 +161,12 @@ public class TableUtil {
 
             pk = pk.substring(0, pk.length() - 1);
 
-            sqlddl = "CREATE TABLE IF NOT EXISTS " + tableName + "  " + sql +",\n PRIMARY KEY (" + pk + ")\n" + ");";
+            sqlddl = "CREATE TABLE IF NOT EXISTS " + dstTableName + "  " + sql +",\n PRIMARY KEY (" + pk + ")\n" + ");";
 
             return  sqlddl;
         }
 
-        sqlddl = "CREATE TABLE IF NOT EXISTS " + tableName +" " + sql  + ");";
+        sqlddl = "CREATE TABLE IF NOT EXISTS " + dstTableName +" " + sql  + ");";
         return sqlddl;
     }
 

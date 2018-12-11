@@ -35,6 +35,16 @@ public class DataMig extends DataMigration {
 
 
     //dbconn  dst
+    private String dstTableCh;
+
+    public String getDstTableCh() {
+        return dstTableCh;
+    }
+
+    public void setDstTableCh(String dstTableCh) {
+        this.dstTableCh = dstTableCh;
+    }
+
     private Integer dstDbconnId;
 
     private String dstTable;

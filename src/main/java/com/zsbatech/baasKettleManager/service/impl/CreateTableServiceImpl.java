@@ -1,8 +1,10 @@
 package com.zsbatech.baasKettleManager.service.impl;
 
 import com.zsbatech.baasKettleManager.dao.DbManagementMapper;
+import com.zsbatech.baasKettleManager.dao.DstDbConnectionMapper;
 import com.zsbatech.baasKettleManager.model.DataMig;
 import com.zsbatech.baasKettleManager.model.DbManagement;
+import com.zsbatech.baasKettleManager.model.DstDbConnection;
 import com.zsbatech.baasKettleManager.service.CreateTableService;
 import com.zsbatech.baasKettleManager.util.TableUtil;
 import com.zsbatech.base.common.ResponseData;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.sql.*;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -22,16 +25,33 @@ public class CreateTableServiceImpl implements CreateTableService {
 
     @Autowired
     DbManagementMapper dbManagementMapper;
+    @Autowired
+    DstDbConnectionMapper dstDbConnectionMapper;
 
     public ResponseData<String> createTable(DataMig dataMig) {
         ResponseData<String> responseData = new ResponseData<>();
-
+        DstDbConnection dstDbConnection = new DstDbConnection();
         DbManagement  dbManagementsrc = dbManagementMapper.selectByPrimaryKey(dataMig.getSrcDbconnId());
         DbManagement  dbManagementdst = dbManagementMapper.selectByPrimaryKey(dataMig.getDstDbconnId());
         try {
-           String execSql = TableUtil.getCreateTableDDL(dbManagementsrc,dbManagementdst,dataMig.getSrcTable());
+           String execSql = TableUtil.getCreateTableDDL(dbManagementsrc,dataMig.getSrcTable(),dbManagementdst,dataMig.getDstTable());
 
             createTb(dbManagementdst,execSql);
+
+            String dstTableName = dataMig.getDstTable();
+            if (dstTableName == null || dstTableName==""){
+                dstTableName = dataMig.getSrcTable();
+            }
+            if (dataMig.getDstTableCh()!= null){
+                dstDbConnection.setDstTableCh(dataMig.getDstTableCh());
+            }
+            dstDbConnection.setCreated(new Date());
+            dstDbConnection.setDstTable(dstTableName);
+            dstDbConnection.setLinkId(dataMig.getDstDbconnId());
+            dstDbConnection.setUpdated(new Date());
+
+            dstDbConnectionMapper.insert(dstDbConnection);
+
             responseData.setOK(200,"success","Create table success.");
         } catch (Exception e) {
             e.printStackTrace();
