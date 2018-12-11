@@ -48,7 +48,7 @@ public class CatalogManageServiceImpl implements CatalogManageService {
             if (file1.exists()) {
                 fileList.add(file);
             } else {
-                file1.mkdir();
+                file1.mkdirs();
                 newCreateContentList.add(file);
             }
             map.put("exist catalog", fileList);

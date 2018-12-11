@@ -34,12 +34,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ApplicationTests {
 
     @Autowired
-    private JobExcuteService jobExcuteService;
+    private CatalogManageService catalogManageService;
+
+    @Autowired
+    private JobManageService jobExcuteService;
 
     @Autowired
     private SaveJobMetaService saveJobMetaService;
@@ -211,7 +217,10 @@ public class ApplicationTests {
 
     @Test
     public void testStop() throws Exception{
-        new StopJobUtil().stopJob("C:\\Users\\zhang\\Desktop\\aaa.kjb","C:\\Users\\zhang\\Desktop\\aaa.kjb");
+//        new StopJobUtil().stopJob("C:\\Users\\zhang\\Desktop\\aaa.kjb","C:\\Users\\zhang\\Desktop\\aaa.kjb");
+        List<String> catalogList = new ArrayList<>();
+        catalogList.add("C:\\Users\\zhang\\Desktop\\制服\\");
+        catalogManageService.createCatalogs(catalogList);
     }
 
     @Test
