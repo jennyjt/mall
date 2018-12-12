@@ -209,4 +209,14 @@ public class CatalogManageServiceImpl implements CatalogManageService {
         return filesVOMapper.getFilesByFileIds(fileIds);
     }
 
+    @Override
+    public String getFullPathByCatalogId(Integer catalogId) {
+        StringBuilder sb = new StringBuilder();
+        List<FileCatalogVO> catalogList = fileCatalogVOMapper.getFullPathByCatalogId(catalogId);
+        for(FileCatalogVO fileCatalog: catalogList) {
+            sb.append(File.separator).append(fileCatalog.getSourceCatalog());
+        }
+        return sb.toString();
+    }
+
 }

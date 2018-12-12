@@ -18,4 +18,6 @@ public interface FileCatalogVOMapper {
     FileCatalogVO select(FileCatalogVO fileCatalogVO);
 
     List<FileCatalogVO> queryCatalogById(List<Integer> idList);
+
+    List<FileCatalogVO> getFullPathByCatalogId(Integer id);
 }
