@@ -46,4 +46,10 @@ public interface CatalogManageService {
      */
     List<FilesVO> getFileInfosByIds(List<Integer> fileIds);
 
+    /**
+     * 通过目录id获取完整的路径
+     * @param catalogId
+     * @return
+     */
+    String getFullPathByCatalogId(Integer catalogId);
 }

@@ -1,5 +1,6 @@
 package com.zsbatech.baasKettleManager.controller;
 
+import com.zsbatech.baasKettleManager.service.CatalogManageService;
 import com.zsbatech.baasKettleManager.service.FileUpDownloadService;
 import com.zsbatech.base.common.ResponseData;
 import com.zsbatech.base.constants.RequestField;
@@ -28,11 +29,16 @@ public class FileUpDownloadController {
     @Autowired
     private FileUpDownloadService fileService;
 
-    @ApiOperation(value = "上传文件到指定机器的指定目录", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @Autowired
+    private CatalogManageService catalogService;
+
+    @ApiOperation(value = "上传文件到指定目录", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiResponses({@ApiResponse(code = Response.OK, message = "上传成功"),})
     @ApiImplicitParams(
             value = {
                     @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
+                    @ApiImplicitParam(paramType = "query", name = "org_id", dataType = "String", required = true, value = "机构编号"),
+                    @ApiImplicitParam(paramType = "query", name = "catalog_id", dataType = "Integer", required = true, value = "目录id"),
             }
     )
     @RequestMapping(value = "/upload", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -40,7 +46,6 @@ public class FileUpDownloadController {
     public ResponseData<String> fileUpload(HttpServletRequest request,
                                            @RequestParam(name = "file", required = true) MultipartFile file,
                                            @RequestParam(name = "org_id", required = true) String orgNo,
-                                           @RequestParam(name = "file_directory", required = true) String fileDirectory,
                                            @RequestParam(name = "catalog_id", required = true) Integer catalogId) {
         ResponseData<String> responseData = new ResponseData<>();
         //UniToken uniToken = JWTUtils.validateToken(request);
@@ -49,6 +54,8 @@ public class FileUpDownloadController {
             responseData.setError("empty file!");
             return responseData;
         }
+
+        String fileDirectory = catalogService.getFullPathByCatalogId(catalogId);
 
         boolean result = fileService.fileUpload(file, orgNo, fileDirectory, catalogId);
         if(result) {
