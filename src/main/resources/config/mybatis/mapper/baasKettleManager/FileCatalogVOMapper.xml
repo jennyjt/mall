@@ -40,4 +40,22 @@
     </foreach>
   </select>
 
+<!--  根据目录id获取全路径-->
+  <select id="getFullPathByCatalogId" resultMap="BaseResultMap" parameterType="java.util.List" >
+    SELECT T2.id, T2.source_catalog, T2.alias_name
+    FROM (
+    SELECT
+    @r AS _id,
+    (SELECT @r := parent_id FROM file_catalog WHERE id = _id) AS parentId,
+    @l := @l + 1 AS lvl
+    FROM
+    (SELECT @r := #{id,jdbcType=INTEGER}, @l := 0) vars,
+    file_catalog  h
+    WHERE @r &lt;&gt; 0) T1
+    left JOIN file_catalog T2
+    ON T1._id = T2.id
+    ORDER BY T1.lvl DESC
+  </select>
+
+
 </mapper>
