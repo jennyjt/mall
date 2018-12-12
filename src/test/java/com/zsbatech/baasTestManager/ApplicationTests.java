@@ -1,12 +1,9 @@
 package com.zsbatech.baasTestManager;
 
-import com.zsbatech.baasKettleManager.dao.FilesFileCatalogVOMapper;
 import com.zsbatech.baasKettleManager.service.*;
 import com.zsbatech.baasKettleManager.service.impl.SaveTransMetaServiceImpl;
 import com.zsbatech.baasKettleManager.util.FTPUtil;
-import com.zsbatech.baasKettleManager.util.StopJobUtil;
 import com.zsbatech.baasKettleManager.vo.FTPDownLoadStepVO;
-import com.zsbatech.baasKettleManager.vo.FilesFileCatalogVO;
 import com.zsbatech.baasKettleManager.vo.JobStartStepVO;
 import com.zsbatech.base.constants.RequestField;
 import com.zsbatech.base.utils.JWTUtils;
@@ -218,9 +215,7 @@ public class ApplicationTests {
     @Test
     public void testStop() throws Exception{
 //        new StopJobUtil().stopJob("C:\\Users\\zhang\\Desktop\\aaa.kjb","C:\\Users\\zhang\\Desktop\\aaa.kjb");
-        List<String> catalogList = new ArrayList<>();
-        catalogList.add("C:\\Users\\zhang\\Desktop\\制服\\");
-        catalogManageService.createCatalogs(catalogList);
+        catalogManageService.getFtpCatalog("test");
     }
 
     @Test

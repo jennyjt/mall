@@ -3,11 +3,16 @@ package com.zsbatech.baasKettleManager.service.impl;
 import com.zsbatech.baasKettleManager.dao.FileCatalogVOMapper;
 import com.zsbatech.baasKettleManager.dao.FilesFileCatalogVOMapper;
 import com.zsbatech.baasKettleManager.dao.FilesVOMapper;
+import com.zsbatech.baasKettleManager.dao.FtpSourceManageVOMapper;
 import com.zsbatech.baasKettleManager.service.CatalogManageService;
+import com.zsbatech.baasKettleManager.util.FTPUtil;
 import com.zsbatech.baasKettleManager.util.StringUtil;
 import com.zsbatech.baasKettleManager.vo.FileCatalogVO;
 import com.zsbatech.baasKettleManager.vo.FilesFileCatalogVO;
 import com.zsbatech.baasKettleManager.vo.FilesVO;
+import com.zsbatech.baasKettleManager.vo.FtpSourceManageVO;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +28,9 @@ import java.util.*;
  */
 @Service
 public class CatalogManageServiceImpl implements CatalogManageService {
+
+    @Autowired
+    private FtpSourceManageVOMapper ftpSourceManageVOMapper;
 
     @Autowired
     private FilesVOMapper filesVOMapper;
@@ -150,6 +158,8 @@ public class CatalogManageServiceImpl implements CatalogManageService {
     public List<String> queryCataLog(String code, String fileName) {
         Set<String> strings = new HashSet<>();
         List<FilesVO> filesVOList = filesVOMapper.queryFile(code, fileName);
+        System.out.println(filesVOList.size());
+        List<FileCatalogVO> fileCatalogVOList =null;
         if (filesVOList != null && filesVOList.size() != 0) {
             for (FilesVO filesVO : filesVOList) {
                 List<FilesFileCatalogVO> filesFileCatalogVOList = filesFileCatalogVOMapper.queryByFileId(filesVO.getId());
@@ -157,7 +167,11 @@ public class CatalogManageServiceImpl implements CatalogManageService {
                 for (FilesFileCatalogVO filesFileCatalogVO : filesFileCatalogVOList) {
                     cataLogIdList.add(filesFileCatalogVO.getFileCatalogId());
                 }
-                List<FileCatalogVO> fileCatalogVOList = fileCatalogVOMapper.queryCatalogById(cataLogIdList);
+                if(cataLogIdList == null || cataLogIdList.size() == 0){
+                    return null;
+                }else {
+                    fileCatalogVOList = fileCatalogVOMapper.queryCatalogById(cataLogIdList);
+                }
                 String cataLog = new String();
                 for (FileCatalogVO fileCatalogVO : fileCatalogVOList) {
                     cataLog = cataLog + StringUtil.toString(fileCatalogVO.getSourceCatalog(), '/');
@@ -209,4 +223,26 @@ public class CatalogManageServiceImpl implements CatalogManageService {
         return filesVOMapper.getFilesByFileIds(fileIds);
     }
 
+
+    /**
+     * 获取ftp目录
+     *
+     * @param nickName
+     * @return
+     */
+    public List<String> getFtpCatalog(String nickName){
+        FtpSourceManageVO ftpSourceManageVO = ftpSourceManageVOMapper.selectByName(nickName);
+        List<String> catalogList = new ArrayList<>();
+        FTPClient ftpClient = FTPUtil.loginFTP(ftpSourceManageVO.getFtpHost(),Integer.valueOf(ftpSourceManageVO.getFtpPort()),ftpSourceManageVO.getUserName(),ftpSourceManageVO.getPassWord());
+        try {
+           FTPFile[] fileAraay = ftpClient.listFiles();
+           for(FTPFile file:fileAraay) {
+               System.out.println(file.getName());
+           }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return catalogList;
+    }
 }

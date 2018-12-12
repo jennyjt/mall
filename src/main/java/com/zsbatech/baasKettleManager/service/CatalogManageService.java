@@ -13,6 +13,8 @@ import java.util.Map;
  */
 public interface CatalogManageService {
 
+    List<String> getFtpCatalog(String nickName);
+
     Map<String, List<String>> createCatalogs(List<String> files);
 
     Map<String, List<String>> deleteFiles(List<String> files);

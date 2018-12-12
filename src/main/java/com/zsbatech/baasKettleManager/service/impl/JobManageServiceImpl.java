@@ -1,5 +1,6 @@
 package com.zsbatech.baasKettleManager.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.zsbatech.baasKettleManager.dao.ExceptionLogVOMapper;
 import com.zsbatech.baasKettleManager.service.JobManageService;
 import com.zsbatech.baasKettleManager.vo.ExceptionLogVO;
@@ -7,8 +8,10 @@ import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.gui.JobTracker;
 import org.pentaho.di.core.logging.KettleLogStore;
+import org.pentaho.di.core.row.RowMetaInterface;
 import org.pentaho.di.job.Job;
 import org.pentaho.di.job.JobMeta;
+import org.pentaho.di.trans.steps.jobexecutor.JobExecutor;
 import org.pentaho.di.www.SlaveServerJobStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -66,7 +69,6 @@ public class JobManageServiceImpl implements JobManageService {
             if (name.equals(jobName)) {
                 System.out.println(lstThreads[i + 1].getName());
                 lstThreads[i + 1].interrupt();
-                lstThreads[i + 1].stop();
                 lstThreads[i].interrupt();
                 System.out.println("===================================");
                 break;
