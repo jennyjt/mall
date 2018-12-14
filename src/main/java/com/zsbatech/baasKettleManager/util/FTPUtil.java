@@ -1,5 +1,6 @@
 package com.zsbatech.baasKettleManager.util;
 
+import com.zsbatech.baasKettleManager.vo.FtpcatalogNode;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -72,22 +73,22 @@ public class FTPUtil {
     }
 
     //获取文件目录信息
-    public static Map<String, List<String>> getFiles(FTPClient client,String fileCatalog, String file) {
+    public static Map<String, List<String>> getFiles(FTPClient client, String fileCatalog, String file) {
         Map<String, List<String>> filesVOMap = null;
         try {
             filesVOMap = new HashMap<>();
             List<String> fielList = new ArrayList<>();
             if (file == null) {
                 FTPFile[] files = client.listFiles(fileCatalog);
-                for(FTPFile file1:files){
-                    String fileName= file1.getName();
+                for (FTPFile file1 : files) {
+                    String fileName = file1.getName();
                     fielList.add(fileName);
                 }
-                filesVOMap.put(fileCatalog,fielList);
-            }else {
+                filesVOMap.put(fileCatalog, fielList);
+            } else {
                 FTPFile[] files = client.listFiles(fileCatalog);
                 fielList.add(file);
-                filesVOMap.put(fileCatalog,fielList);
+                filesVOMap.put(fileCatalog, fielList);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -95,16 +96,65 @@ public class FTPUtil {
         return filesVOMap;
     }
 
-    //获取文件目录信息
-    public static boolean createCatalog(FTPClient client,String fileCatalog) {
+    //创建目录
+    public static boolean createCatalog(FTPClient client, String fileCatalog) {
         try {
             FTPFile[] ftpFile = client.listFiles(fileCatalog);
-            if(ftpFile == null && ftpFile.length == 0){
+            if (ftpFile == null && ftpFile.length == 0) {
                 client.makeDirectory(fileCatalog);
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
         return true;
+    }
+
+    /**
+     * 获取ftp目录
+     *
+     * @param ftpClient
+     * @return
+     */
+    public static List<String> ftpCatalog(FTPClient ftpClient, String pathName) {
+        List<String> stringList = ListSingleton.getListInstance();
+        try {
+            FTPFile[] ftpFiles = ftpClient.listFiles(pathName);
+            if (ftpFiles != null && ftpFiles.length != 0) {
+                for (FTPFile ftpFile : ftpFiles) {
+                    if (ftpFile.isDirectory()) {
+                        stringList.add(pathName+ftpFile.getName()+"/");
+                        ftpCatalog(ftpClient, pathName+ftpFile.getName()+"/");
+                    }
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return stringList;
+    }
+
+    /**
+     * 还原目录树形结构
+     *
+     * @param ftpCatalogList
+     * @return
+     */
+
+    public static List<FtpcatalogNode> ftpCatalog(List<String> ftpCatalogList) {
+        List<FtpcatalogNode> nodeList = new ArrayList<>();
+        for(int i = 0 ; i < ftpCatalogList.size() ; i++){
+            FtpcatalogNode node = new FtpcatalogNode();
+            for(int j =i+1;j <ftpCatalogList.size() ; j++){
+                if(ftpCatalogList.get(j).startsWith(ftpCatalogList.get(i))){
+                    node.setParentName(ftpCatalogList.get(i));
+                    node.setName(ftpCatalogList.get(j));
+                }else {
+                    node.setName(ftpCatalogList.get(j));
+                }
+                nodeList.add(node);
+            }
+        }
+
+        return nodeList;
     }
 }

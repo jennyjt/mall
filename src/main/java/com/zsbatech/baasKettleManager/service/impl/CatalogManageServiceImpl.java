@@ -7,10 +7,7 @@ import com.zsbatech.baasKettleManager.dao.FtpSourceManageVOMapper;
 import com.zsbatech.baasKettleManager.service.CatalogManageService;
 import com.zsbatech.baasKettleManager.util.FTPUtil;
 import com.zsbatech.baasKettleManager.util.StringUtil;
-import com.zsbatech.baasKettleManager.vo.FileCatalogVO;
-import com.zsbatech.baasKettleManager.vo.FilesFileCatalogVO;
-import com.zsbatech.baasKettleManager.vo.FilesVO;
-import com.zsbatech.baasKettleManager.vo.FtpSourceManageVO;
+import com.zsbatech.baasKettleManager.vo.*;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -230,21 +227,13 @@ public class CatalogManageServiceImpl implements CatalogManageService {
      * @param nickName
      * @return
      */
-    public List<String> getFtpCatalog(String nickName){
+    public List<FtpcatalogNode> getFtpCatalog(String nickName){
         FtpSourceManageVO ftpSourceManageVO = ftpSourceManageVOMapper.selectByName(nickName);
-        List<String> catalogList = new ArrayList<>();
         FTPClient ftpClient = FTPUtil.loginFTP(ftpSourceManageVO.getFtpHost(),Integer.valueOf(ftpSourceManageVO.getFtpPort()),ftpSourceManageVO.getUserName(),ftpSourceManageVO.getPassWord());
-        try {
-           FTPFile[] fileAraay = ftpClient.listFiles();
-           for(FTPFile file:fileAraay) {
-               System.out.println(file.getName());
-           }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-        return catalogList;
+        return FTPUtil.ftpCatalog(FTPUtil.ftpCatalog(ftpClient,""));
     }
+
+
     @Override
     public String getFullPathByCatalogId(Integer catalogId) {
         StringBuilder sb = new StringBuilder();
