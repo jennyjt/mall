@@ -1,12 +1,10 @@
 package com.zsbatech.baasTestManager;
 
-import com.zsbatech.baasKettleManager.dao.FilesFileCatalogVOMapper;
 import com.zsbatech.baasKettleManager.service.*;
 import com.zsbatech.baasKettleManager.service.impl.SaveTransMetaServiceImpl;
 import com.zsbatech.baasKettleManager.util.FTPUtil;
-import com.zsbatech.baasKettleManager.util.StopJobUtil;
 import com.zsbatech.baasKettleManager.vo.FTPDownLoadStepVO;
-import com.zsbatech.baasKettleManager.vo.FilesFileCatalogVO;
+import com.zsbatech.baasKettleManager.vo.FtpcatalogNode;
 import com.zsbatech.baasKettleManager.vo.JobStartStepVO;
 import com.zsbatech.base.constants.RequestField;
 import com.zsbatech.base.utils.JWTUtils;
@@ -209,18 +207,17 @@ public class ApplicationTests {
 
     @Test
     public void TestFile() throws Exception {
-        FTPClient ftpClient = FTPUtil.loginFTP("106.75.17.46", 21, "kettletest", "test123456");
-        boolean f = ftpClient.isConnected();
-        FTPFile[] file = ftpClient.listFiles("arrow-right-large.png");
-        System.out.println(file[0].getName());
+        FTPClient ftpClient = FTPUtil.loginFTP("106.75.17.46", 21, "test", "test123456");
+        ftpClient.makeDirectory("files/pento/dataSour");
     }
 
     @Test
     public void testStop() throws Exception{
 //        new StopJobUtil().stopJob("C:\\Users\\zhang\\Desktop\\aaa.kjb","C:\\Users\\zhang\\Desktop\\aaa.kjb");
-        List<String> catalogList = new ArrayList<>();
-        catalogList.add("C:\\Users\\zhang\\Desktop\\制服\\");
-        catalogManageService.createCatalogs(catalogList);
+        List<FtpcatalogNode> stringLIst =catalogManageService.getFtpCatalog("test");
+        for(FtpcatalogNode s:stringLIst){
+            System.out.println(s.getParentName());
+        }
     }
 
     @Test

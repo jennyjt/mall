@@ -1,6 +1,7 @@
 package com.zsbatech.baasKettleManager.service;
 
 import com.zsbatech.baasKettleManager.vo.FilesVO;
+import com.zsbatech.baasKettleManager.vo.FtpcatalogNode;
 
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,8 @@ import java.util.Map;
  * Date: 2018/11/20
  */
 public interface CatalogManageService {
+
+    List<FtpcatalogNode> getFtpCatalog(String nickName);
 
     Map<String, List<String>> createCatalogs(List<String> files);
 
