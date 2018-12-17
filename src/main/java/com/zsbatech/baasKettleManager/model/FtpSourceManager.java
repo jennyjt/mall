@@ -29,6 +29,10 @@ public class FtpSourceManager {
 
     private String updateUser;
 
+    private String nickName;
+
+    private Byte useCount;
+
     public Integer getId() {
         return id;
     }
@@ -131,5 +135,21 @@ public class FtpSourceManager {
 
     public void setUpdateUser(String updateUser) {
         this.updateUser = updateUser == null ? null : updateUser.trim();
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public void setNickName(String nickName) {
+        this.nickName = nickName;
+    }
+
+    public Byte getUseCount() {
+        return useCount;
+    }
+
+    public void setUseCount(Byte useCount) {
+        this.useCount = useCount;
     }
 }
