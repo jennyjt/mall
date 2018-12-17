@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.zsbatech.baasKettleManager.dao.FtpSourceManageVOMapper">
-    <resultMap id="BaseResultMap" type="com.zsbatech.baasKettleManager.vo.FtpSourceManageVO">
+<mapper namespace="com.zsbatech.baasKettleManager.dao.FtpSourceManageDOMapper">
+    <resultMap id="BaseResultMap" type="com.zsbatech.baasKettleManager.model.FtpSourceManageDO">
         <id column="id" property="id" jdbcType="INTEGER"/>
         <result column="ftp_host" property="ftpHost" jdbcType="VARCHAR"/>
         <result column="ftp_port" property="ftpPort" jdbcType="VARCHAR"/>

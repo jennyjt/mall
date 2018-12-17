@@ -24,6 +24,8 @@ public class JobMetaDO {
 
     private short executeStatus;
 
+    private String jobType;
+
     public int getId() {
         return id;
     }
@@ -52,6 +54,10 @@ public class JobMetaDO {
         return executeStatus;
     }
 
+    public String getJobType() {
+        return jobType;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -78,5 +84,9 @@ public class JobMetaDO {
 
     public void setExecuteStatus(short executeStatus) {
         this.executeStatus = executeStatus;
+    }
+
+    public void setJobType(String jobType) {
+        this.jobType = jobType;
     }
 }
