@@ -38,6 +38,8 @@ public class FtpSourceManageVO {
 
     private String nickName;
 
+    private short useCount;
+
     public int getId() {
         return id;
     }
@@ -148,5 +150,13 @@ public class FtpSourceManageVO {
 
     public void setNickName(String nickName) {
         this.nickName = nickName;
+    }
+
+    public short getUseCount() {
+        return useCount;
+    }
+
+    public void setUseCount(short useCount) {
+        this.useCount = useCount;
     }
 }
