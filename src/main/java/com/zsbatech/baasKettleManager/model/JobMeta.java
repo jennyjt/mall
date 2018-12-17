@@ -7,13 +7,17 @@ public class JobMeta {
 
     private String jobName;
 
-    private String filename;
+    private String fileName;
 
     private Date createtime;
 
     private Date updatetime;
 
     private Integer transMetaId;
+
+    private Byte executeStatus;
+
+    private String jobType;
 
     public Integer getId() {
         return id;
@@ -31,12 +35,12 @@ public class JobMeta {
         this.jobName = jobName == null ? null : jobName.trim();
     }
 
-    public String getFilename() {
-        return filename;
+    public String getFileName() {
+        return fileName;
     }
 
-    public void setFilename(String filename) {
-        this.filename = filename == null ? null : filename.trim();
+    public void setFileName(String fileName) {
+        this.fileName = fileName == null ? null : fileName.trim();
     }
 
     public Date getCreatetime() {
@@ -61,5 +65,21 @@ public class JobMeta {
 
     public void setTransMetaId(Integer transMetaId) {
         this.transMetaId = transMetaId;
+    }
+
+    public Byte getExecuteStatus() {
+        return executeStatus;
+    }
+
+    public void setExecuteStatus(Byte executeStatus) {
+        this.executeStatus = executeStatus;
+    }
+
+    public String getJobType() {
+        return jobType;
+    }
+
+    public void setJobType(String jobType) {
+        this.jobType = jobType;
     }
 }

@@ -25,6 +25,8 @@ public class DbManagement {
 
     private String createUser;
 
+    private Short useCount;
+
     public Integer getId() {
         return id;
     }
@@ -111,5 +113,13 @@ public class DbManagement {
 
     public void setCreateUser(String createUser) {
         this.createUser = createUser == null ? null : createUser.trim();
+    }
+
+    public Short getUseCount() {
+        return useCount;
+    }
+
+    public void setUseCount(Short useCount) {
+        this.useCount = useCount;
     }
 }
