@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.util.List;
 
 /**
  * 文件上传下载接口实现类
@@ -77,6 +78,59 @@ public class FileDownloadServiceImpl implements FileUpDownloadService {
             log.setCreateTime(DateUtils.currentDateTime());
             log.setCreateUser(userId);
             updownloadLogMapper.insert(log);
+        } catch (IllegalStateException e) {
+            e.printStackTrace();
+            return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public boolean multiFilesUpload(List<MultipartFile> files, String userId, String fileDirectory, Integer catalogId) {
+        //文件要上传的路径
+        String path = fileDirectory;
+
+        try {
+            for (MultipartFile file:files) {
+                String oldFileName = file.getOriginalFilename();
+                String newFileName = DateUtils.currentTimestamp() + oldFileName.substring(oldFileName.lastIndexOf("."));
+
+                File targetFile = new File(path + File.separator + newFileName);
+                //如果目标文件路径不存在就报错
+                if(!targetFile.getParentFile().exists()){
+                    return false;
+                }
+                //文件复制
+                file.transferTo(targetFile);
+                //文件表插入数据
+                FilesVO filesVO = new FilesVO();
+                filesVO.setOriginName(oldFileName);
+                filesVO.setCreateTime(DateUtils.currentDateTime());
+                filesVO.setCreateUser(userId);
+                filesVO.setFileCatalog(path);
+                filesVO.setFileName(newFileName);
+                boolean result = catalogManageService.saveFile(filesVO);
+                if(!result){
+                    return false;
+                }
+                //文件关联表插入一条数据
+                FilesFileCatalogVO filesRelateInfo =  new FilesFileCatalogVO();
+                filesRelateInfo.setFileId(filesVO.getId());
+                filesRelateInfo.setFileCatalogId(catalogId);
+                filesFileCatalogVOMapper.insert(filesRelateInfo);
+
+                //插入一条日志信息
+                UpdownloadLog log = new UpdownloadLog();
+                log.setFileId(filesVO.getId());
+                log.setOperation(UPLOAD_OPERATION);
+                log.setCreateTime(DateUtils.currentDateTime());
+                log.setCreateUser(userId);
+                updownloadLogMapper.insert(log);
+            }
+
         } catch (IllegalStateException e) {
             e.printStackTrace();
             return false;
