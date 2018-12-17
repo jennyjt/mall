@@ -16,6 +16,7 @@
     <result column="create_user" property="createUser" jdbcType="VARCHAR" />
     <result column="update_user" property="updateUser" jdbcType="VARCHAR" />
     <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
+    <result column="use_count" property="useCount" javaType="TINYINT"/>
   </resultMap>
   <sql id="Base_Column_List" >
     id, ftp_host, ftp_port, user_name, pass_word, proxy_host, proxy_port, proxy_user_name,

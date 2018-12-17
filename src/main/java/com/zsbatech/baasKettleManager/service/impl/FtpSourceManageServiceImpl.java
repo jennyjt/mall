@@ -69,23 +69,4 @@ public class FtpSourceManageServiceImpl implements FtpSouceManageService {
         Pagination<FtpSourceManager> sourceInfo = new Pagination<FtpSourceManager>(ftpSourceList);
         return sourceInfo;
     }
-
-    public boolean isSourceUsed(String nickName) {
-        boolean isSourceUsed = false;
-        int sourceId = ftpSourceManageVOMapper.selectByName(nickName).getId();
-        List<FTPDownLoadStepVO> ftpDownLoadStepVOS= ftpDownLoadStepVOMapper.selectBySourceId(sourceId);
-        Set<Integer> sourceIdSet = new HashSet<>();
-        for(FTPDownLoadStepVO ftpDownLoadStepVO:ftpDownLoadStepVOS){
-           sourceIdSet.add(ftpDownLoadStepVO.getFtpSourceId());
-        }
-        List<FTPPutStepVO> ftpPutStepVOS= ftpPutStepVOMapper.selectBySourceId(sourceId);
-        for(FTPPutStepVO ftpPutStepVO:ftpPutStepVOS){
-            sourceIdSet.add(ftpPutStepVO.getFtpSourceId());
-        }
-       JobMetaVO jobMetaVO = jobMetaVOMapper.selectById(new ArrayList<>(sourceIdSet));
-        if(jobMetaVO != null){
-            isSourceUsed = true;
-        }
-        return isSourceUsed;
-    }
 }
