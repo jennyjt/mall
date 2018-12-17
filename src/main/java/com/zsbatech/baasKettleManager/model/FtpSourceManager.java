@@ -31,7 +31,7 @@ public class FtpSourceManager {
 
     private String nickName;
 
-    private Byte useCount;
+    private Short useCount;
 
     public Integer getId() {
         return id;
@@ -145,11 +145,11 @@ public class FtpSourceManager {
         this.nickName = nickName;
     }
 
-    public Byte getUseCount() {
+    public Short getUseCount() {
         return useCount;
     }
 
-    public void setUseCount(Byte useCount) {
+    public void setUseCount(Short useCount) {
         this.useCount = useCount;
     }
 }
