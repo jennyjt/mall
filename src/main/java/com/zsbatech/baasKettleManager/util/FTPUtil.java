@@ -122,8 +122,8 @@ public class FTPUtil {
             if (ftpFiles != null && ftpFiles.length != 0) {
                 for (FTPFile ftpFile : ftpFiles) {
                     if (ftpFile.isDirectory()) {
-                        stringList.add(pathName+ftpFile.getName()+"/");
-                        ftpCatalog(ftpClient, pathName+ftpFile.getName()+"/");
+                        stringList.add(pathName + ftpFile.getName() + "/");
+                        ftpCatalog(ftpClient, pathName + ftpFile.getName() + "/");
                     }
                 }
             }
@@ -142,17 +142,17 @@ public class FTPUtil {
 
     public static List<FtpcatalogNode> ftpCatalog(List<String> ftpCatalogList) {
         List<FtpcatalogNode> nodeList = new ArrayList<>();
-        for(int i = 0 ; i < ftpCatalogList.size() ; i++){
+        for (int i = 0; i < ftpCatalogList.size(); i++) {
             FtpcatalogNode node = new FtpcatalogNode();
-            for(int j =i+1;j <ftpCatalogList.size() ; j++){
-                if(ftpCatalogList.get(j).startsWith(ftpCatalogList.get(i))){
-                    node.setParentName(ftpCatalogList.get(i));
-                    node.setName(ftpCatalogList.get(j));
-                }else {
-                    node.setName(ftpCatalogList.get(j));
-                }
-                nodeList.add(node);
+            String[] strings = ftpCatalogList.get(i).split("/");
+            int length = strings.length;
+            if (length >= 2) {
+                node.setName(strings[length-1]);
+                node.setParentName(strings[length-2]);
+            } else if(length == 1){
+                node.setName(strings[length - 1]);
             }
+            nodeList.add(node);
         }
 
         return nodeList;

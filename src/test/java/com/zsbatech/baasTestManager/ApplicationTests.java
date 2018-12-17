@@ -208,7 +208,7 @@ public class ApplicationTests {
     @Test
     public void TestFile() throws Exception {
         FTPClient ftpClient = FTPUtil.loginFTP("106.75.17.46", 21, "test", "test123456");
-        ftpClient.makeDirectory("files/pento");
+        ftpClient.makeDirectory("files/pento/dataSour");
     }
 
     @Test

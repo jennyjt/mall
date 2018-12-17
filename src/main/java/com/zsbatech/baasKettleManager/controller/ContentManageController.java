@@ -147,7 +147,7 @@ public class ContentManageController {
     )
     @RequestMapping(value = "/queryFtpCatalog", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public ResponseData<List<FtpcatalogNode>> queryFtpCatalog( @RequestParam(name = "code") String nickName) {
+    public ResponseData<List<FtpcatalogNode>> queryFtpCatalog( @RequestParam(name = "nickName") String nickName) {
         List<FtpcatalogNode> catalogList = catalogManageService.getFtpCatalog(nickName);
         ResponseData<List<FtpcatalogNode>> responseData = new ResponseData<>();
         if (catalogList != null && catalogList.size() != 0) {
