@@ -20,7 +20,7 @@
   </resultMap>
   <sql id="Base_Column_List" >
     id, ftp_host, ftp_port, user_name, pass_word, proxy_host, proxy_port, proxy_user_name,
-    proxy_pass_word, create_time, update_time, create_user, update_user,nick_name
+    proxy_pass_word, create_time, update_time, create_user, update_user,nick_name,use_count
   </sql>
 
   <insert id="insert" parameterType="com.zsbatech.baasKettleManager.vo.FtpSourceManageVO" useGeneratedKeys="true" keyProperty="id">
@@ -33,7 +33,7 @@
       #{userName,jdbcType=VARCHAR}, #{passWord,jdbcType=VARCHAR}, #{proxyHost,jdbcType=VARCHAR},
       #{proxyPort,jdbcType=VARCHAR}, #{proxyUserName,jdbcType=VARCHAR}, #{proxyPassWord,jdbcType=VARCHAR},
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR},
-      #{updateUser,jdbcType=VARCHAR},#{nickName,jdbcType=VARCHAR})
+      #{updateUser,jdbcType=VARCHAR},#{nickName,jdbcType=VARCHAR},#{useCount,jdbcType=INTEGER})
   </insert>
 
 
