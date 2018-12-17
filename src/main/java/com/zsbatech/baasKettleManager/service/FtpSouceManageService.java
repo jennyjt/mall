@@ -30,4 +30,12 @@ public interface FtpSouceManageService {
      * @return
      */
     Pagination<FtpSourceManager> getDataSources(Integer currPage, Integer pageSize, FtpSourceManager ftpSource);
+
+    /**
+     * 判断数据源是否被使用
+     * @param nickName
+     * @return
+     */
+    boolean isSourceUsed(String nickName);
+
 }

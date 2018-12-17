@@ -56,4 +56,11 @@
         where job_meta_id = #{jobMetaId,jdbcType=INTEGER}
         limit 1
     </select>
+
+    <select id="selectBySourceId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+        select
+        <include refid="Base_Column_List" />
+        from ftp_download_step
+        where ftp_source_id = #{ftpSourceId,jdbcType=INTEGER}
+    </select>
 </mapper>
