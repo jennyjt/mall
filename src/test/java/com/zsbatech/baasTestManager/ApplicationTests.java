@@ -1,6 +1,7 @@
 package com.zsbatech.baasTestManager;
 
 import com.zsbatech.baasKettleManager.service.*;
+import com.zsbatech.baasKettleManager.service.impl.FtpSourceManageServiceImpl;
 import com.zsbatech.baasKettleManager.service.impl.SaveTransMetaServiceImpl;
 import com.zsbatech.baasKettleManager.util.FTPUtil;
 import com.zsbatech.baasKettleManager.vo.FTPDownLoadStepVO;
@@ -38,6 +39,9 @@ import java.util.List;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ApplicationTests {
+
+    @Autowired
+    private FtpSourceManageServiceImpl ftpSourceManageService;
 
     @Autowired
     private CatalogManageService catalogManageService;
@@ -207,8 +211,9 @@ public class ApplicationTests {
 
     @Test
     public void TestFile() throws Exception {
-        FTPClient ftpClient = FTPUtil.loginFTP("106.75.17.46", 21, "test", "test123456");
-        ftpClient.makeDirectory("files/pento/dataSour");
+//        FTPClient ftpClient = FTPUtil.loginFTP("106.75.17.46", 21, "test", "test123456");
+//        ftpClient.makeDirectory("files/pento/dataSour");
+        ftpSourceManageService.isSourceUsed("test");
     }
 
     @Test

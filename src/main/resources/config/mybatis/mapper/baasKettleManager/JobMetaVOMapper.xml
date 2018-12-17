@@ -35,13 +35,12 @@
         select
         <include refid="Base_Column_List"/>
         from job_meta
-        where id in
-        <foreach collection="list" item="item" index="index" separator=",">
-            (
-            #{item,jdbcType=INTEGER},
-            )
-        </foreach>
-        and execute_status='true'
-        limit 1
+        <where>execute_status = 1 and
+            id in
+            <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+                #{item,jdbcType=INTEGER}
+            </foreach>
+            limit 1
+        </where>
     </select>
 </mapper>
