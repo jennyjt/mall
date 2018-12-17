@@ -1,12 +1,12 @@
 package com.zsbatech.baasKettleManager.service.impl;
 
-import com.zsbatech.baasKettleManager.dao.FilesFileCatalogVOMapper;
+import com.zsbatech.baasKettleManager.dao.FilesFileCatalogDOMapper;
 import com.zsbatech.baasKettleManager.dao.UpdownloadLogMapper;
+import com.zsbatech.baasKettleManager.model.FilesDO;
+import com.zsbatech.baasKettleManager.model.FilesFileCatalogDO;
 import com.zsbatech.baasKettleManager.model.UpdownloadLog;
 import com.zsbatech.baasKettleManager.service.CatalogManageService;
 import com.zsbatech.baasKettleManager.service.FileUpDownloadService;
-import com.zsbatech.baasKettleManager.vo.FilesFileCatalogVO;
-import com.zsbatech.baasKettleManager.vo.FilesVO;
 import com.zsbatech.base.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -37,7 +37,7 @@ public class FileDownloadServiceImpl implements FileUpDownloadService {
     private UpdownloadLogMapper updownloadLogMapper;
 
     @Autowired
-    private FilesFileCatalogVOMapper filesFileCatalogVOMapper;
+    private FilesFileCatalogDOMapper filesFileCatalogDOMapper;
 
     @Override
     public boolean fileUpload(MultipartFile file, String userId, String fileDirectory, Integer catalogId) {
@@ -55,25 +55,25 @@ public class FileDownloadServiceImpl implements FileUpDownloadService {
             //文件复制
             file.transferTo(targetFile);
             //文件表插入数据
-            FilesVO filesVO = new FilesVO();
-            filesVO.setOriginName(oldFileName);
-            filesVO.setCreateTime(DateUtils.currentDateTime());
-            filesVO.setCreateUser(userId);
-            filesVO.setFileCatalog(path);
-            filesVO.setFileName(newFileName);
-            boolean result = catalogManageService.saveFile(filesVO);
+            FilesDO filesDO = new FilesDO();
+            filesDO.setOriginName(oldFileName);
+            filesDO.setCreateTime(DateUtils.currentDateTime());
+            filesDO.setCreateUser(userId);
+            filesDO.setFileCatalog(path);
+            filesDO.setFileName(newFileName);
+            boolean result = catalogManageService.saveFile(filesDO);
             if(!result){
                 return false;
             }
             //文件关联表插入一条数据
-            FilesFileCatalogVO filesRelateInfo =  new FilesFileCatalogVO();
-            filesRelateInfo.setFileId(filesVO.getId());
+            FilesFileCatalogDO filesRelateInfo =  new FilesFileCatalogDO();
+            filesRelateInfo.setFileId(filesDO.getId());
             filesRelateInfo.setFileCatalogId(catalogId);
-            filesFileCatalogVOMapper.insert(filesRelateInfo);
+            filesFileCatalogDOMapper.insert(filesRelateInfo);
 
             //插入一条日志信息
             UpdownloadLog log = new UpdownloadLog();
-            log.setFileId(filesVO.getId());
+            log.setFileId(filesDO.getId());
             log.setOperation(UPLOAD_OPERATION);
             log.setCreateTime(DateUtils.currentDateTime());
             log.setCreateUser(userId);
@@ -106,25 +106,25 @@ public class FileDownloadServiceImpl implements FileUpDownloadService {
                 //文件复制
                 file.transferTo(targetFile);
                 //文件表插入数据
-                FilesVO filesVO = new FilesVO();
-                filesVO.setOriginName(oldFileName);
-                filesVO.setCreateTime(DateUtils.currentDateTime());
-                filesVO.setCreateUser(userId);
-                filesVO.setFileCatalog(path);
-                filesVO.setFileName(newFileName);
-                boolean result = catalogManageService.saveFile(filesVO);
+                FilesDO filesDO = new FilesDO();
+                filesDO.setOriginName(oldFileName);
+                filesDO.setCreateTime(DateUtils.currentDateTime());
+                filesDO.setCreateUser(userId);
+                filesDO.setFileCatalog(path);
+                filesDO.setFileName(newFileName);
+                boolean result = catalogManageService.saveFile(filesDO);
                 if(!result){
                     return false;
                 }
                 //文件关联表插入一条数据
-                FilesFileCatalogVO filesRelateInfo =  new FilesFileCatalogVO();
-                filesRelateInfo.setFileId(filesVO.getId());
+                FilesFileCatalogDO filesRelateInfo =  new FilesFileCatalogDO();
+                filesRelateInfo.setFileId(filesDO.getId());
                 filesRelateInfo.setFileCatalogId(catalogId);
-                filesFileCatalogVOMapper.insert(filesRelateInfo);
+                filesFileCatalogDOMapper.insert(filesRelateInfo);
 
                 //插入一条日志信息
                 UpdownloadLog log = new UpdownloadLog();
-                log.setFileId(filesVO.getId());
+                log.setFileId(filesDO.getId());
                 log.setOperation(UPLOAD_OPERATION);
                 log.setCreateTime(DateUtils.currentDateTime());
                 log.setCreateUser(userId);
@@ -143,7 +143,7 @@ public class FileDownloadServiceImpl implements FileUpDownloadService {
 
     @Override
     public boolean fileDownload(Integer fileId, HttpServletResponse response, String userId) {
-        FilesVO fileInfo = catalogManageService.getFileInfoById(fileId);
+        FilesDO fileInfo = catalogManageService.getFileInfoById(fileId);
         if (fileInfo == null){
             return false;
         }

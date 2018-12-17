@@ -2,6 +2,7 @@ package com.zsbatech.baasKettleManager.controller;
 
 import com.zsbatech.baasKettleManager.service.FileSyncJobService;
 import com.zsbatech.baasKettleManager.service.JobManageService;
+import com.zsbatech.baasKettleManager.service.impl.JobManageServiceImpl;
 import com.zsbatech.base.common.ResponseData;
 import com.zsbatech.base.constants.RequestField;
 import com.zsbatech.base.constants.Response;
@@ -39,9 +40,13 @@ public class JobManageController {
     )
     @RequestMapping(value = "/stopJob", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public ResponseData<Boolean> stopJob(@RequestParam String jobName) {
-        ResponseData<Boolean> responseData = new ResponseData<>();
-        jobManageService.stop(jobName);
+    public ResponseData<String> stopJob(@RequestParam String jobName) {
+        ResponseData<String> responseData = new ResponseData<>();
+        if(jobManageService.stop(jobName)){
+            responseData.setOK(200,"job已经停止",jobName);
+        }else {
+            responseData.setError("job停止失败");
+        }
         return responseData;
     }
 
@@ -92,11 +97,15 @@ public class JobManageController {
                     @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
             }
     )
-    @RequestMapping(value = "/stopAll", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @RequestMapping(value = "/stopJobs", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public ResponseData<Boolean> stopAll() {
-        ResponseData<Boolean> responseData = new ResponseData<>();
-        jobManageService.stopAll();
+    public ResponseData<List> stopJobs(@RequestBody List<String> jobNames) {
+        ResponseData<List> responseData = new ResponseData<>();
+        if(jobManageService.stopJobs(jobNames)){
+            responseData.setOK(200,"job已经停止",jobNames);
+        }else {
+            responseData.setError("job停止失败");
+        }
         return responseData;
     }
 }

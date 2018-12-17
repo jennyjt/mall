@@ -1,5 +1,9 @@
 package com.zsbatech.baasKettleManager.vo;
 
+import com.zsbatech.baasKettleManager.model.FTPDownLoadStepDO;
+import com.zsbatech.baasKettleManager.model.FTPPutStepDO;
+import com.zsbatech.baasKettleManager.model.JobStartStepDO;
+
 /**
  * Created with IntelliJ IDEA.
  * Description:
@@ -8,19 +12,19 @@ package com.zsbatech.baasKettleManager.vo;
  */
 public class FTPSyncSetp {
 
-    private JobStartStepVO jobStartStepVO;
+    private JobStartStepDO jobStartStepVO;
 
-    private FTPDownLoadStepVO ftpDownLoadStepVO;
+    private FTPDownLoadStepDO ftpDownLoadStepVO;
 
-    private FTPPutStepVO ftpPutStepVO;
+    private FTPPutStepDO ftpPutStepVO;
 
     private String fileName;
 
-    public JobStartStepVO getJobStartStepVO() {
+    public JobStartStepDO getJobStartStepVO() {
         return jobStartStepVO;
     }
 
-    public FTPDownLoadStepVO getFtpDownLoadStepVO() {
+    public FTPDownLoadStepDO getFtpDownLoadStepVO() {
         return ftpDownLoadStepVO;
     }
 
@@ -28,15 +32,15 @@ public class FTPSyncSetp {
         return fileName;
     }
 
-    public FTPPutStepVO getFtpPutStepVO() {
+    public FTPPutStepDO getFtpPutStepVO() {
         return ftpPutStepVO;
     }
 
-    public void setJobStartStepVO(JobStartStepVO jobStartStepVO) {
+    public void setJobStartStepVO(JobStartStepDO jobStartStepVO) {
         this.jobStartStepVO = jobStartStepVO;
     }
 
-    public void setFtpDownLoadStepVO(FTPDownLoadStepVO ftpDownLoadStepVO) {
+    public void setFtpDownLoadStepVO(FTPDownLoadStepDO ftpDownLoadStepVO) {
         this.ftpDownLoadStepVO = ftpDownLoadStepVO;
     }
 
@@ -44,7 +48,7 @@ public class FTPSyncSetp {
         this.fileName = fileName;
     }
 
-    public void setFtpPutStepVO(FTPPutStepVO ftpPutStepVO) {
+    public void setFtpPutStepVO(FTPPutStepDO ftpPutStepVO) {
         this.ftpPutStepVO = ftpPutStepVO;
     }
 }

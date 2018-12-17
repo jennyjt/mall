@@ -1,15 +1,18 @@
 package com.zsbatech.baasKettleManager.service.impl;
 
-import com.zsbatech.baasKettleManager.dao.FileCatalogVOMapper;
-import com.zsbatech.baasKettleManager.dao.FilesFileCatalogVOMapper;
-import com.zsbatech.baasKettleManager.dao.FilesVOMapper;
-import com.zsbatech.baasKettleManager.dao.FtpSourceManageVOMapper;
+import com.zsbatech.baasKettleManager.dao.FileCatalogDOMapper;
+import com.zsbatech.baasKettleManager.dao.FilesFileCatalogDOMapper;
+import com.zsbatech.baasKettleManager.dao.FilesDOMapper;
+import com.zsbatech.baasKettleManager.dao.FtpSourceManageDOMapper;
+import com.zsbatech.baasKettleManager.model.FileCatalogDO;
+import com.zsbatech.baasKettleManager.model.FilesDO;
+import com.zsbatech.baasKettleManager.model.FilesFileCatalogDO;
+import com.zsbatech.baasKettleManager.model.FtpSourceManageDO;
 import com.zsbatech.baasKettleManager.service.CatalogManageService;
 import com.zsbatech.baasKettleManager.util.FTPUtil;
 import com.zsbatech.baasKettleManager.util.StringUtil;
 import com.zsbatech.baasKettleManager.vo.*;
 import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -27,16 +30,16 @@ import java.util.*;
 public class CatalogManageServiceImpl implements CatalogManageService {
 
     @Autowired
-    private FtpSourceManageVOMapper ftpSourceManageVOMapper;
+    private FtpSourceManageDOMapper ftpSourceManageDOMapper;
 
     @Autowired
-    private FilesVOMapper filesVOMapper;
+    private FilesDOMapper filesDOMapper;
 
     @Autowired
-    private FileCatalogVOMapper fileCatalogVOMapper;
+    private FileCatalogDOMapper fileCatalogDOMapper;
 
     @Autowired
-    private FilesFileCatalogVOMapper filesFileCatalogVOMapper;
+    private FilesFileCatalogDOMapper filesFileCatalogDOMapper;
 
     /**
      * 创建本地目录
@@ -134,11 +137,11 @@ public class CatalogManageServiceImpl implements CatalogManageService {
      * @param code
      * @return
      */
-    public List<FilesVO> queryFiles(String fileCatalog, String code) {
-        List<FilesVO> fileList = new ArrayList<>();
-        List<FilesVO> files = filesVOMapper.queryFiles(fileCatalog, code);
+    public List<FilesDO> queryFiles(String fileCatalog, String code) {
+        List<FilesDO> fileList = new ArrayList<>();
+        List<FilesDO> files = filesDOMapper.queryFiles(fileCatalog, code);
         if (files != null && files.size() != 0) {
-            for (FilesVO file : files) {
+            for (FilesDO file : files) {
                 fileList.add(file);
             }
         }
@@ -154,24 +157,24 @@ public class CatalogManageServiceImpl implements CatalogManageService {
      */
     public List<String> queryCataLog(String code, String fileName) {
         Set<String> strings = new HashSet<>();
-        List<FilesVO> filesVOList = filesVOMapper.queryFile(code, fileName);
+        List<FilesDO> filesVOList = filesDOMapper.queryFile(code, fileName);
         System.out.println(filesVOList.size());
-        List<FileCatalogVO> fileCatalogVOList =null;
+        List<FileCatalogDO> fileCatalogDOList =null;
         if (filesVOList != null && filesVOList.size() != 0) {
-            for (FilesVO filesVO : filesVOList) {
-                List<FilesFileCatalogVO> filesFileCatalogVOList = filesFileCatalogVOMapper.queryByFileId(filesVO.getId());
+            for (FilesDO filesDO : filesVOList) {
+                List<FilesFileCatalogDO> filesFileCatalogDOList = filesFileCatalogDOMapper.queryByFileId(filesDO.getId());
                 List<Integer> cataLogIdList = new ArrayList<>();
-                for (FilesFileCatalogVO filesFileCatalogVO : filesFileCatalogVOList) {
-                    cataLogIdList.add(filesFileCatalogVO.getFileCatalogId());
+                for (FilesFileCatalogDO filesFileCatalogDO : filesFileCatalogDOList) {
+                    cataLogIdList.add(filesFileCatalogDO.getFileCatalogId());
                 }
                 if(cataLogIdList == null || cataLogIdList.size() == 0){
                     return null;
                 }else {
-                    fileCatalogVOList = fileCatalogVOMapper.queryCatalogById(cataLogIdList);
+                    fileCatalogDOList = fileCatalogDOMapper.queryCatalogById(cataLogIdList);
                 }
                 String cataLog = new String();
-                for (FileCatalogVO fileCatalogVO : fileCatalogVOList) {
-                    cataLog = cataLog + StringUtil.toString(fileCatalogVO.getSourceCatalog(), '/');
+                for (FileCatalogDO fileCatalogDO : fileCatalogDOList) {
+                    cataLog = cataLog + StringUtil.toString(fileCatalogDO.getSourceCatalog(), '/');
                     strings.add(cataLog);
                 }
             }
@@ -187,22 +190,22 @@ public class CatalogManageServiceImpl implements CatalogManageService {
      * @return
      */
     public int saveFiles(List<String> files) {
-        List<FilesVO> filesVOList = new ArrayList<>();
+        List<FilesDO> filesDOList = new ArrayList<>();
         for (String file : files) {
             File file1 = new File(file);
-            FilesVO filesVO = new FilesVO();
-            filesVO.setFileCatalog(file1.getParentFile().toString());
-            filesVO.setCreateTime(new Date());
-            filesVO.setFileName(file1.getName());
-            filesVO.setUpdateTime(new Date());
-            filesVOList.add(filesVO);
+            FilesDO filesDO = new FilesDO();
+            filesDO.setFileCatalog(file1.getParentFile().toString());
+            filesDO.setCreateTime(new Date());
+            filesDO.setFileName(file1.getName());
+            filesDO.setUpdateTime(new Date());
+            filesDOList.add(filesDO);
         }
-        return filesVOMapper.insertBatch(filesVOList);
+        return filesDOMapper.insertBatch(filesDOList);
     }
 
     @Override
-    public boolean saveFile(FilesVO filesVO) {
-        int result = filesVOMapper.insert(filesVO);
+    public boolean saveFile(FilesDO filesDO) {
+        int result = filesDOMapper.insert(filesDO);
         if (result > 0) {
             return true;
         } else {
@@ -211,13 +214,13 @@ public class CatalogManageServiceImpl implements CatalogManageService {
     }
 
     @Override
-    public FilesVO getFileInfoById(Integer fileId) {
-        return filesVOMapper.getFileByFileId(fileId);
+    public FilesDO getFileInfoById(Integer fileId) {
+        return filesDOMapper.getFileByFileId(fileId);
     }
 
     @Override
-    public List<FilesVO> getFileInfosByIds(List<Integer> fileIds) {
-        return filesVOMapper.getFilesByFileIds(fileIds);
+    public List<FilesDO> getFileInfosByIds(List<Integer> fileIds) {
+        return filesDOMapper.getFilesByFileIds(fileIds);
     }
 
 
@@ -228,8 +231,8 @@ public class CatalogManageServiceImpl implements CatalogManageService {
      * @return
      */
     public List<FtpcatalogNode> getFtpCatalog(String nickName){
-        FtpSourceManageVO ftpSourceManageVO = ftpSourceManageVOMapper.selectByName(nickName);
-        FTPClient ftpClient = FTPUtil.loginFTP(ftpSourceManageVO.getFtpHost(),Integer.valueOf(ftpSourceManageVO.getFtpPort()),ftpSourceManageVO.getUserName(),ftpSourceManageVO.getPassWord());
+        FtpSourceManageDO ftpSourceManageDO = ftpSourceManageDOMapper.selectByName(nickName);
+        FTPClient ftpClient = FTPUtil.loginFTP(ftpSourceManageDO.getFtpHost(),Integer.valueOf(ftpSourceManageDO.getFtpPort()),ftpSourceManageDO.getUserName(),ftpSourceManageDO.getPassWord());
         return FTPUtil.ftpCatalog(FTPUtil.ftpCatalog(ftpClient,""));
     }
 
@@ -237,8 +240,8 @@ public class CatalogManageServiceImpl implements CatalogManageService {
     @Override
     public String getFullPathByCatalogId(Integer catalogId) {
         StringBuilder sb = new StringBuilder();
-        List<FileCatalogVO> catalogList = fileCatalogVOMapper.getFullPathByCatalogId(catalogId);
-        for(FileCatalogVO fileCatalog: catalogList) {
+        List<FileCatalogDO> catalogList = fileCatalogDOMapper.getFullPathByCatalogId(catalogId);
+        for(FileCatalogDO fileCatalog: catalogList) {
             sb.append(File.separator).append(fileCatalog.getSourceCatalog());
         }
         return sb.toString();

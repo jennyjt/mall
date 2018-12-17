@@ -1,10 +1,10 @@
 package com.zsbatech.baasKettleManager.service.impl;
 
 import com.zsbatech.baasKettleManager.dao.*;
+import com.zsbatech.baasKettleManager.model.*;
 import com.zsbatech.baasKettleManager.service.CatalogManageService;
 import com.zsbatech.baasKettleManager.service.SaveJobMetaService;
 import com.zsbatech.baasKettleManager.util.ConfigUtil;
-import com.zsbatech.baasKettleManager.vo.*;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.KettleEnvironment;
@@ -50,22 +50,22 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
     private CatalogManageService catalogManageService;
 
     @Autowired
-    private JobHopMetaVOMapper jobHopMetaVOMapper;
+    private JobHopMetaDOMapper jobHopMetaDOMapper;
 
     @Autowired
-    private JobMetaVOMapper jobMetaVOMapper;
+    private JobMetaDOMapper jobMetaDOMapper;
 
     @Autowired
-    private JobStartStepVOMapper jobStartStepVOMapper;
+    private JobStartStepDOMapper jobStartStepDOMapper;
 
     @Autowired
-    private FTPPutStepVOMapper ftpPutStepVOMapper;
+    private FTPPutStepDOMapper ftpPutStepDOMapper;
 
     @Autowired
-    private FTPDownLoadStepVOMapper ftpDownLoadStepVOMapper;
+    private FTPDownLoadStepDOMapper ftpDownLoadStepDOMapper;
 
     @Autowired
-    private TransMetaVOMapper transMetaVOMapper;
+    private TransMetaDOMapper transMetaDOMapper;
 
     public boolean save(EngineMetaInterface meta, String filename, boolean export) {
         EngineMetaInterface lmeta;
@@ -108,65 +108,65 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
         } catch (KettleException e) {
             e.printStackTrace();
         }
-        JobStartStepVO jobStartStepVO = null;
-        FTPPutStepVO ftpPutStepVO = null;
-        FTPDownLoadStepVO ftpDownLoadStepVO = null;
-        List<JobHopMetaVO> jobHopMetaVOList = new ArrayList<>();
-        if (jobMetaVOMapper.selectByJobName(jobMeta.getName()) != null) {
+        JobStartStepDO jobStartStepDO = null;
+        FTPPutStepDO ftpPutStepDO = null;
+        FTPDownLoadStepDO ftpDownLoadStepDO = null;
+        List<JobHopMetaDO> jobHopMetaDOList = new ArrayList<>();
+        if (jobMetaDOMapper.selectByJobName(jobMeta.getName()) != null) {
             return true;
-        } else if (jobMetaVOMapper.insert(getJobMetaVO(jobMeta)) != 0) {
-            int jobMetaId = jobMetaVOMapper.selectByJobName(jobMeta.getName()).getId();
-            jobStartStepVO = getJobStartStepVO(jobMeta);
-            jobStartStepVO.setJobMetaId(jobMetaId);
+        } else if (jobMetaDOMapper.insert(getJobMetaDO(jobMeta)) != 0) {
+            int jobMetaId = jobMetaDOMapper.selectByJobName(jobMeta.getName()).getId();
+            jobStartStepDO = getJobStartStepDO(jobMeta);
+            jobStartStepDO.setJobMetaId(jobMetaId);
             int jobStartStepId = 0;
             int ftpPutStepId = 0;
             int ftpDownLoadStepId = 0;
-            if (jobStartStepVOMapper.insert(jobStartStepVO) != 0) {
-                jobStartStepId = jobStartStepVOMapper.selectJobStartStepVO(jobMetaId).getId();
+            if (jobStartStepDOMapper.insert(jobStartStepDO) != 0) {
+                jobStartStepId = jobStartStepDOMapper.selectJobStartStepVO(jobMetaId).getId();
             }
-            ftpPutStepVO = getFTPPutStepVO(jobMeta);
-            ftpPutStepVO.setJobMetaId(jobMetaId);
-            ftpPutStepVO.setFtpSourceId(upFtpSourceId);
-            if (ftpPutStepVO.getStepName() != null && ftpPutStepVOMapper.insert(ftpPutStepVO) != 0) {
-                ftpPutStepId = ftpPutStepVOMapper.selectByName(ftpPutStepVO.getStepName()).getId();
+            ftpPutStepDO = getFTPPutStepDO(jobMeta);
+            ftpPutStepDO.setJobMetaId(jobMetaId);
+            ftpPutStepDO.setFtpSourceId(upFtpSourceId);
+            if (ftpPutStepDO.getStepName() != null && ftpPutStepDOMapper.insert(ftpPutStepDO) != 0) {
+                ftpPutStepId = ftpPutStepDOMapper.selectByName(ftpPutStepDO.getStepName()).getId();
             }
-            ftpDownLoadStepVO = getFTPDownLoadStepVO(jobMeta);
-            ftpDownLoadStepVO.setJobMetaId(jobMetaId);
-            ftpDownLoadStepVO.setFtpSourceId(downFtpSourceId);
-            if (ftpDownLoadStepVO.getStepName() != null && ftpDownLoadStepVOMapper.insert(ftpDownLoadStepVO) != 0) {
-                ftpDownLoadStepId = ftpDownLoadStepVOMapper.selectByName(ftpDownLoadStepVO.getStepName()).getId();
+            ftpDownLoadStepDO = getFTPDownLoadStepDO(jobMeta);
+            ftpDownLoadStepDO.setJobMetaId(jobMetaId);
+            ftpDownLoadStepDO.setFtpSourceId(downFtpSourceId);
+            if (ftpDownLoadStepDO.getStepName() != null && ftpDownLoadStepDOMapper.insert(ftpDownLoadStepDO) != 0) {
+                ftpDownLoadStepId = ftpDownLoadStepDOMapper.selectByName(ftpDownLoadStepDO.getStepName()).getId();
             }
             List<JobHopMeta> jobHopMetaList = jobMeta.getJobhops();
             for (JobHopMeta jobHopMeta : jobHopMetaList) {
-                JobHopMetaVO jobHopMetaVO = new JobHopMetaVO();
+                JobHopMetaDO jobHopMetaDO = new JobHopMetaDO();
                 JobEntryInterface jobEntryInterface = jobHopMeta.getFromEntry().getEntry();
                 JobEntryInterface jobEntryInterface1 = jobHopMeta.getToEntry().getEntry();
                 if (jobEntryInterface instanceof JobEntrySpecial) {
-                    jobHopMetaVO.setFromStepId(jobStartStepId);
+                    jobHopMetaDO.setFromStepId(jobStartStepId);
                     if (jobHopMeta.isUnconditional()) {
-                        jobHopMetaVO.setCondition((short) 0);
+                        jobHopMetaDO.setCondition((short) 0);
                     }
                     if (jobEntryInterface1 instanceof JobEntryFTP) {
-                        jobHopMetaVO.setToStepId(ftpDownLoadStepId);
+                        jobHopMetaDO.setToStepId(ftpDownLoadStepId);
                     } else if (jobEntryInterface1 instanceof JobEntryFTPPUT) {
-                        jobHopMetaVO.setToStepId(ftpPutStepId);
+                        jobHopMetaDO.setToStepId(ftpPutStepId);
                     }
-                    jobHopMetaVOList.add(jobHopMetaVO);
+                    jobHopMetaDOList.add(jobHopMetaDO);
                 } else if (jobEntryInterface instanceof JobEntryFTP) {
-                    jobHopMetaVO.setFromStepId(ftpDownLoadStepId);
+                    jobHopMetaDO.setFromStepId(ftpDownLoadStepId);
                     if (jobHopMeta.isUnconditional()) {
-                        jobHopMetaVO.setCondition((short) 0);
+                        jobHopMetaDO.setCondition((short) 0);
                     } else {
                         jobHopMeta.getEvaluation();
                     }
                     if (jobEntryInterface1 instanceof JobEntryFTPPUT) {
-                        jobHopMetaVO.setToStepId(ftpPutStepId);
+                        jobHopMetaDO.setToStepId(ftpPutStepId);
                     }
-                    jobHopMetaVOList.add(jobHopMetaVO);
+                    jobHopMetaDOList.add(jobHopMetaDO);
                 }
             }
         }
-        if (jobHopMetaVOMapper.insertBatch(jobHopMetaVOList) > 0) {
+        if (jobHopMetaDOMapper.insertBatch(jobHopMetaDOList) > 0) {
             return true;
         } else {
             return false;
@@ -187,130 +187,130 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
         } catch (KettleXMLException e) {
             e.printStackTrace();
         }
-        JobStartStepVO jobStartStepVO = null;
-        JobHopMetaVO jobHopMetaVO = new JobHopMetaVO();
+        JobStartStepDO jobStartStepDO = null;
+        JobHopMetaDO jobHopMetaDO = new JobHopMetaDO();
         JobEntryTrans jobEntryTrans = getJobEntryTrans(jobMeta);
         File file= new File(jobEntryTrans.getFilename());
         String transName =file.getName().replaceAll(".ktr","");
         int transMetaId = 0;
-        if (transMetaVOMapper.selectTransMetaVO(transName) != null) {
-            transMetaId = transMetaVOMapper.selectTransMetaVO(transName).getId();
+        if (transMetaDOMapper.selectTransMetaVO(transName) != null) {
+            transMetaId = transMetaDOMapper.selectTransMetaVO(transName).getId();
         } else {
             logger.info("job中对应的转换不存在！！！！！");
             return false;
         }
-        JobMetaVO jobMetaVO = getJobMetaVO(jobMeta);
-        jobMetaVO.setTransMetaId(transMetaId);
-        if (jobMetaVOMapper.selectByJobName(jobMeta.getName()) != null) {
+        JobMetaDO jobMetaDO = getJobMetaDO(jobMeta);
+        jobMetaDO.setTransMetaId(transMetaId);
+        if (jobMetaDOMapper.selectByJobName(jobMeta.getName()) != null) {
             return true;
-        } else if (jobMetaVOMapper.insert(jobMetaVO) != 0) {
-            int jobMetaId = jobMetaVOMapper.selectByJobName(jobMeta.getName()).getId();
-            jobStartStepVO = getJobStartStepVO(jobMeta);
-            jobStartStepVO.setJobMetaId(jobMetaId);
+        } else if (jobMetaDOMapper.insert(jobMetaDO) != 0) {
+            int jobMetaId = jobMetaDOMapper.selectByJobName(jobMeta.getName()).getId();
+            jobStartStepDO = getJobStartStepDO(jobMeta);
+            jobStartStepDO.setJobMetaId(jobMetaId);
             int fromStepId = 0;
             int toStepId = 0;
-            if (jobStartStepVOMapper.insert(jobStartStepVO) != 0) {
-                fromStepId = jobStartStepVOMapper.selectJobStartStepVO(jobStartStepVO.getJobMetaId()).getId();
+            if (jobStartStepDOMapper.insert(jobStartStepDO) != 0) {
+                fromStepId = jobStartStepDOMapper.selectJobStartStepVO(jobStartStepDO.getJobMetaId()).getId();
             }
             toStepId = transMetaId;
             if (fromStepId != 0 && toStepId != 0) {
-                jobHopMetaVO.setFromStepId(fromStepId);
-                jobHopMetaVO.setToStepId(toStepId);
-                jobHopMetaVO.setCondition((short) 0);
-                jobHopMetaVO.setCreateTime(new Date());
-                jobHopMetaVO.setUpdateTime(new Date());
+                jobHopMetaDO.setFromStepId(fromStepId);
+                jobHopMetaDO.setToStepId(toStepId);
+                jobHopMetaDO.setCondition((short) 0);
+                jobHopMetaDO.setCreateTime(new Date());
+                jobHopMetaDO.setUpdateTime(new Date());
             }
         }
-        if (jobHopMetaVOMapper.insert(jobHopMetaVO) > 0) {
+        if (jobHopMetaDOMapper.insert(jobHopMetaDO) > 0) {
             return true;
         } else {
             return false;
         }
     }
 
-    public JobMetaVO getJobMetaVO(JobMeta jobMeta) {
-        JobMetaVO jobMetaVO = new JobMetaVO();
-        jobMetaVO.setJobName(jobMeta.getName());
-        jobMetaVO.setFileName(jobMeta.getFilename());
-        jobMetaVO.setCreateTime(new Date());
-        jobMetaVO.setUpdateTime(new Date());
-        jobMetaVO.setExecuteStatus((short) 0);
-        return jobMetaVO;
+    public JobMetaDO getJobMetaDO(JobMeta jobMeta) {
+        JobMetaDO jobMetaDO = new JobMetaDO();
+        jobMetaDO.setJobName(jobMeta.getName());
+        jobMetaDO.setFileName(jobMeta.getFilename());
+        jobMetaDO.setCreateTime(new Date());
+        jobMetaDO.setUpdateTime(new Date());
+        jobMetaDO.setExecuteStatus((short) 0);
+        return jobMetaDO;
     }
 
-    public JobStartStepVO getJobStartStepVO(JobMeta jobMeta) {
+    public JobStartStepDO getJobStartStepDO(JobMeta jobMeta) {
         JobEntryCopy jobEntryCopy = jobMeta.getStart();
         JobEntryInterface jobEntryInterface = jobEntryCopy.getEntry();
-        JobStartStepVO jobStartStepVO = new JobStartStepVO();
+        JobStartStepDO jobStartStepDO = new JobStartStepDO();
         if (jobEntryInterface instanceof JobEntrySpecial) {
-            jobStartStepVO.setStepName(jobEntryInterface.getName());
-            jobStartStepVO.setTimingType((short) ((JobEntrySpecial) jobEntryInterface).getSchedulerType());
-            if (jobStartStepVO.getTimingType() == 1) {
-                jobStartStepVO.setTimingTime(((JobEntrySpecial) jobEntryInterface).getIntervalSeconds());
-            } else if (jobStartStepVO.getTimingType() == 2) {
-                jobStartStepVO.setTimingTime(((JobEntrySpecial) jobEntryInterface).getHour());
-            } else if (jobStartStepVO.getTimingType() == 3) {
-                jobStartStepVO.setTimingTime(((JobEntrySpecial) jobEntryInterface).getWeekDay());
-            } else if (jobStartStepVO.getTimingType() == 4) {
-                jobStartStepVO.setTimingTime(((JobEntrySpecial) jobEntryInterface).getDayOfMonth());
+            jobStartStepDO.setStepName(jobEntryInterface.getName());
+            jobStartStepDO.setTimingType((short) ((JobEntrySpecial) jobEntryInterface).getSchedulerType());
+            if (jobStartStepDO.getTimingType() == 1) {
+                jobStartStepDO.setTimingTime(((JobEntrySpecial) jobEntryInterface).getIntervalSeconds());
+            } else if (jobStartStepDO.getTimingType() == 2) {
+                jobStartStepDO.setTimingTime(((JobEntrySpecial) jobEntryInterface).getHour());
+            } else if (jobStartStepDO.getTimingType() == 3) {
+                jobStartStepDO.setTimingTime(((JobEntrySpecial) jobEntryInterface).getWeekDay());
+            } else if (jobStartStepDO.getTimingType() == 4) {
+                jobStartStepDO.setTimingTime(((JobEntrySpecial) jobEntryInterface).getDayOfMonth());
             }
             if (((JobEntrySpecial) jobEntryInterface).isRepeat() == true) {
-                jobStartStepVO.setIsRepeat((short) 1);
+                jobStartStepDO.setIsRepeat((short) 1);
             } else {
-                jobStartStepVO.setIsRepeat((short) 0);
+                jobStartStepDO.setIsRepeat((short) 0);
             }
-            jobStartStepVO.setCreateTime(new Date());
-            jobStartStepVO.setUpdateTime(new Date());
+            jobStartStepDO.setCreateTime(new Date());
+            jobStartStepDO.setUpdateTime(new Date());
         }
-        return jobStartStepVO;
+        return jobStartStepDO;
     }
 
-    public FTPDownLoadStepVO getFTPDownLoadStepVO(JobMeta jobMeta) {
-        FTPDownLoadStepVO ftpDownLoadStepVO = new FTPDownLoadStepVO();
+    public FTPDownLoadStepDO getFTPDownLoadStepDO(JobMeta jobMeta) {
+        FTPDownLoadStepDO ftpDownLoadStepDO = new FTPDownLoadStepDO();
         List<JobEntryCopy> jobEntryCopyList = jobMeta.getJobCopies();
         for (JobEntryCopy jobEntryCopy : jobEntryCopyList) {
             JobEntryInterface jobEntryInterface = jobEntryCopy.getEntry();
             if (jobEntryInterface instanceof JobEntryFTP) {
-                ftpDownLoadStepVO.setTimeout(((JobEntryFTP) jobEntryInterface).getTimeout());
+                ftpDownLoadStepDO.setTimeout(((JobEntryFTP) jobEntryInterface).getTimeout());
                 if (((JobEntryFTP) jobEntryInterface).isBinaryMode() == true) {
-                    ftpDownLoadStepVO.setBinaryMode((short) 1);
+                    ftpDownLoadStepDO.setBinaryMode((short) 1);
                 } else {
-                    ftpDownLoadStepVO.setBinaryMode((short) 0);
+                    ftpDownLoadStepDO.setBinaryMode((short) 0);
                 }
-                ftpDownLoadStepVO.setControlEncoding(((JobEntryFTP) jobEntryInterface).getControlEncoding());
-                ftpDownLoadStepVO.setFtpDirectory(((JobEntryFTP) jobEntryInterface).getFtpDirectory());
-                ftpDownLoadStepVO.setFtpFileName(((JobEntryFTP) jobEntryInterface).getWildcard());
-                ftpDownLoadStepVO.setTargetDirectory(((JobEntryFTP) jobEntryInterface).getTargetDirectory());
-                ftpDownLoadStepVO.setStepName(((JobEntryFTP) jobEntryInterface).getName());
-                ftpDownLoadStepVO.setCreateTime(new Date());
-                ftpDownLoadStepVO.setUpdateTime(new Date());
+                ftpDownLoadStepDO.setControlEncoding(((JobEntryFTP) jobEntryInterface).getControlEncoding());
+                ftpDownLoadStepDO.setFtpDirectory(((JobEntryFTP) jobEntryInterface).getFtpDirectory());
+                ftpDownLoadStepDO.setFtpFileName(((JobEntryFTP) jobEntryInterface).getWildcard());
+                ftpDownLoadStepDO.setTargetDirectory(((JobEntryFTP) jobEntryInterface).getTargetDirectory());
+                ftpDownLoadStepDO.setStepName(((JobEntryFTP) jobEntryInterface).getName());
+                ftpDownLoadStepDO.setCreateTime(new Date());
+                ftpDownLoadStepDO.setUpdateTime(new Date());
             }
         }
-        return ftpDownLoadStepVO;
+        return ftpDownLoadStepDO;
     }
 
-    public FTPPutStepVO getFTPPutStepVO(JobMeta jobMeta) {
-        FTPPutStepVO ftpPutStepVO = new FTPPutStepVO();
+    public FTPPutStepDO getFTPPutStepDO(JobMeta jobMeta) {
+        FTPPutStepDO ftpPutStepDO = new FTPPutStepDO();
         List<JobEntryCopy> jobEntryCopyList = jobMeta.getJobCopies();
         for (JobEntryCopy jobEntryCopy : jobEntryCopyList) {
             JobEntryInterface jobEntryInterface = jobEntryCopy.getEntry();
             if (jobEntryInterface instanceof JobEntryFTPPUT) {
-                ftpPutStepVO.setTimeout(((JobEntryFTPPUT) jobEntryInterface).getTimeout());
+                ftpPutStepDO.setTimeout(((JobEntryFTPPUT) jobEntryInterface).getTimeout());
                 if (((JobEntryFTPPUT) jobEntryInterface).isBinaryMode() == true) {
-                    ftpPutStepVO.setBinaryMode((short) 1);
+                    ftpPutStepDO.setBinaryMode((short) 1);
                 } else {
-                    ftpPutStepVO.setBinaryMode((short) 0);
+                    ftpPutStepDO.setBinaryMode((short) 0);
                 }
-                ftpPutStepVO.setControlEncoding(((JobEntryFTPPUT) jobEntryInterface).getControlEncoding());
-                ftpPutStepVO.setFtpDirectory(((JobEntryFTPPUT) jobEntryInterface).getRemoteDirectory());
-                ftpPutStepVO.setPutFileName(((JobEntryFTPPUT) jobEntryInterface).getWildcard());
-                ftpPutStepVO.setTargetDirectory(((JobEntryFTPPUT) jobEntryInterface).getLocalDirectory());
-                ftpPutStepVO.setStepName(((JobEntryFTPPUT) jobEntryInterface).getName());
-                ftpPutStepVO.setCreateTime(new Date());
-                ftpPutStepVO.setUpdateTime(new Date());
+                ftpPutStepDO.setControlEncoding(((JobEntryFTPPUT) jobEntryInterface).getControlEncoding());
+                ftpPutStepDO.setFtpDirectory(((JobEntryFTPPUT) jobEntryInterface).getRemoteDirectory());
+                ftpPutStepDO.setPutFileName(((JobEntryFTPPUT) jobEntryInterface).getWildcard());
+                ftpPutStepDO.setTargetDirectory(((JobEntryFTPPUT) jobEntryInterface).getLocalDirectory());
+                ftpPutStepDO.setStepName(((JobEntryFTPPUT) jobEntryInterface).getName());
+                ftpPutStepDO.setCreateTime(new Date());
+                ftpPutStepDO.setUpdateTime(new Date());
             }
         }
-        return ftpPutStepVO;
+        return ftpPutStepDO;
     }
 
     public JobEntryTrans getJobEntryTrans(JobMeta jobMeta) {
@@ -331,36 +331,36 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
         } catch (KettleException e) {
             e.printStackTrace();
         }
-        JobMetaVO jobMetaVO = jobMetaVOMapper.selectByJobName(jobName);
-        JobStartStepVO jobStartStepVO = jobStartStepVOMapper.selectJobStartStepVO(jobMetaVO.getId());
-        TransMetaVO transMetaVO = transMetaVOMapper.selectTransMetaVOById(jobMetaVO.getTransMetaId());
+        JobMetaDO jobMetaDO = jobMetaDOMapper.selectByJobName(jobName);
+        JobStartStepDO jobStartStepDO = jobStartStepDOMapper.selectJobStartStepVO(jobMetaDO.getId());
+        TransMetaDO transMetaDO = transMetaDOMapper.selectTransMetaVOById(jobMetaDO.getTransMetaId());
         JobMeta jobMeta = new JobMeta();
-        jobMeta.setName(jobMetaVO.getJobName());
+        jobMeta.setName(jobMetaDO.getJobName());
         JobEntrySpecial jobEntrySpecial = new JobEntrySpecial();
-        jobEntrySpecial.setName(jobStartStepVO.getStepName());
-        if (jobStartStepVO.getIsRepeat() == 1) {
+        jobEntrySpecial.setName(jobStartStepDO.getStepName());
+        if (jobStartStepDO.getIsRepeat() == 1) {
             jobEntrySpecial.setRepeat(true);
         } else {
             jobEntrySpecial.setRepeat(false);
         }
-        jobEntrySpecial.setSchedulerType(jobStartStepVO.getTimingType());
-        if (jobStartStepVO.getTimingType() == 1) {
+        jobEntrySpecial.setSchedulerType(jobStartStepDO.getTimingType());
+        if (jobStartStepDO.getTimingType() == 1) {
             jobEntrySpecial.setIntervalMinutes(0);
-            jobEntrySpecial.setIntervalSeconds(jobStartStepVO.getTimingTime());
-        } else if (jobStartStepVO.getTimingType() == 2) {
-            jobEntrySpecial.setHour(jobStartStepVO.getTimingTime());
-        } else if (jobStartStepVO.getTimingType() == 3) {
-            jobEntrySpecial.setWeekDay(jobStartStepVO.getTimingTime());
-        } else if (jobStartStepVO.getTimingType() == 4) {
-            jobEntrySpecial.setDayOfMonth(jobStartStepVO.getTimingTime());
+            jobEntrySpecial.setIntervalSeconds(jobStartStepDO.getTimingTime());
+        } else if (jobStartStepDO.getTimingType() == 2) {
+            jobEntrySpecial.setHour(jobStartStepDO.getTimingTime());
+        } else if (jobStartStepDO.getTimingType() == 3) {
+            jobEntrySpecial.setWeekDay(jobStartStepDO.getTimingTime());
+        } else if (jobStartStepDO.getTimingType() == 4) {
+            jobEntrySpecial.setDayOfMonth(jobStartStepDO.getTimingTime());
         }
         jobEntrySpecial.setStart(true);
         JobEntryCopy specialCopy = new JobEntryCopy(jobEntrySpecial);
         specialCopy.setLocation(30, 20);
         specialCopy.setDrawn(true);
         jobMeta.addJobEntry(specialCopy);
-        JobEntryTrans jobEntryTrans = new JobEntryTrans(transMetaVO.getTransName());
-        jobEntryTrans.setFileName(DBTransUrl + transMetaVO.getFileName());
+        JobEntryTrans jobEntryTrans = new JobEntryTrans(transMetaDO.getTransName());
+        jobEntryTrans.setFileName(DBTransUrl + transMetaDO.getFileName());
         JobEntryCopy transJob = new JobEntryCopy(jobEntryTrans);
         transJob.setLocation(200, 20);
         transJob.setDrawn(true);
@@ -368,7 +368,7 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
         JobHopMeta jobHopMeta = new JobHopMeta(specialCopy, transJob);
         jobHopMeta.setUnconditional(true);
         jobMeta.addJobHop(jobHopMeta);
-        return save(jobMeta, DBTransUrl + jobMetaVO.getJobName()+".kjb", true);
+        return save(jobMeta, DBTransUrl + jobMetaDO.getJobName()+".kjb", true);
     }
 
     public boolean saveFtpIncrJobByDB(String jobName) {
@@ -378,109 +378,109 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
             e.printStackTrace();
         }
         JobMeta jobMeta = new JobMeta();
-        JobMetaVO jobMetaVO = jobMetaVOMapper.selectByJobName(jobName);
-        JobStartStepVO jobStartStepVO = null;
-        FTPPutStepVO ftpPutStepVO = null;
-        FTPDownLoadStepVO ftpDownLoadStepVO = null;
+        JobMetaDO jobMetaDO = jobMetaDOMapper.selectByJobName(jobName);
+        JobStartStepDO jobStartStepDO = null;
+        FTPPutStepDO ftpPutStepDO = null;
+        FTPDownLoadStepDO ftpDownLoadStepDO = null;
         JobEntryCopy jobEntryFTPCopy = null;
         JobEntryCopy jobEntryFTPPutCopy = null;
-        if (jobMetaVO != null) {
+        if (jobMetaDO != null) {
             jobMeta.setJobstatus(0);
             jobMeta.setName(jobName);
-            jobStartStepVO = jobStartStepVOMapper.selectJobStartStepVO(jobMetaVO.getId());
+            jobStartStepDO = jobStartStepDOMapper.selectJobStartStepVO(jobMetaDO.getId());
             JobEntrySpecial jobEntrySpecial = new JobEntrySpecial();
-            jobEntrySpecial.setName(jobStartStepVO.getStepName());
+            jobEntrySpecial.setName(jobStartStepDO.getStepName());
             jobEntrySpecial.setStart(true);
-            if (jobStartStepVO.getIsRepeat() == 1) {
+            if (jobStartStepDO.getIsRepeat() == 1) {
                 jobEntrySpecial.setRepeat(true);
             } else {
                 jobEntrySpecial.setRepeat(false);
             }
-            jobEntrySpecial.setSchedulerType(jobStartStepVO.getTimingType());
-            if (jobStartStepVO.getTimingType() == 1) {
-                jobEntrySpecial.setIntervalSeconds(jobStartStepVO.getTimingTime());
-            } else if (jobStartStepVO.getTimingType() == 2) {
-                jobEntrySpecial.setHour(jobStartStepVO.getTimingTime());
-            } else if (jobStartStepVO.getTimingType() == 3) {
+            jobEntrySpecial.setSchedulerType(jobStartStepDO.getTimingType());
+            if (jobStartStepDO.getTimingType() == 1) {
+                jobEntrySpecial.setIntervalSeconds(jobStartStepDO.getTimingTime());
+            } else if (jobStartStepDO.getTimingType() == 2) {
+                jobEntrySpecial.setHour(jobStartStepDO.getTimingTime());
+            } else if (jobStartStepDO.getTimingType() == 3) {
                 jobEntrySpecial.setWeekDay(jobEntrySpecial.getWeekDay());
-            } else if (jobStartStepVO.getTimingType() == 4) {
+            } else if (jobStartStepDO.getTimingType() == 4) {
                 jobEntrySpecial.setDayOfMonth(jobEntrySpecial.getDayOfMonth());
             }
-            ftpDownLoadStepVO = ftpDownLoadStepVOMapper.selectFTPDownLoadStepVOById(jobMetaVO.getId());
+            ftpDownLoadStepDO = ftpDownLoadStepDOMapper.selectFTPDownLoadStepVOById(jobMetaDO.getId());
             JobEntryCopy jobEntrySpecialCopy = new JobEntryCopy(jobEntrySpecial);
             jobEntrySpecialCopy.setDrawn(true);
             jobEntrySpecialCopy.setLocation(30, 20);
             jobMeta.addJobEntry(jobEntrySpecialCopy);
-            if (ftpDownLoadStepVO != null) {
+            if (ftpDownLoadStepDO != null) {
                 JobEntryFTP jobEntryFTP = new JobEntryFTP();
-                jobEntryFTP.setName(ftpDownLoadStepVO.getStepName());
-                jobEntryFTP.setServerName(ftpDownLoadStepVO.getServerName());
-                jobEntryFTP.setProxyHost(ftpDownLoadStepVO.getProxyHost());
-                jobEntryFTP.setUserName(ftpDownLoadStepVO.getUserName());
-                jobEntryFTP.setPassword(ftpDownLoadStepVO.getPassword());
-                jobEntryFTP.setProxyPort(ftpDownLoadStepVO.getProxyPort());
-                jobEntryFTP.setProxyPassword(ftpDownLoadStepVO.getProxyPassword());
-                jobEntryFTP.setProxyUsername(ftpDownLoadStepVO.getProxyUsername());
-                jobEntryFTP.setPort(ftpDownLoadStepVO.getPort());
-                jobEntryFTP.setTimeout(ftpDownLoadStepVO.getTimeout());
-                if (ftpDownLoadStepVO.getBinaryMode() == 1) {
+                jobEntryFTP.setName(ftpDownLoadStepDO.getStepName());
+                jobEntryFTP.setServerName(ftpDownLoadStepDO.getServerName());
+                jobEntryFTP.setProxyHost(ftpDownLoadStepDO.getProxyHost());
+                jobEntryFTP.setUserName(ftpDownLoadStepDO.getUserName());
+                jobEntryFTP.setPassword(ftpDownLoadStepDO.getPassword());
+                jobEntryFTP.setProxyPort(ftpDownLoadStepDO.getProxyPort());
+                jobEntryFTP.setProxyPassword(ftpDownLoadStepDO.getProxyPassword());
+                jobEntryFTP.setProxyUsername(ftpDownLoadStepDO.getProxyUsername());
+                jobEntryFTP.setPort(ftpDownLoadStepDO.getPort());
+                jobEntryFTP.setTimeout(ftpDownLoadStepDO.getTimeout());
+                if (ftpDownLoadStepDO.getBinaryMode() == 1) {
                     jobEntryFTP.setBinaryMode(true);
                 }
-                jobEntryFTP.setControlEncoding(ftpDownLoadStepVO.getControlEncoding());
+                jobEntryFTP.setControlEncoding(ftpDownLoadStepDO.getControlEncoding());
 
                 //创建目录
                 List<String> fileContents = new ArrayList<>();
-                fileContents.add(ftpDownLoadStepVO.getFtpDirectory());
-                fileContents.add(ftpDownLoadStepVO.getTargetDirectory());
+                fileContents.add(ftpDownLoadStepDO.getFtpDirectory());
+                fileContents.add(ftpDownLoadStepDO.getTargetDirectory());
 //                catalogManageService.createCatalogs(fileContents);
 
-                jobEntryFTP.setFtpDirectory(ftpDownLoadStepVO.getFtpDirectory());
-                jobEntryFTP.setTargetDirectory(ftpDownLoadStepVO.getTargetDirectory());
-                jobEntryFTP.setWildcard(ftpDownLoadStepVO.getFtpFileName());
+                jobEntryFTP.setFtpDirectory(ftpDownLoadStepDO.getFtpDirectory());
+                jobEntryFTP.setTargetDirectory(ftpDownLoadStepDO.getTargetDirectory());
+                jobEntryFTP.setWildcard(ftpDownLoadStepDO.getFtpFileName());
                 jobEntryFTPCopy = new JobEntryCopy(jobEntryFTP);
                 jobEntryFTPCopy.setDrawn(true);
                 jobEntryFTPCopy.setLocation(80, 20);
                 jobMeta.addJobEntry(jobEntryFTPCopy);
-                JobHopMetaVO jobHopMetaVO = jobHopMetaVOMapper.selectJobHopMetaVOById(jobStartStepVO.getId(), ftpDownLoadStepVO.getId());
+                JobHopMetaDO jobHopMetaDO = jobHopMetaDOMapper.selectJobHopMetaVOById(jobStartStepDO.getId(), ftpDownLoadStepDO.getId());
                 JobHopMeta jobHopMeta = new JobHopMeta(jobEntrySpecialCopy, jobEntryFTPCopy);
                 jobHopMeta.setUnconditional(true);
                 jobMeta.addJobHop(jobHopMeta);
             }
-            ftpPutStepVO = ftpPutStepVOMapper.selectFTPPutStepVOById(jobMetaVO.getId());
+            ftpPutStepDO = ftpPutStepDOMapper.selectFTPPutStepVOById(jobMetaDO.getId());
             JobEntryFTPPUT jobEntryFTPPUT = null;
-            if (ftpPutStepVO != null) {
+            if (ftpPutStepDO != null) {
                 jobEntryFTPPUT = new JobEntryFTPPUT();
-                jobEntryFTPPUT.setName(ftpPutStepVO.getStepName());
-                jobEntryFTPPUT.setServerName(ftpPutStepVO.getServerName());
-                jobEntryFTPPUT.setProxyHost(ftpPutStepVO.getProxyHost());
-                jobEntryFTPPUT.setUserName(ftpPutStepVO.getUserName());
-                jobEntryFTPPUT.setPassword(ftpPutStepVO.getPassword());
-                jobEntryFTPPUT.setProxyPort(ftpPutStepVO.getProxyPort());
-                jobEntryFTPPUT.setProxyPassword(ftpPutStepVO.getProxyPassword());
-                jobEntryFTPPUT.setProxyUsername(ftpPutStepVO.getProxyUsername());
-                jobEntryFTPPUT.setServerPort(ftpPutStepVO.getPort());
-                jobEntryFTPPUT.setTimeout(ftpPutStepVO.getTimeout());
-                if (ftpPutStepVO.getBinaryMode() == 1) {
+                jobEntryFTPPUT.setName(ftpPutStepDO.getStepName());
+                jobEntryFTPPUT.setServerName(ftpPutStepDO.getServerName());
+                jobEntryFTPPUT.setProxyHost(ftpPutStepDO.getProxyHost());
+                jobEntryFTPPUT.setUserName(ftpPutStepDO.getUserName());
+                jobEntryFTPPUT.setPassword(ftpPutStepDO.getPassword());
+                jobEntryFTPPUT.setProxyPort(ftpPutStepDO.getProxyPort());
+                jobEntryFTPPUT.setProxyPassword(ftpPutStepDO.getProxyPassword());
+                jobEntryFTPPUT.setProxyUsername(ftpPutStepDO.getProxyUsername());
+                jobEntryFTPPUT.setServerPort(ftpPutStepDO.getPort());
+                jobEntryFTPPUT.setTimeout(ftpPutStepDO.getTimeout());
+                if (ftpPutStepDO.getBinaryMode() == 1) {
                     jobEntryFTPPUT.setBinaryMode(true);
                 }
-                jobEntryFTPPUT.setControlEncoding(ftpPutStepVO.getControlEncoding());
+                jobEntryFTPPUT.setControlEncoding(ftpPutStepDO.getControlEncoding());
 
                 //创建目录
                 List<String> fileContents = new ArrayList<>();
-                fileContents.add(ftpPutStepVO.getFtpDirectory());
-                fileContents.add(ftpPutStepVO.getTargetDirectory());
+                fileContents.add(ftpPutStepDO.getFtpDirectory());
+                fileContents.add(ftpPutStepDO.getTargetDirectory());
 //                catalogManageService.createCatalogs(fileContents);
 
-                jobEntryFTPPUT.setRemoteDirectory(ftpPutStepVO.getFtpDirectory());
-                jobEntryFTPPUT.setLocalDirectory(ftpPutStepVO.getTargetDirectory());
-                jobEntryFTPPUT.setWildcard(ftpPutStepVO.getPutFileName());
+                jobEntryFTPPUT.setRemoteDirectory(ftpPutStepDO.getFtpDirectory());
+                jobEntryFTPPUT.setLocalDirectory(ftpPutStepDO.getTargetDirectory());
+                jobEntryFTPPUT.setWildcard(ftpPutStepDO.getPutFileName());
                 jobEntryFTPPutCopy = new JobEntryCopy(jobEntryFTPPUT);
                 jobEntryFTPPutCopy.setDrawn(true);
                 jobEntryFTPPutCopy.setLocation(200, 20);
                 jobMeta.addJobEntry(jobEntryFTPPutCopy);
-                JobHopMetaVO jobHopMetaVO = jobHopMetaVOMapper.selectJobHopMetaVOById(jobStartStepVO.getId(), ftpPutStepVO.getId());
+                JobHopMetaDO jobHopMetaDO = jobHopMetaDOMapper.selectJobHopMetaVOById(jobStartStepDO.getId(), ftpPutStepDO.getId());
                 JobHopMeta jobHopMeta1 = null;
-                if (jobHopMetaVO != null) {
+                if (jobHopMetaDO != null) {
                     jobHopMeta1 = new JobHopMeta(jobEntrySpecialCopy, jobEntryFTPPutCopy);
                     jobHopMeta1.setUnconditional(true);
                 } else {

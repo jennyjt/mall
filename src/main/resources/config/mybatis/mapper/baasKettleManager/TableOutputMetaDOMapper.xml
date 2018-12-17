@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zsbatech.baasKettleManager.dao.TableOutputMetaDOMapper">
+    <resultMap id="BaseResultMap" type="com.zsbatech.baasKettleManager.model.TableOutputMetaDO">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="step_name" property="stepName" jdbcType="VARCHAR"/>
+        <result column="db_connection_name" property="dbConnectionName" jdbcType="VARCHAR"/>
+        <result column="target_table" property="targetTable" jdbcType="VARCHAR"/>
+        <result column="trans_meta_id" property="transMetaId" jdbcType="INTEGER"/>
+        <result column="createtime" property="createTime" jdbcType="VARCHAR"/>
+        <result column="updatetime" property="updateTime" jdbcType="VARCHAR"/>
+        <result column="isbatch_insert" property="isBatchInsert" jdbcType="INTEGER"/>
+        <result column="entry_id" property="entryId" jdbcType="INTEGER"/>
+        <result column="db_management_id" property="dBManageMentId" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, step_name, target_table, createtime, updatetime,db_connection_name,isbatch_insert,entry_id,trans_meta_id,db_management_id
+  </sql>
+
+    <insert id="insert" parameterType="com.zsbatech.baasKettleManager.model.TableOutputMetaDO">
+    insert into tableoutput_step (id, step_name,db_connection_name, target_table,isbatch_insert,
+     entry_id,createtime,updatetime,trans_meta_id,db_management_id)
+    values (#{id,jdbcType=INTEGER}, #{stepName,jdbcType=VARCHAR},#{dbConnectionName,jdbcType=VARCHAR},#{targetTable,jdbcType=VARCHAR}, #{isBatchInsert,jdbcType=INTEGER},
+
+    #{entryId,jdbcType=INTEGER},#{createTime,jdbcType=INTEGER},#{updateTime,jdbcType=INTEGER},#{transMetaId,jdbcType=INTEGER},#{dBManageMentId,jdbcType=INTEGER})
+
+  </insert>
+
+    <select id="selectTableOutputMetaVO" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from tableoutput_step
+        where step_name = #{stepName,jdbcType=VARCHAR}
+        limit 1
+    </select>
+
+    <select id="selectTableOutputMetaVOByTransMetaId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from tableoutput_step
+        where trans_meta_id = #{transMetaId,jdbcType=INTEGER}
+        limit 1
+    </select>
+</mapper>

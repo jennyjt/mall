@@ -3,14 +3,9 @@ package com.zsbatech.baasTestManager;
 import com.zsbatech.baasKettleManager.service.*;
 import com.zsbatech.baasKettleManager.service.impl.FtpSourceManageServiceImpl;
 import com.zsbatech.baasKettleManager.service.impl.SaveTransMetaServiceImpl;
-import com.zsbatech.baasKettleManager.util.FTPUtil;
 import com.zsbatech.baasKettleManager.vo.FTPDownLoadStepVO;
-import com.zsbatech.baasKettleManager.vo.FtpcatalogNode;
-import com.zsbatech.baasKettleManager.vo.JobStartStepVO;
 import com.zsbatech.base.constants.RequestField;
 import com.zsbatech.base.utils.JWTUtils;
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.pentaho.di.core.KettleEnvironment;
@@ -32,9 +27,6 @@ import org.pentaho.di.trans.steps.tableinput.TableInputMeta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -146,7 +138,7 @@ public class ApplicationTests {
         jobMeta.setName("job");
         JobEntrySpecial jobEntrySpecial = new JobEntrySpecial();
         jobEntrySpecial.setName("start");
-        jobEntrySpecial.setRepeat(false);
+        jobEntrySpecial.setRepeat(true);
         jobEntrySpecial.setSchedulerType(1);
         jobEntrySpecial.setIntervalMinutes(1);
         jobEntrySpecial.setStart(true);
@@ -155,7 +147,7 @@ public class ApplicationTests {
         specialCopy.setDrawn(true);
         jobMeta.addJobEntry(specialCopy);
         JobEntryTrans jobEntryTrans = new JobEntryTrans("job");
-        jobEntryTrans.setFileName("C:\\Users\\zhang\\Desktop\\transjob.ktr");
+        jobEntryTrans.setFileName("/Users/yinshanzhang/Desktop/transjob.ktr");
         JobEntryCopy transJob = new JobEntryCopy(jobEntryTrans);
         transJob.setLocation(200, 20);
         transJob.setDrawn(true);
@@ -163,14 +155,14 @@ public class ApplicationTests {
         JobHopMeta jobHopMeta = new JobHopMeta(specialCopy, transJob);
         jobHopMeta.setUnconditional(true);
         jobMeta.addJobHop(jobHopMeta);
-        saveJobMetaService.save(jobMeta, "C:\\Users\\zhang\\Desktop\\cads.kjb", true);
-        saveJobMetaService.saveTransJobData("C:\\Users\\zhang\\Desktop\\cads.kjb");
+        saveJobMetaService.save(jobMeta, "/Users/yinshanzhang/Desktop/cads.kjb", true);
+        saveJobMetaService.saveTransJobData("/Users/yinshanzhang/Desktop/cads.kjb");
     }
 
     @Test
     public void testJob() throws Exception {
         KettleEnvironment.init();
-        JobMeta jobMeta = new JobMeta("C:\\Users\\zhang\\Desktop\\aaa.kjb", null);
+        JobMeta jobMeta = new JobMeta("/Users/yinshanzhang/Desktop/cads.kjb", null);
         Job job = new Job(null, jobMeta);
         job.start();
         Thread.currentThread().setName("cads");
@@ -183,7 +175,7 @@ public class ApplicationTests {
     @Test
     public void testmaet() {
 //        saveTransMetaService.saveTransData("C:\\Users\\zhang\\Desktop\\jdbc.ktr",8,8);
-        saveJobMetaService.saveTransJobData("C:\\Users\\zhang\\Desktop\\cads.kjb");
+        saveJobMetaService.saveTransJobData("/Users/yinshanzhang/Desktop/cads.kjb");
     }
 
     @Test
@@ -218,10 +210,11 @@ public class ApplicationTests {
     @Test
     public void testStop() throws Exception{
 //        new StopJobUtil().stopJob("C:\\Users\\zhang\\Desktop\\aaa.kjb","C:\\Users\\zhang\\Desktop\\aaa.kjb");
-        List<FtpcatalogNode> stringLIst =catalogManageService.getFtpCatalog("test");
-        for(FtpcatalogNode s:stringLIst){
-            System.out.println(s.getParentName());
-        }
+//        List<FtpcatalogNode> stringLIst =catalogManageService.getFtpCatalog("test");
+//        for(FtpcatalogNode s:stringLIst){
+//            System.out.println(s.getParentName());
+//        }
+        jobExcuteService.stop("job");
     }
 
     @Test

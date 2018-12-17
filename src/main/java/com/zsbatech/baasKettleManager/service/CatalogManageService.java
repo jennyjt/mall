@@ -1,6 +1,6 @@
 package com.zsbatech.baasKettleManager.service;
 
-import com.zsbatech.baasKettleManager.vo.FilesVO;
+import com.zsbatech.baasKettleManager.model.FilesDO;
 import com.zsbatech.baasKettleManager.vo.FtpcatalogNode;
 
 import java.util.List;
@@ -22,7 +22,7 @@ public interface CatalogManageService {
 
     Map<String, List<String>> deleteCatalogs(List<String> fileCatalogs);
 
-    List<FilesVO> queryFiles(String fileCatalog,String code);
+    List<FilesDO> queryFiles(String fileCatalog, String code);
 
     List<String> queryCataLog(String code,String fileName);
 
@@ -30,24 +30,24 @@ public interface CatalogManageService {
 
     /**
      * 保存单个文件信息
-     * @param filesVO
+     * @param filesDO
      * @return
      */
-    boolean saveFile(FilesVO filesVO);
+    boolean saveFile(FilesDO filesDO);
 
     /**
      * 根据文件id查询单个文件信息
      * @param fileId
      * @return
      */
-    FilesVO getFileInfoById(Integer fileId);
+    FilesDO getFileInfoById(Integer fileId);
 
     /**
      * 根据文件id查询单个文件信息
      * @param fileIds
      * @return
      */
-    List<FilesVO> getFileInfosByIds(List<Integer> fileIds);
+    List<FilesDO> getFileInfosByIds(List<Integer> fileIds);
 
     /**
      * 通过目录id获取完整的路径

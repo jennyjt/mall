@@ -1,9 +1,9 @@
 package com.zsbatech.baasKettleManager.service;
 
-import com.zsbatech.baasKettleManager.vo.FTPPutStepVO;
-import com.zsbatech.baasKettleManager.vo.FTPDownLoadStepVO;
-import com.zsbatech.baasKettleManager.vo.FileCatalogVO;
-import com.zsbatech.baasKettleManager.vo.JobStartStepVO;
+import com.zsbatech.baasKettleManager.model.FTPDownLoadStepDO;
+import com.zsbatech.baasKettleManager.model.FTPPutStepDO;
+import com.zsbatech.baasKettleManager.model.FileCatalogDO;
+import com.zsbatech.baasKettleManager.model.JobStartStepDO;
 
 import java.util.List;
 
@@ -15,15 +15,15 @@ import java.util.List;
  */
 public interface FileSyncJobService {
 
-    String createDownloadJobMeta(JobStartStepVO jobStartStepVO, FTPDownLoadStepVO ftpDownLoadStepVO,String fileName);
+    String createDownloadJobMeta(JobStartStepDO jobStartStepDO, FTPDownLoadStepDO ftpDownLoadStepDO, String fileName);
 
-    String createPutJobMeta(JobStartStepVO jobStartStepVO, FTPPutStepVO ftpPutStepVO,String fileName);
+    String createPutJobMeta(JobStartStepDO jobStartStepDO, FTPPutStepDO ftpPutStepDO, String fileName);
 
-    String fileSyncFtpToFtpJobMeta(JobStartStepVO jobStartStepVO, FTPPutStepVO ftpPutStepVO,FTPDownLoadStepVO ftpDownLoadStepVO,String fileName);
+    String fileSyncFtpToFtpJobMeta(JobStartStepDO jobStartStepDO, FTPPutStepDO ftpPutStepDO,FTPDownLoadStepDO ftpDownLoadStepDO,String fileName);
 
     boolean saveFileInfo(int ftpSourceId,String createCode, String fileCatalog , String fileList);
 
-    List<FileCatalogVO> saveFileCatalogInfo(List<FileCatalogVO> fileCatalogVOList);
+    List<FileCatalogDO> saveFileCatalogInfo(List<FileCatalogDO> fileCatalogDOList);
 
     String selectByJobName(String jobName);
 }

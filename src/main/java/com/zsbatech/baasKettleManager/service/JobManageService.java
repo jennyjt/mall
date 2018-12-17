@@ -1,5 +1,7 @@
 package com.zsbatech.baasKettleManager.service;
 
+import java.util.List;
+
 /**
  * Created with IntelliJ IDEA.
  * Description:
@@ -10,7 +12,7 @@ public interface JobManageService {
 
     int executeJob(String jobFile);
 
-    void stop(String jobName);
+    boolean stop(String jobName);
 
-    void stopAll();
+    boolean stopJobs(List<String> jobNames);
 }

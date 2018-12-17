@@ -3,20 +3,13 @@ package com.zsbatech.baasKettleManager.service.impl;
 import com.github.pagehelper.page.PageMethod;
 import com.zsbatech.baasKettleManager.dao.*;
 import com.zsbatech.baasKettleManager.model.FtpSourceManager;
-import com.zsbatech.baasKettleManager.service.FileSyncJobService;
 import com.zsbatech.baasKettleManager.service.FtpSouceManageService;
-import com.zsbatech.baasKettleManager.vo.FTPDownLoadStepVO;
-import com.zsbatech.baasKettleManager.vo.FTPPutStepVO;
-import com.zsbatech.baasKettleManager.vo.JobMetaVO;
 import com.zsbatech.base.common.Pagination;
 import com.zsbatech.base.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * FTP数据源管理接口实现类
@@ -25,16 +18,16 @@ import java.util.Set;
 public class FtpSourceManageServiceImpl implements FtpSouceManageService {
 
     @Autowired
-    private JobMetaVOMapper jobMetaVOMapper;
+    private JobMetaDOMapper jobMetaDOMapper;
 
     @Autowired
-    private FTPPutStepVOMapper ftpPutStepVOMapper;
+    private FTPPutStepDOMapper ftpPutStepDOMapper;
 
     @Autowired
-    private FTPDownLoadStepVOMapper ftpDownLoadStepVOMapper;
+    private FTPDownLoadStepDOMapper ftpDownLoadStepDOMapper;
 
     @Autowired
-    private FtpSourceManageVOMapper ftpSourceManageVOMapper;
+    private FtpSourceManageDOMapper ftpSourceManageDOMapper;
     @Autowired
     private FtpSourceManagerMapper ftpSourceMapper;
 
