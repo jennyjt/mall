@@ -30,4 +30,5 @@ public interface FtpSouceManageService {
      * @return
      */
     Pagination<FtpSourceManager> getDataSources(Integer currPage, Integer pageSize, FtpSourceManager ftpSource);
+
 }

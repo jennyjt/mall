@@ -152,6 +152,8 @@ public class ContentManageController {
         ResponseData<List<FtpcatalogNode>> responseData = new ResponseData<>();
         if (catalogList != null && catalogList.size() != 0) {
             responseData.setOK(200, "查询成功", catalogList);
+        }else if(catalogList == null || catalogList.size() == 0) {
+            responseData.setOK(200,"没有目录存在",catalogList);
         }else {
             responseData.setError("查询错误");
         }

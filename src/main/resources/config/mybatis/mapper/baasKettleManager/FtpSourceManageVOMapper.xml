@@ -23,7 +23,8 @@
     proxy_pass_word, create_time, update_time, create_user, update_user, nick_name, use_count
   </sql>
 
-  <insert id="insert" parameterType="com.zsbatech.baasKettleManager.vo.FtpSourceManageVO" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" parameterType="com.zsbatech.baasKettleManager.vo.FtpSourceManageVO" useGeneratedKeys="true"
+            keyProperty="id">
     insert into ftp_source_manager (id, ftp_host, ftp_port,
       user_name, pass_word, proxy_host,
       proxy_port, proxy_user_name, proxy_pass_word,
@@ -37,11 +38,11 @@
   </insert>
 
 
-  <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select
-    <include refid="Base_Column_List" />
-    from ftp_source_manager
-    where nick_name = #{nickName,jdbcType=INTEGER}
-    limit 1
-  </select>
+    <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from ftp_source_manager
+        where nick_name = #{nickName,jdbcType=INTEGER}
+        limit 1
+    </select>
 </mapper>

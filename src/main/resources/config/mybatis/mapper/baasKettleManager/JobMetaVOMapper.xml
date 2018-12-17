@@ -15,7 +15,7 @@
     id, job_name, file_name, createtime, updatetime,trans_meta_id,execute_status,job_type
   </sql>
 
-  <insert id="insert" parameterType="com.zsbatech.baasKettleManager.vo.JobMetaVO" >
+    <insert id="insert" parameterType="com.zsbatech.baasKettleManager.vo.JobMetaVO">
     insert into job_meta (id, job_name, file_name,
       createtime, updatetime, trans_meta_id,
       execute_status, job_type)
@@ -24,11 +24,23 @@
       #{executeStatus,jdbcType=TINYINT}, #{jobType,jdbcType=VARCHAR})
   </insert>
 
-  <select id="selectByJobName" resultMap="BaseResultMap" parameterType="java.lang.String" >
-    select
-    <include refid="Base_Column_List" />
-    from job_meta
-    where job_name = #{jobName,jdbcType=VARCHAR}
-    limit 1
-  </select>
+    <select id="selectByJobName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from job_meta
+        where job_name = #{jobName,jdbcType=VARCHAR}
+        limit 1
+    </select>
+
+    <select id="selectById" resultMap="BaseResultMap" parameterType="java.util.List">
+        select
+        <include refid="Base_Column_List"/>
+        from job_meta
+        <where>
+            id in
+            <foreach collection="list" item="item" index="index" open="(" separator="," close=")">
+                #{item,jdbcType=INTEGER}
+            </foreach>
+        </where>
+    </select>
 </mapper>
