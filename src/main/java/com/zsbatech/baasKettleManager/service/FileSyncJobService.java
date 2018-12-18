@@ -15,11 +15,11 @@ import java.util.List;
  */
 public interface FileSyncJobService {
 
-    String createDownloadJobMeta(JobStartStepDO jobStartStepDO, FTPDownLoadStepDO ftpDownLoadStepDO, String fileName);
+    String createDownloadJobMeta(JobStartStepDO jobStartStepDO, FTPDownLoadStepDO ftpDownLoadStepDO, String jobName,String nickName);
 
-    String createPutJobMeta(JobStartStepDO jobStartStepDO, FTPPutStepDO ftpPutStepDO, String fileName);
+    String createPutJobMeta(JobStartStepDO jobStartStepDO, FTPPutStepDO ftpPutStepDO, String jobName,String nickName);
 
-    String fileSyncFtpToFtpJobMeta(JobStartStepDO jobStartStepDO, FTPPutStepDO ftpPutStepDO,FTPDownLoadStepDO ftpDownLoadStepDO,String fileName);
+    String fileSyncFtpToFtpJobMeta(JobStartStepDO jobStartStepDO, FTPPutStepDO ftpPutStepDO,String srcNickName,FTPDownLoadStepDO ftpDownLoadStepDO,String dstNickName,String jobName);
 
     boolean saveFileInfo(int ftpSourceId,String createCode, String fileCatalog , String fileList);
 

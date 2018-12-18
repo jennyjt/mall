@@ -3,6 +3,7 @@ package com.zsbatech.baasKettleManager.controller;
 import com.zsbatech.baasKettleManager.service.FileSyncJobService;
 import com.zsbatech.baasKettleManager.service.JobManageService;
 import com.zsbatech.baasKettleManager.service.impl.JobManageServiceImpl;
+import com.zsbatech.baasKettleManager.vo.FTPSyncSetp;
 import com.zsbatech.base.common.ResponseData;
 import com.zsbatech.base.constants.RequestField;
 import com.zsbatech.base.constants.Response;
@@ -85,8 +86,10 @@ public class JobManageController {
     )
     @RequestMapping(value = "/modifyJob", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public ResponseData<String> modifyJob(@RequestParam String jobName) {
+    public ResponseData<String> modifyJob(@RequestParam FTPSyncSetp ftpSyncSetp) {
         ResponseData<String> responseData = new ResponseData<>();
+        jobManageService.modifyJob(ftpSyncSetp);
+        responseData.setOK(200,"修改成功",ftpSyncSetp.getJobName());
         return responseData;
     }
 

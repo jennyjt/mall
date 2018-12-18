@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zsbatech.baasKettleManager.dao.SmParamDetailMapper" >
+  <resultMap id="BaseResultMap" type="com.zsbatech.baasKettleManager.model.SmParamDetail" >
+    <id column="param_id" property="paramId" jdbcType="BIGINT" />
+    <result column="param_type" property="paramType" jdbcType="VARCHAR" />
+    <result column="param_code" property="paramCode" jdbcType="VARCHAR" />
+    <result column="param_desc" property="paramDesc" jdbcType="VARCHAR" />
+    <result column="note" property="note" jdbcType="VARCHAR" />
+    <result column="version" property="version" jdbcType="TINYINT" />
+    <result column="system_id" property="systemId" jdbcType="VARCHAR" />
+    <result column="langue_type" property="langueType" jdbcType="VARCHAR" />
+    <result column="create_user" property="createUser" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="BIGINT" />
+    <result column="update_time" property="updateTime" jdbcType="BIGINT" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    param_id, param_type, param_code, param_desc, note, version, system_id, langue_type, 
+    create_user, create_time, update_time
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 
+    <include refid="Base_Column_List" />
+    from sm_param_detail
+    where param_id = #{paramId,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from sm_param_detail
+    where param_id = #{paramId,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.zsbatech.baasKettleManager.model.SmParamDetail" >
+    insert into sm_param_detail (param_id, param_type, param_code, 
+      param_desc, note, version, 
+      system_id, langue_type, create_user, 
+      create_time, update_time)
+    values (#{paramId,jdbcType=BIGINT}, #{paramType,jdbcType=VARCHAR}, #{paramCode,jdbcType=VARCHAR}, 
+      #{paramDesc,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, #{version,jdbcType=TINYINT}, 
+      #{systemId,jdbcType=VARCHAR}, #{langueType,jdbcType=VARCHAR}, #{createUser,jdbcType=VARCHAR}, 
+      #{createTime,jdbcType=BIGINT}, #{updateTime,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" parameterType="com.zsbatech.baasKettleManager.model.SmParamDetail" >
+    insert into sm_param_detail
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="paramId != null" >
+        param_id,
+      </if>
+      <if test="paramType != null" >
+        param_type,
+      </if>
+      <if test="paramCode != null" >
+        param_code,
+      </if>
+      <if test="paramDesc != null" >
+        param_desc,
+      </if>
+      <if test="note != null" >
+        note,
+      </if>
+      <if test="version != null" >
+        version,
+      </if>
+      <if test="systemId != null" >
+        system_id,
+      </if>
+      <if test="langueType != null" >
+        langue_type,
+      </if>
+      <if test="createUser != null" >
+        create_user,
+      </if>
+      <if test="createTime != null" >
+        create_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="paramId != null" >
+        #{paramId,jdbcType=BIGINT},
+      </if>
+      <if test="paramType != null" >
+        #{paramType,jdbcType=VARCHAR},
+      </if>
+      <if test="paramCode != null" >
+        #{paramCode,jdbcType=VARCHAR},
+      </if>
+      <if test="paramDesc != null" >
+        #{paramDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null" >
+        #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null" >
+        #{version,jdbcType=TINYINT},
+      </if>
+      <if test="systemId != null" >
+        #{systemId,jdbcType=VARCHAR},
+      </if>
+      <if test="langueType != null" >
+        #{langueType,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        #{createTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zsbatech.baasKettleManager.model.SmParamDetail" >
+    update sm_param_detail
+    <set >
+      <if test="paramType != null" >
+        param_type = #{paramType,jdbcType=VARCHAR},
+      </if>
+      <if test="paramCode != null" >
+        param_code = #{paramCode,jdbcType=VARCHAR},
+      </if>
+      <if test="paramDesc != null" >
+        param_desc = #{paramDesc,jdbcType=VARCHAR},
+      </if>
+      <if test="note != null" >
+        note = #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="version != null" >
+        version = #{version,jdbcType=TINYINT},
+      </if>
+      <if test="systemId != null" >
+        system_id = #{systemId,jdbcType=VARCHAR},
+      </if>
+      <if test="langueType != null" >
+        langue_type = #{langueType,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null" >
+        create_time = #{createTime,jdbcType=BIGINT},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=BIGINT},
+      </if>
+    </set>
+    where param_id = #{paramId,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zsbatech.baasKettleManager.model.SmParamDetail" >
+    update sm_param_detail
+    set param_type = #{paramType,jdbcType=VARCHAR},
+      param_code = #{paramCode,jdbcType=VARCHAR},
+      param_desc = #{paramDesc,jdbcType=VARCHAR},
+      note = #{note,jdbcType=VARCHAR},
+      version = #{version,jdbcType=TINYINT},
+      system_id = #{systemId,jdbcType=VARCHAR},
+      langue_type = #{langueType,jdbcType=VARCHAR},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=BIGINT},
+      update_time = #{updateTime,jdbcType=BIGINT}
+    where param_id = #{paramId,jdbcType=BIGINT}
+  </update>
+
+  <select id="selectBySelective" parameterType="com.zsbatech.baasKettleManager.model.SmParamDetail"
+          resultMap="BaseResultMap">
+    select * from sm_param_detail
+    <where>
+      <if test="paramType != null" >
+        and param_type = #{paramType,jdbcType=VARCHAR}
+      </if>
+      <if test="paramCode != null" >
+        and param_code = #{paramCode,jdbcType=VARCHAR}
+      </if>
+      <if test="paramDesc != null" >
+        and param_desc = #{paramDesc,jdbcType=VARCHAR}
+      </if>
+      <if test="note != null" >
+        and note = #{note,jdbcType=VARCHAR}
+      </if>
+      <if test="version != null" >
+        and version = #{version,jdbcType=TINYINT}
+      </if>
+      <if test="systemId != null" >
+        and system_id = #{systemId,jdbcType=VARCHAR}
+      </if>
+      <if test="langueType != null" >
+        and langue_type = #{langueType,jdbcType=VARCHAR}
+      </if>
+      <if test="createUser != null" >
+        and create_user = #{createUser,jdbcType=VARCHAR}
+      </if>
+      <if test="createTime != null" >
+        and create_time = #{createTime,jdbcType=BIGINT}
+      </if>
+      <if test="updateTime != null" >
+        and update_time = #{updateTime,jdbcType=BIGINT}
+      </if>
+    </where>
+  </select>
+
+  <select id="getDbDate" resultType="java.util.Date">
+    select SYSDATE() from dual
+  </select>
+</mapper>

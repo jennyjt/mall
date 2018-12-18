@@ -1,5 +1,7 @@
 package com.zsbatech.baasKettleManager.service;
 
+import com.zsbatech.baasKettleManager.vo.FTPSyncSetp;
+
 import java.util.List;
 
 /**
@@ -15,4 +17,7 @@ public interface JobManageService {
     boolean stop(String jobName);
 
     boolean stopJobs(List<String> jobNames);
+
+    boolean modifyJob(FTPSyncSetp ftpSyncSetp);
+
 }

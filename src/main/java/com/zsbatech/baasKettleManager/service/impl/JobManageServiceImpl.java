@@ -4,7 +4,11 @@ import com.zsbatech.baasKettleManager.dao.ExceptionLogDOMapper;
 import com.zsbatech.baasKettleManager.dao.JobMetaDOMapper;
 import com.zsbatech.baasKettleManager.model.ExceptionLogDO;
 import com.zsbatech.baasKettleManager.model.JobMetaDO;
+import com.zsbatech.baasKettleManager.service.FileSyncJobService;
 import com.zsbatech.baasKettleManager.service.JobManageService;
+import com.zsbatech.baasKettleManager.service.SaveJobMetaService;
+import com.zsbatech.baasKettleManager.service.SaveTransMetaService;
+import com.zsbatech.baasKettleManager.vo.FTPSyncSetp;
 import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.logging.KettleLogStore;
@@ -15,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.*;
 
 /**
@@ -31,12 +36,21 @@ public class JobManageServiceImpl implements JobManageService {
     private static Map<String, Job> jobMap = new HashMap<>();
 
     @Autowired
+    private FileSyncJobService fileSyncJobService;
+
+    @Autowired
+    private SaveJobMetaService saveJobMetaService;
+
+    @Autowired
     private JobMetaDOMapper jobMetaDOMapper;
 
     @Autowired
     private ExceptionLogDOMapper exceptionLogDOMapper;
 
     public int executeJob(String jobFile) {
+        if (!new File(jobFile).exists()) {
+            saveJobMetaService.saveIncrJobByDB("job2");
+        }
         JobMeta jobMeta = null;
         try {
             KettleEnvironment.init();
@@ -68,15 +82,15 @@ public class JobManageServiceImpl implements JobManageService {
         jobMetaDO.setJobName(jobName);
         boolean isStopped = false;
         Job job = jobMap.get(jobName);
-        if(job == null){
+        if (job == null) {
             return false;
         }
         job.stopAll();
         if (job.isStopped()) {
             jobMap.remove(jobName);
             jobMetaDO.setUpdateTime(new Date());
-            jobMetaDO.setExecuteStatus((short)0);
-            if(jobMetaDOMapper.updateByJobName(jobMetaDO) > 0){
+            jobMetaDO.setExecuteStatus((short) 0);
+            if (jobMetaDOMapper.updateByJobName(jobMetaDO) > 0) {
                 isStopped = true;
             }
         }
@@ -87,16 +101,31 @@ public class JobManageServiceImpl implements JobManageService {
     public boolean stopJobs(List<String> jobNames) {
         int jobMapStartSize = jobMap.size();
         boolean isStopped = false;
-        for(String jobName : jobNames){
+        for (String jobName : jobNames) {
             Job job = jobMap.get(jobName);
             job.stopAll();
             jobMap.remove(jobName);
         }
         int jobMapEndSize = jobMap.size();
-        if(jobMapStartSize == jobMapEndSize + jobNames.size()){
+        if (jobMapStartSize == jobMapEndSize + jobNames.size()) {
             isStopped = true;
 
         }
         return isStopped;
+    }
+
+    public boolean modifyJob(FTPSyncSetp ftpSyncSetp) {
+        boolean isModifyJob = false;
+        JobMetaDO jobMetaDO = jobMetaDOMapper.selectByJobName(ftpSyncSetp.getJobName());
+        if(jobMetaDO.getTransMetaId() != 0){
+            if(ftpSyncSetp.getFtpDownLoadStepVO() != null && ftpSyncSetp.getFtpPutStepVO() != null) {
+                String fileName = fileSyncJobService.fileSyncFtpToFtpJobMeta(ftpSyncSetp.getJobStartStepVO(), ftpSyncSetp.getFtpPutStepVO(),ftpSyncSetp.getSrcNickName(), ftpSyncSetp.getFtpDownLoadStepVO(), ftpSyncSetp.getDstNickName(),ftpSyncSetp.getJobName());
+            }else if(ftpSyncSetp.getFtpDownLoadStepVO() != null){
+                String fileName = fileSyncJobService.createDownloadJobMeta(ftpSyncSetp.getJobStartStepVO(), ftpSyncSetp.getFtpDownLoadStepVO(), ftpSyncSetp.getJobName(),ftpSyncSetp.getSrcNickName());
+            }else {
+                String fileName = fileSyncJobService.createPutJobMeta(ftpSyncSetp.getJobStartStepVO(), ftpSyncSetp.getFtpPutStepVO(), ftpSyncSetp.getJobName(),ftpSyncSetp.getDstNickName());
+            }
+        }
+        return isModifyJob;
     }
 }

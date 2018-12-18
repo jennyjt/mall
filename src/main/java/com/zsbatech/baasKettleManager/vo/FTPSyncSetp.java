@@ -18,7 +18,11 @@ public class FTPSyncSetp {
 
     private FTPPutStepDO ftpPutStepVO;
 
-    private String fileName;
+    private String jobName;
+
+    private String srcNickName;
+
+    private String dstNickName;
 
     public JobStartStepDO getJobStartStepVO() {
         return jobStartStepVO;
@@ -28,12 +32,20 @@ public class FTPSyncSetp {
         return ftpDownLoadStepVO;
     }
 
-    public String getFileName() {
-        return fileName;
+    public String getJobName() {
+        return jobName;
     }
 
     public FTPPutStepDO getFtpPutStepVO() {
         return ftpPutStepVO;
+    }
+
+    public String getSrcNickName() {
+        return srcNickName;
+    }
+
+    public String getDstNickName() {
+        return dstNickName;
     }
 
     public void setJobStartStepVO(JobStartStepDO jobStartStepVO) {
@@ -44,11 +56,19 @@ public class FTPSyncSetp {
         this.ftpDownLoadStepVO = ftpDownLoadStepVO;
     }
 
-    public void setFileName(String fileName) {
-        this.fileName = fileName;
+    public void setJobName(String jobName) {
+        this.jobName = jobName;
     }
 
     public void setFtpPutStepVO(FTPPutStepDO ftpPutStepVO) {
         this.ftpPutStepVO = ftpPutStepVO;
+    }
+
+    public void setSrcNickName(String srcNickName) {
+        this.srcNickName = srcNickName;
+    }
+
+    public void setDstNickName(String dstNickName) {
+        this.dstNickName = dstNickName;
     }
 }
