@@ -1,5 +1,9 @@
 package com.zsbatech.baasKettleManager.service;
 
+import com.zsbatech.baasKettleManager.model.FTPDownLoadStepDO;
+import com.zsbatech.baasKettleManager.model.FTPPutStepDO;
+import com.zsbatech.baasKettleManager.model.JobMetaDO;
+import com.zsbatech.baasKettleManager.model.JobStartStepDO;
 import com.zsbatech.baasKettleManager.vo.*;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.job.JobMeta;
@@ -20,13 +24,13 @@ public interface SaveJobMetaService {
 
     boolean saveTransJobData(String fileName);
 
-    JobMetaVO getJobMetaVO(JobMeta jobMeta);
+    JobMetaDO getJobMetaDO(JobMeta jobMeta);
 
-    JobStartStepVO getJobStartStepVO(JobMeta jobMeta);
+    JobStartStepDO getJobStartStepDO(JobMeta jobMeta);
 
-    FTPPutStepVO getFTPPutStepVO(JobMeta jobMeta);
+    FTPPutStepDO getFTPPutStepDO(JobMeta jobMeta);
 
-    FTPDownLoadStepVO getFTPDownLoadStepVO(JobMeta jobMeta);
+    FTPDownLoadStepDO getFTPDownLoadStepDO(JobMeta jobMeta);
 
     JobEntryTrans getJobEntryTrans(JobMeta jobMeta);
 

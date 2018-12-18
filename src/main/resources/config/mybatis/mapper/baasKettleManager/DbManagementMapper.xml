@@ -14,6 +14,7 @@
     <result column="updated_time" property="updatedTime" jdbcType="TIMESTAMP" />
     <result column="create_user" property="createUser" jdbcType="VARCHAR" />
     <result column="use_count" jdbcType="SMALLINT" property="useCount" />
+    <result column="status" jdbcType="TINYINT" property="status" />
   </resultMap>
   <sql id="Example_Where_Clause" >
     <where >
@@ -75,7 +76,7 @@
   </sql>
   <sql id="Base_Column_List" >
     id, link_name, db_type, db_host, db_port, db_name, db_user, db_password, create_time, 
-    updated_time, create_user, use_count
+    updated_time, create_user, use_count, status
   </sql>
   <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.zsbatech.baasKettleManager.model.DbManagementExample" >
     select
@@ -111,12 +112,13 @@
     insert into db_management (id, link_name, db_type, 
       db_host, db_port, db_name, 
       db_user, db_password, create_time, 
-      updated_time, create_user, use_count
+      updated_time, create_user, use_count, status
       )
     values (#{id,jdbcType=INTEGER}, #{linkName,jdbcType=VARCHAR}, #{dbType,jdbcType=VARCHAR},
       #{dbHost,jdbcType=VARCHAR}, #{dbPort,jdbcType=VARCHAR}, #{dbName,jdbcType=VARCHAR},
       #{dbUser,jdbcType=VARCHAR}, #{dbPassword,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP},
-      #{updatedTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, #{useCount,jdbcType=SMALLINT}
+      #{updatedTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, #{useCount,jdbcType=SMALLINT},
+      #{status,jdbcType=TINYINT}
       )
   </insert>
   <insert id="insertSelective" parameterType="com.zsbatech.baasKettleManager.model.DbManagement" >
@@ -158,6 +160,9 @@
       <if test="useCount != null">
         use_count,
       </if>
+      <if test="status != null">
+        status,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -195,6 +200,9 @@
       </if>
       <if test="useCount != null">
         #{useCount,jdbcType=SMALLINT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
       </if>
     </trim>
   </insert>
@@ -243,6 +251,9 @@
       <if test="record.useCount != null">
         use_count = #{record.useCount,jdbcType=SMALLINT},
       </if>
+      <if test="record.status != null">
+        status = #{record.status,jdbcType=TINYINT},
+      </if>
     </set>
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
@@ -261,7 +272,8 @@
       create_time = #{record.createTime,jdbcType=TIMESTAMP},
       updated_time = #{record.updatedTime,jdbcType=TIMESTAMP},
       create_user = #{record.createUser,jdbcType=VARCHAR},
-      use_count = #{record.useCount,jdbcType=SMALLINT}
+      use_count = #{record.useCount,jdbcType=SMALLINT},
+      status = #{record.status,jdbcType=TINYINT}
     <if test="_parameter != null" >
       <include refid="Update_By_Example_Where_Clause" />
     </if>
@@ -302,6 +314,9 @@
       <if test="useCount != null">
         use_count = #{useCount,jdbcType=SMALLINT},
       </if>
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -317,7 +332,8 @@
       create_time = #{createTime,jdbcType=TIMESTAMP},
       updated_time = #{updatedTime,jdbcType=TIMESTAMP},
       create_user = #{createUser,jdbcType=VARCHAR},
-      use_count = #{useCount,jdbcType=SMALLINT}
+      use_count = #{useCount,jdbcType=SMALLINT},
+      status = #{status,jdbcType=TINYINT}
     where id = #{id,jdbcType=INTEGER}
   </update>
 
@@ -352,6 +368,9 @@
       </if>
       <if test="useCount != null">
         and use_count = #{useCount,jdbcType=SMALLINT}
+      </if>
+      <if test="status != null">
+        and status = #{status,jdbcType=TINYINT}
       </if>
     </where>
     order by id desc

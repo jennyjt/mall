@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zsbatech.baasKettleManager.dao.FileCatalogDOMapper" >
+  <resultMap id="BaseResultMap" type="com.zsbatech.baasKettleManager.model.FileCatalogDO" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="source_catalog" property="sourceCatalog" jdbcType="VARCHAR" />
+    <result column="createtime" property="createTime" jdbcType="VARCHAR" />
+    <result column="updatetime" property="updateTime" jdbcType="VARCHAR" />
+    <result column="create_user" property="createUser" jdbcType="VARCHAR" />
+    <result column="parent_id" property="parentId" jdbcType="INTEGER" />
+    <result column="layer" property="layer" jdbcType="TINYINT" />
+    <result column="alias_name" property="aliasName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, source_catalog, createtime, updatetime,create_user,parent_id,layer,alias_name
+  </sql>
+
+  <insert id="insert" parameterType="com.zsbatech.baasKettleManager.model.FileCatalogDO" >
+    insert into file_catalog (id, source_catalog, createtime, updatetime,create_user,parent_id,layer,alias_name)
+    values (#{id,jdbcType=INTEGER}, #{sourceCatalog,jdbcType=VARCHAR},#{createTime,jdbcType=VARCHAR},
+    #{updateTime,jdbcType=VARCHAR},#{createUser,jdbcType=VARCHAR},#{parentId,jdbcType=INTEGER},#{layer,jdbcType=TINYINT},#{aliasName,jdbcType=VARCHAR})
+  </insert>
+
+  <select id="select" resultMap="BaseResultMap" parameterType="com.zsbatech.baasKettleManager.model.FileCatalogDO" >
+    select
+    <include refid="Base_Column_List" />
+    from file_catalog
+    where source_catalog = #{sourceCatalog,jdbcType=VARCHAR} AND
+           layer = #{layer,jdbcType=TINYINT}
+    limit 1
+  </select>
+
+  <select id="queryCatalogById" resultMap="BaseResultMap" parameterType="java.util.List" >
+    select
+    <include refid="Base_Column_List" />
+    from file_catalog
+    where id in
+    <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+      #{item}
+    </foreach>
+  </select>
+
+<!--  根据目录id获取全路径-->
+  <select id="getFullPathByCatalogId" resultMap="BaseResultMap" parameterType="java.util.List" >
+    SELECT T2.id, T2.source_catalog, T2.alias_name
+    FROM (
+    SELECT
+    @r AS _id,
+    (SELECT @r := parent_id FROM file_catalog WHERE id = _id) AS parentId,
+    @l := @l + 1 AS lvl
+    FROM
+    (SELECT @r := #{id,jdbcType=INTEGER}, @l := 0) vars,
+    file_catalog  h
+    WHERE @r &lt;&gt; 0) T1
+    left JOIN file_catalog T2
+    ON T1._id = T2.id
+    ORDER BY T1.lvl DESC
+  </select>
+
+
+</mapper>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
-<mapper namespace="com.zsbatech.baasKettleManager.dao.TransMetaVOMapper" >
-  <resultMap id="BaseResultMap" type="com.zsbatech.baasKettleManager.vo.TransMetaVO" >
+<mapper namespace="com.zsbatech.baasKettleManager.dao.TransMetaDOMapper" >
+  <resultMap id="BaseResultMap" type="com.zsbatech.baasKettleManager.model.TransMetaDO" >
     <id column="id" property="id" jdbcType="INTEGER" />
     <result column="trans_name" property="transName" jdbcType="VARCHAR" />
     <result column="file_name" property="fileName" jdbcType="VARCHAR" />
@@ -12,7 +12,7 @@
     id, trans_name, file_name, createtime, updatetime
   </sql>
 
-  <insert id="insert" parameterType="com.zsbatech.baasKettleManager.vo.TransMetaVO" >
+  <insert id="insert" parameterType="com.zsbatech.baasKettleManager.model.TransMetaDO" >
     insert into trans_meta (id, trans_name, file_name,
       createtime, updatetime)
     values (#{id,jdbcType=INTEGER}, #{transName,jdbcType=VARCHAR},#{fileName,jdbcType=VARCHAR},#{createTime,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR})

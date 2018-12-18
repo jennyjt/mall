@@ -1,8 +1,8 @@
 package com.zsbatech.baasKettleManager.controller;
 
+import com.zsbatech.baasKettleManager.model.FilesDO;
 import com.zsbatech.baasKettleManager.service.CatalogManageService;
 import com.zsbatech.baasKettleManager.vo.FileQueryVO;
-import com.zsbatech.baasKettleManager.vo.FilesVO;
 import com.zsbatech.baasKettleManager.vo.FtpcatalogNode;
 import com.zsbatech.base.common.ResponseData;
 import com.zsbatech.base.constants.RequestField;
@@ -104,7 +104,7 @@ public class ContentManageController {
     @RequestMapping(value = "/queryFilesByCatalog", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public ResponseData<List> queryFilesByCatalog(@RequestBody FileQueryVO fileQueryVO) {
-        List<FilesVO> fileList = catalogManageService.queryFiles(fileQueryVO.getFileCatalog(), fileQueryVO.getCode());
+        List<FilesDO> fileList = catalogManageService.queryFiles(fileQueryVO.getFileCatalog(), fileQueryVO.getCode());
         ResponseData<List> responseData = new ResponseData<>();
         if (fileList != null && fileList.size() != 0) {
             responseData.setOK(200,"查询成功", fileList);

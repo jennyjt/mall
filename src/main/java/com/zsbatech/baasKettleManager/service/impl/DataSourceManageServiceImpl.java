@@ -1,6 +1,7 @@
 package com.zsbatech.baasKettleManager.service.impl;
 
 import com.github.pagehelper.page.PageMethod;
+import com.zsbatech.baasKettleManager.constants.DataSourceConstant;
 import com.zsbatech.baasKettleManager.dao.DbManagementMapper;
 import com.zsbatech.baasKettleManager.model.DbManagement;
 import com.zsbatech.baasKettleManager.service.DataSouceManageService;
@@ -53,8 +54,11 @@ public class DataSourceManageServiceImpl implements DataSouceManageService {
 
     @Override
     public boolean deleteDataSource(Integer id) {
-        int result = dbMapper.deleteByPrimaryKey(id);
-        if(result <= 0) {
+        DbManagement param = new DbManagement();
+        param.setId(id);
+        param.setStatus(DataSourceConstant.DELETE_STATUS);
+        int result = dbMapper.updateByPrimaryKeySelective(param);
+        if (result <= 0) {
             return false;
         } else {
             return true;

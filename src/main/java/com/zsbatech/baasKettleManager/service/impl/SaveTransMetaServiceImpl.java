@@ -1,11 +1,10 @@
 package com.zsbatech.baasKettleManager.service.impl;
 
 import com.zsbatech.baasKettleManager.dao.*;
-import com.zsbatech.baasKettleManager.model.DbManagement;
+import com.zsbatech.baasKettleManager.model.*;
 import com.zsbatech.baasKettleManager.service.SaveTransMetaService;
 import com.zsbatech.baasKettleManager.util.ConfigUtil;
 import com.zsbatech.baasKettleManager.util.StringUtil;
-import com.zsbatech.baasKettleManager.vo.*;
 import org.pentaho.di.core.Const;
 import org.pentaho.di.core.EngineMetaInterface;
 import org.pentaho.di.core.KettleEnvironment;
@@ -47,19 +46,19 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
     private DbManagementMapper dbManagementMapper;
 
     @Autowired
-    private InsertUpdateStepVOMapper insertUpdateStepVOMapper;
+    private InsertUpdateStepDOMapper insertUpdateStepDOMapper;
 
     @Autowired
-    private TableOutputMetaVOMapper tableOutputMetaVOMapper;
+    private TableOutputMetaDOMapper tableOutputMetaDOMapper;
 
     @Autowired
-    private TransHopMetaVOMapper transHopMetaVOMapper;
+    private TransHopMetaDOMapper transHopMetaDOMapper;
 
     @Autowired
-    private TableInputStepVOMapper tableInputStepVOMapper;
+    private TableInputStepDOMapper tableInputStepDOMapper;
 
     @Autowired
-    private TransMetaVOMapper transMetaVOMapper;
+    private TransMetaDOMapper transMetaDOMapper;
 
     public boolean save(EngineMetaInterface meta, String fname, boolean export) {
         EngineMetaInterface lmeta;
@@ -115,59 +114,59 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
             e.printStackTrace();
         }
         List<TransHopMeta> transHopMetas = null;
-        List<TransHopMetaVO> transHopMetaVOList = new ArrayList<>();
-        if (transMetaVOMapper.selectTransMetaVO(transMeta.getName()) != null) {
+        List<TransHopMetaDO> transHopMetaDOList = new ArrayList<>();
+        if (transMetaDOMapper.selectTransMetaVO(transMeta.getName()) != null) {
             return true;
-        } else if (transMetaVOMapper.insert(getTransMetaVO(transMeta)) > 0) {
-            TransMetaVO transMetaVO = transMetaVOMapper.selectTransMetaVO(transMeta.getName());
-            InsertUpdateStepVO insertUpdateStepVO = getInsertUpdateStepVO(transMeta);
-            TableOutputMetaVO tableOutputMetaVO = null;
-            if (insertUpdateStepVO.getStepName() != null) {
-                insertUpdateStepVO.setTransMetaId(transMetaVO.getId());
-                insertUpdateStepVO.setdBManageMentId(dstDbConnId);
+        } else if (transMetaDOMapper.insert(getTransMetaDO(transMeta)) > 0) {
+            TransMetaDO transMetaDO = transMetaDOMapper.selectTransMetaVO(transMeta.getName());
+            InsertUpdateStepDO insertUpdateStepDO = getInsertUpdateStepDO(transMeta);
+            TableOutputMetaDO tableOutputMetaDO = null;
+            if (insertUpdateStepDO.getStepName() != null) {
+                insertUpdateStepDO.setTransMetaId(transMetaDO.getId());
+                insertUpdateStepDO.setdBManageMentId(dstDbConnId);
             } else {
-                tableOutputMetaVO = getTableOutputMetaVO(transMeta);
-                tableOutputMetaVO.setTransMetaId(transMetaVO.getId());
-                tableOutputMetaVO.setdBManageMentId(dstDbConnId);
+                tableOutputMetaDO = getTableOutputMetaDO(transMeta);
+                tableOutputMetaDO.setTransMetaId(transMetaDO.getId());
+                tableOutputMetaDO.setdBManageMentId(dstDbConnId);
             }
-            List<TableInputStepVO> tableInputStepVOList = getTableInputStepVO(transMeta);
+            List<TableInputStepDO> tableInputStepDOList = getTableInputStepDO(transMeta);
             List<String> stepNameList = new ArrayList<>();
-            for (TableInputStepVO tableInputStepVO : tableInputStepVOList) {
-                tableInputStepVO.setTransMetaId(transMetaVO.getId());
-                tableInputStepVO.setdBManageMentId(srcDbConnId);
-                stepNameList.add(tableInputStepVO.getStepName());
+            for (TableInputStepDO tableInputStepDO : tableInputStepDOList) {
+                tableInputStepDO.setTransMetaId(transMetaDO.getId());
+                tableInputStepDO.setdBManageMentId(srcDbConnId);
+                stepNameList.add(tableInputStepDO.getStepName());
             }
-            TableOutputMetaVO tableOutputMeta = null;
-            InsertUpdateStepVO insertUpdateMeta = null;
-            if (insertUpdateStepVO.getStepName() != null && insertUpdateStepVOMapper.insert(insertUpdateStepVO) > 0) {
-                insertUpdateMeta = insertUpdateStepVOMapper.selectByName(insertUpdateStepVO.getStepName());
-            } else if (tableOutputMetaVOMapper.insert(tableOutputMetaVO) > 0) {
-                tableOutputMeta = tableOutputMetaVOMapper.selectTableOutputMetaVO(tableOutputMetaVO.getStepName());
+            TableOutputMetaDO tableOutputMeta = null;
+            InsertUpdateStepDO insertUpdateMeta = null;
+            if (insertUpdateStepDO.getStepName() != null && insertUpdateStepDOMapper.insert(insertUpdateStepDO) > 0) {
+                insertUpdateMeta = insertUpdateStepDOMapper.selectByName(insertUpdateStepDO.getStepName());
+            } else if (tableOutputMetaDOMapper.insert(tableOutputMetaDO) > 0) {
+                tableOutputMeta = tableOutputMetaDOMapper.selectTableOutputMetaVO(tableOutputMetaDO.getStepName());
             }
-            if (tableInputStepVOMapper.insertBatch(tableInputStepVOList) > 0) {
-                List<TableInputStepVO> tableInputStepVOS = tableInputStepVOMapper.selectTableInputStepVO(stepNameList);
+            if (tableInputStepDOMapper.insertBatch(tableInputStepDOList) > 0) {
+                List<TableInputStepDO> tableInputStepDOS = tableInputStepDOMapper.selectTableInputStepVO(stepNameList);
                 transHopMetas = getTransHopMetas(transMeta);
-                Map<String, TableInputStepVO> map = new HashMap<>();
-                for (TableInputStepVO tableInputStepVO : tableInputStepVOS) {
-                    map.put(tableInputStepVO.getStepName(), tableInputStepVO);
+                Map<String, TableInputStepDO> map = new HashMap<>();
+                for (TableInputStepDO tableInputStepDO : tableInputStepDOS) {
+                    map.put(tableInputStepDO.getStepName(), tableInputStepDO);
                 }
                 for (TransHopMeta hop : transHopMetas) {
-                    TransHopMetaVO transHopMetaVO = new TransHopMetaVO();
-                    transHopMetaVO.setCreateTime(new Date());
-                    transHopMetaVO.setCreateTime(new Date());
+                    TransHopMetaDO transHopMetaDO = new TransHopMetaDO();
+                    transHopMetaDO.setCreateTime(new Date());
+                    transHopMetaDO.setCreateTime(new Date());
                     if (hop != null && map.get(hop.getFromStep().getName()) != null) {
-                        transHopMetaVO.setFromStepId(map.get(hop.getFromStep().getName()).getId());
+                        transHopMetaDO.setFromStepId(map.get(hop.getFromStep().getName()).getId());
                     }
                     if(insertUpdateMeta != null && hop != null && hop.getToStep().getName().equals(insertUpdateMeta.getStepName())){
-                        transHopMetaVO.setToStepId(insertUpdateMeta.getId());
+                        transHopMetaDO.setToStepId(insertUpdateMeta.getId());
                     }else if (insertUpdateMeta == null && hop != null && hop.getToStep().getName().equals(tableOutputMeta.getStepName())) {
-                        transHopMetaVO.setToStepId(tableOutputMeta.getId());
+                        transHopMetaDO.setToStepId(tableOutputMeta.getId());
                     }
-                    transHopMetaVOList.add(transHopMetaVO);
+                    transHopMetaDOList.add(transHopMetaDO);
                 }
             }
         }
-        if(transHopMetaVOList != null && transHopMetaVOMapper.insertHopBatch(transHopMetaVOList)> 0) {
+        if(transHopMetaDOList != null && transHopMetaDOMapper.insertHopBatch(transHopMetaDOList)> 0) {
             return true;
         }else {
             return false;
@@ -180,13 +179,13 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
      * @param transMeta
      * @return
      */
-    public TransMetaVO getTransMetaVO(TransMeta transMeta) {
-        TransMetaVO transMetaVO = new TransMetaVO();
-        transMetaVO.setTransName(transMeta.getName());
-        transMetaVO.setFileName(transMeta.getName() + ".ktr");
-        transMetaVO.setCreateTime(new Date());
-        transMetaVO.setUpdateTime(new Date());
-        return transMetaVO;
+    public TransMetaDO getTransMetaDO(TransMeta transMeta) {
+        TransMetaDO transMetaDO = new TransMetaDO();
+        transMetaDO.setTransName(transMeta.getName());
+        transMetaDO.setFileName(transMeta.getName() + ".ktr");
+        transMetaDO.setCreateTime(new Date());
+        transMetaDO.setUpdateTime(new Date());
+        return transMetaDO;
     }
 
     /**
@@ -195,22 +194,22 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
      * @param transMeta
      * @return
      */
-    public List<TableInputStepVO> getTableInputStepVO(TransMeta transMeta) {
-        List<TableInputStepVO> tableInputStepVOList = new ArrayList<>();
+    public List<TableInputStepDO> getTableInputStepDO(TransMeta transMeta) {
+        List<TableInputStepDO> tableInputStepDOList = new ArrayList<>();
         List<StepMeta> stepMeta = transMeta.getTransHopSteps(true);
         for (StepMeta tableStepMeta : stepMeta) {
-            TableInputStepVO tableInputStepVO = new TableInputStepVO();
+            TableInputStepDO tableInputStepDO = new TableInputStepDO();
             StepMetaInterface stepMetaInterface = tableStepMeta.getStepMetaInterface();
             if (stepMetaInterface instanceof TableInputMeta) {
-                tableInputStepVO.setCreateTime(new Date());
-                tableInputStepVO.setUpdateTime(new Date());
-                tableInputStepVO.setSql(((TableInputMeta) stepMetaInterface).getSQL());
-                tableInputStepVO.setDbConnectionName(((TableInputMeta) stepMetaInterface).getDatabaseMeta().getName());
-                tableInputStepVO.setStepName(tableStepMeta.getName());
-                tableInputStepVOList.add(tableInputStepVO);
+                tableInputStepDO.setCreateTime(new Date());
+                tableInputStepDO.setUpdateTime(new Date());
+                tableInputStepDO.setSql(((TableInputMeta) stepMetaInterface).getSQL());
+                tableInputStepDO.setDbConnectionName(((TableInputMeta) stepMetaInterface).getDatabaseMeta().getName());
+                tableInputStepDO.setStepName(tableStepMeta.getName());
+                tableInputStepDOList.add(tableInputStepDO);
             }
         }
-        return tableInputStepVOList;
+        return tableInputStepDOList;
     }
 
     /**
@@ -219,23 +218,23 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
      * @param transMeta
      * @return
      */
-    public TableOutputMetaVO getTableOutputMetaVO(TransMeta transMeta) {
-        TableOutputMetaVO tableOutputMetaVO = new TableOutputMetaVO();
+    public TableOutputMetaDO getTableOutputMetaDO(TransMeta transMeta) {
+        TableOutputMetaDO tableOutputMetaDO = new TableOutputMetaDO();
         List<StepMeta> stepMetaList = transMeta.getTransHopSteps(true);
         for (StepMeta stepMeta : stepMetaList) {
             StepMetaInterface stepMetaInterface = stepMeta.getStepMetaInterface();
             if (stepMetaInterface instanceof TableOutputMeta) {
-                tableOutputMetaVO.setCreateTime(new Date());
-                tableOutputMetaVO.setUpdateTime(new Date());
-                tableOutputMetaVO.setEntryId(1);
-                tableOutputMetaVO.setDbConnectionName(((TableOutputMeta) stepMetaInterface).getDatabaseMeta().getName());
-                tableOutputMetaVO.setStepName(stepMeta.getName());
-                tableOutputMetaVO.setIsBatchInsert(1);
-                tableOutputMetaVO.setTargetTable(((TableOutputMeta) stepMetaInterface).getTableName());
+                tableOutputMetaDO.setCreateTime(new Date());
+                tableOutputMetaDO.setUpdateTime(new Date());
+                tableOutputMetaDO.setEntryId(1);
+                tableOutputMetaDO.setDbConnectionName(((TableOutputMeta) stepMetaInterface).getDatabaseMeta().getName());
+                tableOutputMetaDO.setStepName(stepMeta.getName());
+                tableOutputMetaDO.setIsBatchInsert(1);
+                tableOutputMetaDO.setTargetTable(((TableOutputMeta) stepMetaInterface).getTableName());
                 break;
             }
         }
-        return tableOutputMetaVO;
+        return tableOutputMetaDO;
     }
 
     /**
@@ -244,34 +243,34 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
      * @param transMeta
      * @return
      */
-    public InsertUpdateStepVO getInsertUpdateStepVO(TransMeta transMeta) {
-        InsertUpdateStepVO insertUpdateStepVO = new InsertUpdateStepVO();
+    public InsertUpdateStepDO getInsertUpdateStepDO(TransMeta transMeta) {
+        InsertUpdateStepDO insertUpdateStepDO = new InsertUpdateStepDO();
         List<StepMeta> stepMetaList = transMeta.getTransHopSteps(true);
         for (StepMeta stepMeta : stepMetaList) {
             StepMetaInterface stepMetaInterface = stepMeta.getStepMetaInterface();
             if (stepMetaInterface instanceof InsertUpdateMeta) {
-                insertUpdateStepVO.setStepName(((InsertUpdateMeta) stepMetaInterface).getDatabaseMeta().getName());
-                insertUpdateStepVO.setKeyLookup(StringUtil.toString(((InsertUpdateMeta) stepMetaInterface).getKeyLookup()));
-                insertUpdateStepVO.setKeyStream(StringUtil.toString((((InsertUpdateMeta) stepMetaInterface).getKeyStream())));
-                insertUpdateStepVO.setKeyStream2(StringUtil.toString((((InsertUpdateMeta) stepMetaInterface).getKeyStream2())));//一定要加上
-                insertUpdateStepVO.setKeyCondition(StringUtil.toString((((InsertUpdateMeta) stepMetaInterface).getKeyCondition())));
+                insertUpdateStepDO.setStepName(((InsertUpdateMeta) stepMetaInterface).getDatabaseMeta().getName());
+                insertUpdateStepDO.setKeyLookup(StringUtil.toString(((InsertUpdateMeta) stepMetaInterface).getKeyLookup()));
+                insertUpdateStepDO.setKeyStream(StringUtil.toString((((InsertUpdateMeta) stepMetaInterface).getKeyStream())));
+                insertUpdateStepDO.setKeyStream2(StringUtil.toString((((InsertUpdateMeta) stepMetaInterface).getKeyStream2())));//一定要加上
+                insertUpdateStepDO.setKeyCondition(StringUtil.toString((((InsertUpdateMeta) stepMetaInterface).getKeyCondition())));
                 //设置要更新的字段
-                insertUpdateStepVO.setUpdateLookup(StringUtil.toString(((InsertUpdateMeta) stepMetaInterface).getUpdateLookup()));
-                insertUpdateStepVO.setUpdateStream(StringUtil.toString(((InsertUpdateMeta) stepMetaInterface).getUpdateStream()));
-                insertUpdateStepVO.setUpdateOrNot(StringUtil.toString(((InsertUpdateMeta) stepMetaInterface).getUpdate()));
-                insertUpdateStepVO.setCreateTime(new Date());
-                insertUpdateStepVO.setUpdateTime(new Date());
-                insertUpdateStepVO.setTimeStampColumn(new Date());
-                insertUpdateStepVO.setTargetTable(((InsertUpdateMeta) stepMetaInterface).getTableName());
+                insertUpdateStepDO.setUpdateLookup(StringUtil.toString(((InsertUpdateMeta) stepMetaInterface).getUpdateLookup()));
+                insertUpdateStepDO.setUpdateStream(StringUtil.toString(((InsertUpdateMeta) stepMetaInterface).getUpdateStream()));
+                insertUpdateStepDO.setUpdateOrNot(StringUtil.toString(((InsertUpdateMeta) stepMetaInterface).getUpdate()));
+                insertUpdateStepDO.setCreateTime(new Date());
+                insertUpdateStepDO.setUpdateTime(new Date());
+                insertUpdateStepDO.setTimeStampColumn(new Date());
+                insertUpdateStepDO.setTargetTable(((InsertUpdateMeta) stepMetaInterface).getTableName());
                 if (((InsertUpdateMeta) stepMetaInterface).isUpdateBypassed()) {
-                    insertUpdateStepVO.setIsUpdate((short) 1);
+                    insertUpdateStepDO.setIsUpdate((short) 1);
                 } else {
-                    insertUpdateStepVO.setIsUpdate((short) 0);
+                    insertUpdateStepDO.setIsUpdate((short) 0);
                 }
                 break;
             }
         }
-        return insertUpdateStepVO;
+        return insertUpdateStepDO;
     }
 
     /**
@@ -302,13 +301,13 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
         } catch (KettleException e) {
             e.printStackTrace();
         }
-        TransMetaVO transMetaVO = transMetaVOMapper.selectTransMetaVO(name);
-        TableOutputMetaVO tableOutputMetaVO = tableOutputMetaVOMapper.selectTableOutputMetaVOByTransMetaId(transMetaVO.getId());
-        InsertUpdateStepVO insertUpdateStepVO =insertUpdateStepVOMapper.selectByTransMetaId(transMetaVO.getId());
-        List<TableInputStepVO> tableInputStepVOList = tableInputStepVOMapper.selectTableInputStepVOS(transMetaVO.getId());
+        TransMetaDO transMetaDO = transMetaDOMapper.selectTransMetaVO(name);
+        TableOutputMetaDO tableOutputMetaDO = tableOutputMetaDOMapper.selectTableOutputMetaVOByTransMetaId(transMetaDO.getId());
+        InsertUpdateStepDO insertUpdateStepDO = insertUpdateStepDOMapper.selectByTransMetaId(transMetaDO.getId());
+        List<TableInputStepDO> tableInputStepDOList = tableInputStepDOMapper.selectTableInputStepVOS(transMetaDO.getId());
         TransMeta transMeta = new TransMeta();
-        if(insertUpdateStepVO == null) {
-            DbManagement outputDbManagement = dbManagementMapper.selectByPrimaryKey(tableOutputMetaVO.getdBManageMentId());
+        if(insertUpdateStepDO == null) {
+            DbManagement outputDbManagement = dbManagementMapper.selectByPrimaryKey(tableOutputMetaDO.getdBManageMentId());
             DatabaseMeta outputDatabaseMeta = new DatabaseMeta();
             outputDatabaseMeta.setDatabaseType(outputDbManagement.getDbType());
             outputDatabaseMeta.setDBName(outputDbManagement.getDbName());
@@ -317,26 +316,26 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
             outputDatabaseMeta.setUsername(outputDbManagement.getDbUser());
             outputDatabaseMeta.setPassword(outputDbManagement.getDbPassword());
             outputDatabaseMeta.setName(outputDbManagement.getLinkName());
-            transMeta.setName(transMetaVO.getTransName());
+            transMeta.setName(transMetaDO.getTransName());
             transMeta.addDatabase(outputDatabaseMeta);
             TableOutputMeta tableOutputMeta = new TableOutputMeta();
             tableOutputMeta.setDatabaseMeta(transMeta.findDatabase(outputDbManagement.getLinkName()));
-            tableOutputMeta.setTableName(tableOutputMetaVO.getTargetTable());
+            tableOutputMeta.setTableName(tableOutputMetaDO.getTargetTable());
             String[] fieldsStream = fields;
             tableOutputMeta.setTableNameInTable(true);
             tableOutputMeta.setFieldDatabase(fields);
             tableOutputMeta.setFieldStream(fieldsStream);
             PluginRegistry registry = PluginRegistry.getInstance();
-            if (tableOutputMetaVO.getIsBatchInsert() == 1) {
+            if (tableOutputMetaDO.getIsBatchInsert() == 1) {
                 tableOutputMeta.setUseBatchUpdate(true);
             } else {
                 tableOutputMeta.setUseBatchUpdate(false);
             }
             String tableOutputPluginId = registry.getPluginId(StepPluginType.class, tableOutputMeta);
-            StepMeta tableOutputStepMeta = new StepMeta(tableOutputPluginId, tableOutputMetaVO.getStepName(), tableOutputMeta);
+            StepMeta tableOutputStepMeta = new StepMeta(tableOutputPluginId, tableOutputMetaDO.getStepName(), tableOutputMeta);
             transMeta.addStep(tableOutputStepMeta);
-            for (TableInputStepVO tableInputStepVO : tableInputStepVOList) {
-                DbManagement inputDbManagement = dbManagementMapper.selectByPrimaryKey(tableInputStepVO.getdBManageMentId());
+            for (TableInputStepDO tableInputStepDO : tableInputStepDOList) {
+                DbManagement inputDbManagement = dbManagementMapper.selectByPrimaryKey(tableInputStepDO.getdBManageMentId());
                 DatabaseMeta inputDatabaseMeta = new DatabaseMeta();
                 inputDatabaseMeta.setDatabaseType(inputDbManagement.getDbType());
                 inputDatabaseMeta.setDBName(inputDbManagement.getDbName());
@@ -347,15 +346,15 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
                 inputDatabaseMeta.setName(inputDbManagement.getLinkName());
                 transMeta.addDatabase(inputDatabaseMeta);
                 TableInputMeta tableInputMeta = new TableInputMeta();
-                tableInputMeta.setDatabaseMeta(transMeta.findDatabase(tableInputStepVO.getDbConnectionName()));
-                tableInputMeta.setSQL(tableInputStepVO.getExcSql());
+                tableInputMeta.setDatabaseMeta(transMeta.findDatabase(tableInputStepDO.getDbConnectionName()));
+                tableInputMeta.setSQL(tableInputStepDO.getExcSql());
                 String tableInputPluginId = registry.getPluginId(StepPluginType.class, tableInputMeta);
-                StepMeta tableInputStepMeta = new StepMeta(tableInputPluginId, tableInputStepVO.getStepName(), tableInputMeta);
+                StepMeta tableInputStepMeta = new StepMeta(tableInputPluginId, tableInputStepDO.getStepName(), tableInputMeta);
                 transMeta.addStep(tableInputStepMeta);
                 transMeta.addTransHop(new TransHopMeta(tableInputStepMeta, tableOutputStepMeta));
             }
         }else {
-            DbManagement insertDbManagement = dbManagementMapper.selectByPrimaryKey(insertUpdateStepVO.getdBManageMentId());
+            DbManagement insertDbManagement = dbManagementMapper.selectByPrimaryKey(insertUpdateStepDO.getdBManageMentId());
             DatabaseMeta insertDatabaseMeta = new DatabaseMeta();
             insertDatabaseMeta.setDatabaseType(insertDbManagement.getDbType());
             insertDatabaseMeta.setDBName(insertDbManagement.getDbName());
@@ -364,29 +363,29 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
             insertDatabaseMeta.setUsername(insertDbManagement.getDbUser());
             insertDatabaseMeta.setPassword(insertDbManagement.getDbPassword());
             insertDatabaseMeta.setName(insertDbManagement.getLinkName());
-            transMeta.setName(transMetaVO.getTransName());
+            transMeta.setName(transMetaDO.getTransName());
             transMeta.addDatabase(insertDatabaseMeta);
             InsertUpdateMeta insertUpdateMeta = new InsertUpdateMeta();
             insertUpdateMeta.setDatabaseMeta(transMeta.findDatabase(insertDbManagement.getLinkName()));
             insertUpdateMeta.setDatabaseMeta(insertDatabaseMeta);
-            insertUpdateMeta.setTableName(insertUpdateStepVO.getTargetTable());
-            insertUpdateMeta.setKeyLookup(insertUpdateStepVO.getKeyLookup().split(","));
-            insertUpdateMeta.setKeyStream(insertUpdateStepVO.getKeyStream().split(","));
-            if(insertUpdateStepVO.getKeyStream2() != null) {
-                insertUpdateMeta.setKeyStream2(insertUpdateStepVO.getKeyStream2().split(","));//一定要加上
+            insertUpdateMeta.setTableName(insertUpdateStepDO.getTargetTable());
+            insertUpdateMeta.setKeyLookup(insertUpdateStepDO.getKeyLookup().split(","));
+            insertUpdateMeta.setKeyStream(insertUpdateStepDO.getKeyStream().split(","));
+            if(insertUpdateStepDO.getKeyStream2() != null) {
+                insertUpdateMeta.setKeyStream2(insertUpdateStepDO.getKeyStream2().split(","));//一定要加上
             }else {
                 insertUpdateMeta.setKeyStream2(new String[]{""});
             }
-            insertUpdateMeta.setKeyCondition(insertUpdateStepVO.getKeyCondition().split(","));
-            insertUpdateMeta.setUpdateStream(insertUpdateStepVO.getUpdateStream().split(","));
-            String [] strings = insertUpdateStepVO.getUpdateOrNot().split(",");
+            insertUpdateMeta.setKeyCondition(insertUpdateStepDO.getKeyCondition().split(","));
+            insertUpdateMeta.setUpdateStream(insertUpdateStepDO.getUpdateStream().split(","));
+            String [] strings = insertUpdateStepDO.getUpdateOrNot().split(",");
             Boolean [] booleans = new Boolean[strings.length];
             for(int i = 0; i < strings.length ; i++){
                 booleans[i] = Boolean.valueOf(strings[i]);
             }
             insertUpdateMeta.setUpdate(booleans);
-            insertUpdateMeta.setUpdateLookup(insertUpdateStepVO.getUpdateLookup().split(","));
-            if(insertUpdateStepVO.getIsUpdate() == 1) {
+            insertUpdateMeta.setUpdateLookup(insertUpdateStepDO.getUpdateLookup().split(","));
+            if(insertUpdateStepDO.getIsUpdate() == 1) {
                 insertUpdateMeta.setUpdateBypassed(true);
             }else {
                 insertUpdateMeta.setUpdateBypassed(false);
@@ -394,10 +393,10 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
             PluginRegistry registry = PluginRegistry.getInstance();
             insertUpdateMeta.setDatabaseMeta(transMeta.findDatabase(insertDatabaseMeta.getName()));
             String insertUpdatePluginId = registry.getPluginId(StepPluginType.class, insertUpdateMeta);
-            StepMeta insertUpdateStepMeta = new StepMeta(insertUpdatePluginId, insertUpdateStepVO.getStepName(), insertUpdateMeta);
+            StepMeta insertUpdateStepMeta = new StepMeta(insertUpdatePluginId, insertUpdateStepDO.getStepName(), insertUpdateMeta);
             transMeta.addStep(insertUpdateStepMeta);
-            for (TableInputStepVO tableInputStepVO : tableInputStepVOList) {
-                DbManagement inputDbManagement = dbManagementMapper.selectByPrimaryKey(tableInputStepVO.getdBManageMentId());
+            for (TableInputStepDO tableInputStepDO : tableInputStepDOList) {
+                DbManagement inputDbManagement = dbManagementMapper.selectByPrimaryKey(tableInputStepDO.getdBManageMentId());
                 DatabaseMeta inputDatabaseMeta = new DatabaseMeta();
                 inputDatabaseMeta.setDatabaseType(inputDbManagement.getDbType());
                 inputDatabaseMeta.setDBName(inputDbManagement.getDbName());
@@ -408,10 +407,10 @@ public class SaveTransMetaServiceImpl implements SaveTransMetaService {
                 inputDatabaseMeta.setName(inputDbManagement.getLinkName());
                 transMeta.addDatabase(inputDatabaseMeta);
                 TableInputMeta tableInputMeta = new TableInputMeta();
-                tableInputMeta.setSQL(tableInputStepVO.getExcSql());
-                tableInputMeta.setDatabaseMeta(transMeta.findDatabase(tableInputStepVO.getDbConnectionName()));
+                tableInputMeta.setSQL(tableInputStepDO.getExcSql());
+                tableInputMeta.setDatabaseMeta(transMeta.findDatabase(tableInputStepDO.getDbConnectionName()));
                 String tableInputPluginId = registry.getPluginId(StepPluginType.class, tableInputMeta);
-                StepMeta tableInputStepMeta = new StepMeta(tableInputPluginId, tableInputStepVO.getStepName(), tableInputMeta);
+                StepMeta tableInputStepMeta = new StepMeta(tableInputPluginId, tableInputStepDO.getStepName(), tableInputMeta);
                 transMeta.addStep(tableInputStepMeta);
                 transMeta.addTransHop(new TransHopMeta(tableInputStepMeta, insertUpdateStepMeta));
             }

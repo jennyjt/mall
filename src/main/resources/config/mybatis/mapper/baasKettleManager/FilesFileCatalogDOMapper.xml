@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zsbatech.baasKettleManager.dao.FilesFileCatalogDOMapper">
+    <resultMap id="BaseResultMap" type="com.zsbatech.baasKettleManager.model.FilesFileCatalogDO">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="file_id" property="fileId" jdbcType="INTEGER"/>
+        <result column="file_catalog_id" property="fileCatalogId" jdbcType="INTEGER"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, file_id, file_catalog_id
+  </sql>
+
+    <insert id="insert" parameterType="com.zsbatech.baasKettleManager.model.FilesFileCatalogDO">
+    insert into files_file_catalog (id, file_id, file_catalog_id)
+    values (#{id,jdbcType=INTEGER}, #{fileId,jdbcType=INTEGER},#{fileCatalogId,jdbcType=INTEGER})
+    </insert>
+
+    <insert id="insertBatch" parameterType="java.util.List">
+        insert into files_file_catalog (id, file_id, file_catalog_id)
+        values
+        <foreach collection="list" item="item" index="index" separator=",">
+            ( #{item.id,jdbcType=INTEGER}, #{item.fileId,jdbcType=INTEGER},#{item.fileCatalogId,jdbcType=INTEGER})
+        </foreach>
+    </insert>
+    <select id="queryByFileId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from files_file_catalog
+        where file_id = #{fileId,jdbcType=INTEGER}
+    </select>
+
+</mapper>

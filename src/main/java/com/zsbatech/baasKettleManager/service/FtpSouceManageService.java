@@ -32,7 +32,7 @@ public interface FtpSouceManageService {
     Pagination<FtpSourceManager> getDataSources(Integer currPage, Integer pageSize, FtpSourceManager ftpSource);
 
     /**
-     * 删除数据源
+     * 删除数据源--修改状态为已删除
      * @param id
      * @return
      */

@@ -32,7 +32,7 @@ public interface DataSouceManageService {
     Pagination<DbManagement> getDataSources(Integer currPage, Integer pageSize, DbManagement dbManagement);
 
     /**
-     * 删除数据源
+     * 删除数据源--修改状态为已删除
      * @param id
      * @return
      */

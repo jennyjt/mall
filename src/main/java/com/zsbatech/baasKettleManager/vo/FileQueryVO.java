@@ -1,7 +1,5 @@
 package com.zsbatech.baasKettleManager.vo;
 
-import java.util.List;
-
 /**
  * Created with IntelliJ IDEA.
  * Description:
