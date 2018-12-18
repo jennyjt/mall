@@ -10,6 +10,7 @@ public class JobLog {
     private String jobName;
 
     private Byte status;
+    private Integer linesSuccessed;
 
     private Integer linesRejected;
 
@@ -22,6 +23,14 @@ public class JobLog {
     private Date endTime;
 
     private String logField;
+
+    public Integer getLinesSuccessed() {
+        return linesSuccessed;
+    }
+
+    public void setLinesSuccessed(Integer linesSuccessed) {
+        this.linesSuccessed = linesSuccessed;
+    }
 
     public Integer getId() {
         return id;

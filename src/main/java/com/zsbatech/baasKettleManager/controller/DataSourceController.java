@@ -104,6 +104,7 @@ public class DataSourceController {
 
     @ApiOperation(value = "数据源删除", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiResponses({@ApiResponse(code = Response.OK, message = "查询成功"),})
+
     @ApiImplicitParams(
             value = {
                     @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
@@ -120,8 +121,36 @@ public class DataSourceController {
             responseData.setOK("success", "success");
         }else{
             responseData.setError("fail");
+
         }
         return responseData;
     }
+
+
+
+
+            @ApiOperation(value = "数据源连接测试", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+            @ApiResponses({@ApiResponse(code = Response.OK, message = "测试成功"),})
+            @ApiImplicitParams(
+                    value = {
+                            @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
+                    }
+            )
+                    @RequestMapping(value = "/test", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+                    @ResponseBody
+                    public ResponseData testDataSource(HttpServletRequest request,
+                            @RequestBody DbManagement dbManagement) {
+                        ResponseData responseData = new ResponseData<>();
+
+
+                        boolean result = dbManage.testDataSources(dbManagement);
+                        if (result) {
+                            responseData.setOK("success！", "连接成功！");
+                        }else{
+                            responseData.setError("连接失败!");
+
+                        }
+                        return responseData;
+                    }
 }
 
