@@ -52,4 +52,18 @@ public interface FtpSouceManageService {
      * @return
      */
     boolean increaseUseCount(Integer id);
+
+    /**
+     * ftp数据源是否链接
+     * @param ftpSourceManager
+     * @return
+     */
+    boolean isFtpConnected(FtpSourceManager ftpSourceManager);
+
+    /**
+     * 校验数据源名称对唯一性
+     * @param ftpSourceManager
+     * @return 未被使用，返回true
+     */
+    boolean checkUniqueNickName(FtpSourceManager ftpSourceManager);
 }

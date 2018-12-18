@@ -59,6 +59,18 @@ public class FtpSourceManageTests {
     }
 
     @Test
+    public void testDecreaseUseCount(){
+        boolean result = ftpService.decreaseUseCount(2);
+        assertSame(true, result);
+    }
+
+    @Test
+    public void testIncreaseUseCount(){
+        boolean result = ftpService.increaseUseCount(2);
+        assertSame(true, result);
+    }
+
+    @Test
     public void testGetTableSql() throws KettleException {
         DbManagement source = new DbManagement();
         source.setLinkName("testOracle");

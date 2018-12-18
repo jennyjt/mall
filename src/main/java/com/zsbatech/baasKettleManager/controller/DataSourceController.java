@@ -43,11 +43,23 @@ public class DataSourceController {
                                                         @RequestBody DbManagement dbConnection) {
         ResponseData<String> responseData = new ResponseData<>();
 
-        UniToken uniToken = JWTUtils.validateToken(request);
+        //校验数据源是否能够连接
+        boolean result = dbManage.checkDataSource(dbConnection);
+        if (!result) {
+            responseData.setError("数据源连接失败!");
+            return responseData;
+        }
+        //校验数据源名称是否已存在
+        result = dbManage.checkUniqueLinkName(dbConnection);
+        if (!result) {
+            responseData.setError("数据源名称已存在!");
+            return responseData;
+        }
 
+        UniToken uniToken = JWTUtils.validateToken(request);
         dbConnection.setCreateUser(String.valueOf(uniToken.getUserId()));
 
-        boolean result = dbManage.createDataSource(dbConnection);
+        result = dbManage.createDataSource(dbConnection);
         if(result){
             responseData.setOK("success", "success");
         }else{
@@ -69,7 +81,20 @@ public class DataSourceController {
                                                   @RequestBody DbManagement dbConnection) {
         ResponseData<String> responseData = new ResponseData<>();
 
-        boolean result = dbManage.updateDataSource(dbConnection);
+        //校验数据源是否能够连接
+        boolean result = dbManage.checkDataSource(dbConnection);
+        if (!result) {
+            responseData.setError("数据源连接失败!");
+            return responseData;
+        }
+        //校验数据源名称是否已存在
+        result = dbManage.checkUniqueLinkName(dbConnection);
+        if (!result) {
+            responseData.setError("数据源名称已存在!");
+            return responseData;
+        }
+
+        result = dbManage.updateDataSource(dbConnection);
         if(result){
             responseData.setOK("success", "success");
         }else{
@@ -108,6 +133,7 @@ public class DataSourceController {
 
     @ApiOperation(value = "数据源删除", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiResponses({@ApiResponse(code = Response.OK, message = "查询成功"),})
+
     @ApiImplicitParams(
             value = {
                     @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
@@ -124,8 +150,10 @@ public class DataSourceController {
             responseData.setOK("success", "success");
         }else{
             responseData.setError("fail");
+
         }
         return responseData;
     }
+
 }
 

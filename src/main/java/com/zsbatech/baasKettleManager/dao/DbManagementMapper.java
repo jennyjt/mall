@@ -27,9 +27,13 @@ public interface DbManagementMapper {
     int updateByPrimaryKeySelective(DbManagement record);
 
     int updateByPrimaryKey(DbManagement record);
+
     List<DbManagement> getDbManagentsByParam(DbManagement param);
 
     int increaseUseCount(Integer id);
 
     int decreaseUseCount(Integer id);
+
+    /**通过linkName获取未被删除对数据源信息*/
+    List<DbManagement> getNormalDbManagentsByLinkName(String linkName);
 }

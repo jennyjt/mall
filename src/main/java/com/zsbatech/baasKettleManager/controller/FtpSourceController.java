@@ -42,10 +42,24 @@ public class FtpSourceController {
     public ResponseData<String> createFtpDataSource(HttpServletRequest request,
                                                         @RequestBody FtpSourceManager ftpSourceManager) {
         ResponseData<String> responseData = new ResponseData<>();
+        //校验数据源是否能够连接
+        boolean result = ftpService.isFtpConnected(ftpSourceManager);
+        if (!result) {
+            responseData.setError("FTP源连接失败!");
+            return responseData;
+        }
+
+        //校验数据源名称是否已存在
+        result = ftpService.checkUniqueNickName(ftpSourceManager);
+        if (!result) {
+            responseData.setError("数据源名称已存在!");
+            return responseData;
+        }
 
         UniToken uniToken = JWTUtils.validateToken(request);
         ftpSourceManager.setCreateUser(String.valueOf(uniToken.getUserId()));
-        boolean result = ftpService.createDataSource(ftpSourceManager);
+
+        result = ftpService.createDataSource(ftpSourceManager);
         if (result) {
             responseData.setOK("success", "success");
         } else {
@@ -66,8 +80,24 @@ public class FtpSourceController {
     public ResponseData<String> updateFtpDataSource(HttpServletRequest request,
                                                     @RequestBody FtpSourceManager ftpSourceManager) {
         ResponseData<String> responseData = new ResponseData<>();
+        //校验数据源是否能够连接
+        boolean result = ftpService.isFtpConnected(ftpSourceManager);
+        if (!result) {
+            responseData.setError("FTP源连接失败!");
+            return responseData;
+        }
 
-        boolean result = ftpService.updateDataSource(ftpSourceManager);
+        //校验数据源名称是否已存在
+        result = ftpService.checkUniqueNickName(ftpSourceManager);
+        if (!result) {
+            responseData.setError("数据源名称已存在!");
+            return responseData;
+        }
+
+        UniToken uniToken = JWTUtils.validateToken(request);
+        ftpSourceManager.setUpdateUser(String.valueOf(uniToken.getUserId()));
+
+        result = ftpService.updateDataSource(ftpSourceManager);
         if (result) {
             responseData.setOK("success", "success");
         } else {

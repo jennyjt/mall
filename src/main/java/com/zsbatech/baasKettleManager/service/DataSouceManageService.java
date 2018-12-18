@@ -51,4 +51,18 @@ public interface DataSouceManageService {
      * @return
      */
     boolean increaseUseCount(Integer id);
+
+    /**
+     * 校验数据源是否能够连接
+     * @param dbManagement
+     * @return
+     */
+    boolean checkDataSource(DbManagement dbManagement);
+
+    /**
+     * 校验数据源名称
+     * @param dbManagement
+     * @return 未被使用，返回true
+     */
+    boolean checkUniqueLinkName(DbManagement dbManagement);
 }

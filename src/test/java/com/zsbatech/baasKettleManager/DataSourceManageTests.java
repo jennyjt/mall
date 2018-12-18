@@ -61,4 +61,16 @@ public class DataSourceManageTests {
         boolean result = dbService.deleteDataSource(6);
         assertSame(true, result);
     }
+
+    @Test
+    public void testDecreaseUseCount(){
+        boolean result = dbService.decreaseUseCount(2);
+        assertSame(true, result);
+    }
+
+    @Test
+    public void testIncreaseUseCount(){
+        boolean result = dbService.increaseUseCount(2);
+        assertSame(true, result);
+    }
 }

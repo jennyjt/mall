@@ -5,8 +5,12 @@ import com.zsbatech.baasKettleManager.constants.DataSourceConstant;
 import com.zsbatech.baasKettleManager.dao.DbManagementMapper;
 import com.zsbatech.baasKettleManager.model.DbManagement;
 import com.zsbatech.baasKettleManager.service.DataSouceManageService;
+import com.zsbatech.baasKettleManager.util.TableUtil;
 import com.zsbatech.base.common.Pagination;
 import com.zsbatech.base.utils.DateUtils;
+import org.pentaho.di.core.KettleEnvironment;
+import org.pentaho.di.core.database.Database;
+import org.pentaho.di.core.database.DatabaseMeta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -81,10 +85,46 @@ public class DataSourceManageServiceImpl implements DataSouceManageService {
     @Override
     public boolean increaseUseCount(Integer id) {
         int result = dbMapper.increaseUseCount(id);
-        if(result <= 0) {
+        if (result <= 0) {
             return false;
         } else {
             return true;
+        }
+    }
+
+    @Override
+    public boolean checkDataSource(DbManagement dbManagement) {
+
+        try {
+            KettleEnvironment.init();
+
+            DatabaseMeta sourceDbMeta = new DatabaseMeta(TableUtil.getXmlByDbManagement(dbManagement));
+
+            Database db = new Database(sourceDbMeta);
+
+            db.connect();
+
+            db.disconnect();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public boolean checkUniqueLinkName(DbManagement dbManagement) {
+        List<DbManagement> resultList = dbMapper.getNormalDbManagentsByLinkName(dbManagement.getLinkName());
+        if(resultList == null || resultList.isEmpty()){ //如果同名数量为0，则名称可使用
+            return true;
+        }else if(resultList.size() > 1){ //如果同名数量超过1，则名称不可使用
+            return false;
+        }else if(resultList.get(0).getId() == dbManagement.getId()){ //如果同名数据源是当前数据源，则名称可使用
+            return true;
+        }else{
+            return false;
         }
     }
 }
