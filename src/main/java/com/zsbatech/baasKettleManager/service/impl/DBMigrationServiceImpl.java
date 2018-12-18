@@ -3,10 +3,7 @@ package com.zsbatech.baasKettleManager.service.impl;
 
 import com.github.pagehelper.page.PageMethod;
 import com.zsbatech.baasKettleManager.dao.*;
-import com.zsbatech.baasKettleManager.model.DataMig;
-import com.zsbatech.baasKettleManager.model.DbManagement;
-import com.zsbatech.baasKettleManager.model.JobLog;
-import com.zsbatech.baasKettleManager.model.JobMetaExample;
+import com.zsbatech.baasKettleManager.model.*;
 import com.zsbatech.baasKettleManager.service.DBMigrationService;
 import com.zsbatech.baasKettleManager.service.JobLogService;
 import com.zsbatech.baasKettleManager.service.SaveJobMetaService;
@@ -172,12 +169,15 @@ public class DBMigrationServiceImpl implements DBMigrationService {
     }
 
     public ResponseData<String> cycleMigration(DataMig dataMig) {
+        DbResponse dbResponse = insertupdateMigration(dataMig).getResult();
+
         ResponseData<String> responseData = new ResponseData<>();
         JobLog jobLog = new JobLog();
         try {
 
+            ktrpath = dbResponse.getKtrPath();
             KettleEnvironment.init();
-            ktrpath = DbMigTransUrl+dataMig.getKtrString() ;
+
 
             JobMeta jobMeta = new JobMeta();
             jobMeta.setName(dataMig.getJobName());
@@ -240,6 +240,8 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             }else {
                 jobLog.setStatus((byte)3);
                 jobLog.setLogField("success");
+                jobLog.setLinesSuccessed(dbResponse.getLinesSuccessed().intValue());
+
                 responseData.setOK(200,"success",DbMigJobUrl+dataMig.getJobName()+".kjb");
             }
 
@@ -254,8 +256,9 @@ public class DBMigrationServiceImpl implements DBMigrationService {
         return responseData;
     }
 
-    public ResponseData<String> insertupdateMigration(DataMig dataMig) {
-        ResponseData<String> responseData = new ResponseData<>();
+    public ResponseData<DbResponse> insertupdateMigration(DataMig dataMig) {
+        ResponseData<DbResponse> responseData = new ResponseData<>();
+        DbResponse dbResponse = new DbResponse();
         try {
 
             DbManagement srcdbManagement = dbManagementMapper.selectByPrimaryKey(dataMig.getSrcDbconnId());
@@ -290,7 +293,8 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             databaseMeta.setUsername(srcdbManagement.getDbUser());
             databaseMeta.setPassword(srcdbManagement.getDbPassword());
             databaseMeta.setName(srcdbManagement.getLinkName());
-//只读
+            databaseMeta.addExtraOption(srcdbManagement.getDbType(),"characterEncoding","utf-8");
+         //只读
             databaseMeta.setReadOnly(true);
 
             transMeta.addDatabase(databaseMeta);
@@ -304,6 +308,7 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             dstdatabaseMeta.setUsername(dstdbManagement.getDbUser());
             dstdatabaseMeta.setPassword(dstdbManagement.getDbPassword());
             dstdatabaseMeta.setName(dstdbManagement.getLinkName());
+            dstdatabaseMeta.addExtraOption(dstdbManagement.getDbType(),"characterEncoding","utf-8");
 //只读
             dstdatabaseMeta.setReadOnly(false);
             transMeta.addDatabase(dstdatabaseMeta);
@@ -316,7 +321,14 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             //给表输入添加一个DatabaseMeta连接数据库
             DatabaseMeta database_in = transMeta.findDatabase(srcdbManagement.getLinkName());
             tableInputMeta.setDatabaseMeta(database_in);
-            String  select_sql = "SELECT * FROM " + dataMig.getSrcTable()+ " where "+ dataMig.getTimeStamp() + " > " +"\""+dataMig.getUpdatetime()+"\"";
+
+            String  select_sql ="";
+            if(dataMig.getTimeStamp()==null || dataMig.getTimeStamp()==""){
+                select_sql = "SELECT * FROM " + dataMig.getSrcTable();
+
+            }else{
+                select_sql = "SELECT * FROM " + dataMig.getSrcTable()+ " where "+ dataMig.getTimeStamp() + " > " +"\""+dataMig.getUpdatetime()+"\"";
+            }
 
             tableInputMeta.setSQL(select_sql);
 
@@ -383,17 +395,18 @@ public class DBMigrationServiceImpl implements DBMigrationService {
                 trans.prepareExecution(null);
                 trans.startThreads();
                 trans.waitUntilFinished();
-//                trans.getCounters();
                 if (trans.getErrors()!= 0 ){
-                    responseData.setError(500,"同步失败，请确认输入是否正确","fail");
+                    responseData.set(500,"同步失败，请确认输入是否正确",dbResponse);
                 }else {
-                    responseData.setOK(200,"success",DbMigTransUrl + dataMig.getTransName()+ ".ktr");
+                    dbResponse.setLinesSuccessed(trans.getLastProcessed());
+                    dbResponse.setKtrPath(DbMigTransUrl + dataMig.getTransName()+ ".ktr");
+                    responseData.set(200,"success",dbResponse);
                 }
             }
 
         } catch (Exception e) {
             e.printStackTrace();
-            responseData.setError(500,"fail","fail");
+            responseData.setError(500,"fail",dbResponse);
         }
 
         return responseData;

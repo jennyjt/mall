@@ -53,4 +53,6 @@ public interface DataSouceManageService {
     boolean increaseUseCount(Integer id);
 
 
+     boolean testDataSources(DbManagement dbManagement);
+
 }

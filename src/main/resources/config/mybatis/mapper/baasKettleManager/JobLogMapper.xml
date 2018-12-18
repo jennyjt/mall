@@ -7,6 +7,7 @@
     <result column="job_name" property="jobName" jdbcType="VARCHAR" />
     <result column="status" property="status" jdbcType="TINYINT" />
     <result column="lines_rejected" property="linesRejected" jdbcType="INTEGER" />
+    <result column="lines_successed" property="linesSuccessed" jdbcType="INTEGER" />
     <result column="errors" property="errors" jdbcType="INTEGER" />
     <result column="executing_user" property="executingUser" jdbcType="VARCHAR" />
     <result column="start_time" property="startTime" jdbcType="TIMESTAMP" />
@@ -133,11 +134,11 @@
       select LAST_INSERT_ID()
     </selectKey>
     insert into job_log (id, job_id, job_name, 
-      status, lines_rejected, errors, 
+      status,lines_successed, lines_rejected, errors,
       executing_user, start_time, end_time, 
       log_field)
     values (#{id,jdbcType=INTEGER}, #{jobId,jdbcType=INTEGER}, #{jobName,jdbcType=VARCHAR}, 
-      #{status,jdbcType=TINYINT}, #{linesRejected,jdbcType=INTEGER}, #{errors,jdbcType=INTEGER}, 
+      #{status,jdbcType=TINYINT},#{linesSuccessed,jdbcType=INTEGER}, #{linesRejected,jdbcType=INTEGER}, #{errors,jdbcType=INTEGER},
       #{executingUser,jdbcType=VARCHAR}, #{startTime,jdbcType=TIMESTAMP}, #{endTime,jdbcType=TIMESTAMP}, 
       #{logField,jdbcType=LONGVARCHAR})
   </insert>
