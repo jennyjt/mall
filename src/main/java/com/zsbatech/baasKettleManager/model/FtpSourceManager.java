@@ -33,6 +33,8 @@ public class FtpSourceManager {
 
     private Short useCount;
 
+    private Byte status;
+
     public Integer getId() {
         return id;
     }
@@ -151,5 +153,13 @@ public class FtpSourceManager {
 
     public void setUseCount(Short useCount) {
         this.useCount = useCount;
+    }
+
+    public Byte getStatus() {
+        return status;
+    }
+
+    public void setStatus(Byte status) {
+        this.status = status;
     }
 }

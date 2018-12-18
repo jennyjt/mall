@@ -43,9 +43,9 @@ public class FtpSourceController {
 
         //UniToken uniToken = JWTUtils.validateToken(request);
         boolean result = ftpService.createDataSource(ftpSourceManager);
-        if(result){
+        if (result) {
             responseData.setOK("success", "success");
-        }else{
+        } else {
             responseData.setError("fail");
         }
         return responseData;
@@ -65,9 +65,9 @@ public class FtpSourceController {
         ResponseData<String> responseData = new ResponseData<>();
 
         boolean result = ftpService.updateDataSource(ftpSourceManager);
-        if(result){
+        if (result) {
             responseData.setOK("success", "success");
-        }else{
+        } else {
             responseData.setError("fail");
         }
         return responseData;
@@ -93,9 +93,31 @@ public class FtpSourceController {
         param.setFtpHost(ftpHost);
         param.setCreateUser(createUser);
         Pagination<FtpSourceManager> result = ftpService.getDataSources(currPage, pageSize, param);
-        if(result != null){
+        if (result != null) {
             responseData.setOK("success", result);
-        }else{
+        } else {
+            responseData.setError("fail");
+        }
+        return responseData;
+    }
+
+    @ApiOperation(value = "FTP数据源删除", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiResponses({@ApiResponse(code = Response.OK, message = "查询成功"),})
+    @ApiImplicitParams(
+            value = {
+                    @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
+            }
+    )
+    @RequestMapping(value = "/delete", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseBody
+    public ResponseData<String> deleteFtpDataSource(HttpServletRequest request,
+                                                                           @RequestParam(name = "id", required = false) String ftpSourceId) {
+        ResponseData<String> responseData = new ResponseData<>();
+
+        boolean result = ftpService.deleteDataSource(Integer.valueOf(ftpSourceId));
+        if (result) {
+            responseData.setOK("success", "success");
+        } else {
             responseData.setError("fail");
         }
         return responseData;

@@ -17,10 +17,11 @@
     <result column="update_user" property="updateUser" jdbcType="VARCHAR" />
     <result column="nick_name" property="nickName" jdbcType="VARCHAR" />
     <result column="use_count" jdbcType="SMALLINT" property="useCount" />
+    <result column="status" jdbcType="TINYINT" property="status" />
   </resultMap>
   <sql id="Base_Column_List" >
     id, ftp_host, ftp_port, user_name, pass_word, proxy_host, proxy_port, proxy_user_name, 
-    proxy_pass_word, create_time, update_time, create_user, update_user, nick_name, use_count
+    proxy_pass_word, create_time, update_time, create_user, update_user, nick_name, use_count, status
   </sql>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
     select 
@@ -37,12 +38,13 @@
       user_name, pass_word, proxy_host, 
       proxy_port, proxy_user_name, proxy_pass_word, 
       create_time, update_time, create_user, 
-      update_user, nick_name, use_count)
+      update_user, nick_name, use_count, status)
     values (#{id,jdbcType=INTEGER}, #{ftpHost,jdbcType=VARCHAR}, #{ftpPort,jdbcType=VARCHAR}, 
       #{userName,jdbcType=VARCHAR}, #{passWord,jdbcType=VARCHAR}, #{proxyHost,jdbcType=VARCHAR}, 
       #{proxyPort,jdbcType=VARCHAR}, #{proxyUserName,jdbcType=VARCHAR}, #{proxyPassWord,jdbcType=VARCHAR}, 
       #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{createUser,jdbcType=VARCHAR}, 
-      #{updateUser,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR}, #{useCount,jdbcType=SMALLINT})
+      #{updateUser,jdbcType=VARCHAR}, #{nickName,jdbcType=VARCHAR}, #{useCount,jdbcType=SMALLINT},
+      #{status,jdbcType=TINYINT})
   </insert>
   <insert id="insertSelective" parameterType="com.zsbatech.baasKettleManager.model.FtpSourceManager" >
     insert into ftp_source_manager
@@ -92,6 +94,9 @@
       <if test="useCount != null">
         use_count,
       </if>
+      <if test="status != null">
+        status,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides="," >
       <if test="id != null" >
@@ -138,6 +143,9 @@
       </if>
       <if test="useCount != null">
         #{useCount,jdbcType=SMALLINT},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=TINYINT},
       </if>
     </trim>
   </insert>
@@ -186,6 +194,9 @@
       <if test="useCount != null">
         use_count = #{useCount,jdbcType=SMALLINT},
       </if>
+      <if test="status != null">
+        status = #{status,jdbcType=TINYINT},
+      </if>
     </set>
     where id = #{id,jdbcType=INTEGER}
   </update>
@@ -204,7 +215,8 @@
       create_user = #{createUser,jdbcType=VARCHAR},
       update_user = #{updateUser,jdbcType=VARCHAR},
       nick_name = #{nickName,jdbcType=VARCHAR},
-      use_count = #{useCount,jdbcType=SMALLINT}
+      use_count = #{useCount,jdbcType=SMALLINT},
+      status = #{status,jdbcType=TINYINT}
     where id = #{id,jdbcType=INTEGER}
   </update>
   <select id="getFtpSourcesByParam" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
@@ -257,7 +269,22 @@
       <if test="useCount != null">
         and use_count = #{useCount,jdbcType=SMALLINT}
       </if>
+      <if test="status != null">
+        and status = #{status,jdbcType=TINYINT}
+      </if>
     </where>
     order by id desc
   </select>
+
+  <update id="increaseUseCount" parameterType="java.lang.Integer" >
+    update ftp_source_manager
+    set use_count = use_count + 1
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="decreaseUseCount" parameterType="java.lang.Integer" >
+    update ftp_source_manager
+    set use_count = use_count - 1
+    where id = #{id,jdbcType=INTEGER}
+  </update>
 </mapper>

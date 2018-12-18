@@ -28,4 +28,8 @@ public interface DbManagementMapper {
 
     int updateByPrimaryKey(DbManagement record);
     List<DbManagement> getDbManagentsByParam(DbManagement param);
+
+    int increaseUseCount(Integer id);
+
+    int decreaseUseCount(Integer id);
 }

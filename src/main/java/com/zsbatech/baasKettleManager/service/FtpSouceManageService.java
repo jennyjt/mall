@@ -31,4 +31,25 @@ public interface FtpSouceManageService {
      */
     Pagination<FtpSourceManager> getDataSources(Integer currPage, Integer pageSize, FtpSourceManager ftpSource);
 
+    /**
+     * 删除数据源--修改状态为已删除
+     * @param id
+     * @return
+     */
+    boolean deleteDataSource(Integer id);
+
+
+    /**
+     * 减少一次
+     * @param id
+     * @return
+     */
+    boolean decreaseUseCount(Integer id);
+
+    /**
+     * 增加一次
+     * @param id
+     * @return
+     */
+    boolean increaseUseCount(Integer id);
 }

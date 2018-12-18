@@ -1,6 +1,7 @@
 package com.zsbatech.baasKettleManager.service.impl;
 
 import com.github.pagehelper.page.PageMethod;
+import com.zsbatech.baasKettleManager.constants.DataSourceConstant;
 import com.zsbatech.baasKettleManager.dao.*;
 import com.zsbatech.baasKettleManager.model.FtpSourceManager;
 import com.zsbatech.baasKettleManager.service.FtpSouceManageService;
@@ -17,17 +18,6 @@ import java.util.List;
 @Service
 public class FtpSourceManageServiceImpl implements FtpSouceManageService {
 
-    @Autowired
-    private JobMetaDOMapper jobMetaDOMapper;
-
-    @Autowired
-    private FTPPutStepDOMapper ftpPutStepDOMapper;
-
-    @Autowired
-    private FTPDownLoadStepDOMapper ftpDownLoadStepDOMapper;
-
-    @Autowired
-    private FtpSourceManageDOMapper ftpSourceManageDOMapper;
     @Autowired
     private FtpSourceManagerMapper ftpSourceMapper;
 
@@ -61,5 +51,38 @@ public class FtpSourceManageServiceImpl implements FtpSouceManageService {
         List<FtpSourceManager> ftpSourceList = ftpSourceMapper.getFtpSourcesByParam(ftpSource);
         Pagination<FtpSourceManager> sourceInfo = new Pagination<FtpSourceManager>(ftpSourceList);
         return sourceInfo;
+    }
+
+    @Override
+    public boolean deleteDataSource(Integer id) {
+        FtpSourceManager param = new FtpSourceManager();
+        param.setId(id);
+        param.setStatus(DataSourceConstant.DELETE_STATUS);
+        int result = ftpSourceMapper.updateByPrimaryKeySelective(param);
+        if (result <= 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public boolean decreaseUseCount(Integer id) {
+        int result = ftpSourceMapper.decreaseUseCount(id);
+        if(result <= 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public boolean increaseUseCount(Integer id) {
+        int result = ftpSourceMapper.increaseUseCount(id);
+        if(result <= 0) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }

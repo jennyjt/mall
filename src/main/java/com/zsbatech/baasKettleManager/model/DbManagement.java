@@ -27,6 +27,8 @@ public class DbManagement {
 
     private Short useCount;
 
+    private Byte status;
+
     public Integer getId() {
         return id;
     }
@@ -121,5 +123,13 @@ public class DbManagement {
 
     public void setUseCount(Short useCount) {
         this.useCount = useCount;
+    }
+
+    public Byte getStatus() {
+        return status;
+    }
+
+    public void setStatus(Byte status) {
+        this.status = status;
     }
 }
