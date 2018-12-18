@@ -52,4 +52,11 @@ public interface FtpSouceManageService {
      * @return
      */
     boolean increaseUseCount(Integer id);
+
+    /**
+     * ftp数据源是否链接
+     * @param id
+     * @return
+     */
+    boolean isFtpConnected(Integer id);
 }
