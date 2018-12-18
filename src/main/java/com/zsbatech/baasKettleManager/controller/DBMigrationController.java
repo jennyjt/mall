@@ -1,6 +1,7 @@
 package com.zsbatech.baasKettleManager.controller;
 
 import com.zsbatech.baasKettleManager.model.DataMig;
+import com.zsbatech.baasKettleManager.model.DbResponse;
 import com.zsbatech.baasKettleManager.model.JobMeta;
 import com.zsbatech.baasKettleManager.service.DBMigrationService;
 import com.zsbatech.base.common.Pagination;
@@ -14,7 +15,9 @@ import javax.servlet.http.HttpServletRequest;
 
 
 @Controller
-@RequestMapping (value = "/data_center/migrate")
+//@RequestMapping (value = "/data_center/migrate")
+
+@RequestMapping (value = "/a")
 public class DBMigrationController {
 
     @Autowired
@@ -43,8 +46,8 @@ public class DBMigrationController {
 
     @RequestMapping(value = "/incr",method = RequestMethod.POST)
     @ResponseBody
-    public ResponseData<String> insertupdateMigration(@RequestBody DataMig dataMig) {
-        ResponseData<String> responseData = new ResponseData<>();
+    public ResponseData<DbResponse> insertupdateMigration(@RequestBody DataMig dataMig) {
+        ResponseData<DbResponse> responseData = new ResponseData<>();
 
         responseData = dbMigrationService.insertupdateMigration(dataMig);
         return responseData;

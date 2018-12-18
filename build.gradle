@@ -158,7 +158,11 @@ dependencies {
     }
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile(
-            'kettle-data-center:postgresql:8.3'
+            'kettle-data-center:postgresql:8.3',
+            'kettle-data-center:sqlserver:4.0',
+            'kettle-data-center:sybase:3',
+            'kettle-data-center:oracle:6',
+            'kettle-data-center:db2:1'
     )
 
     runtime('org.springframework.boot:spring-boot-devtools')
