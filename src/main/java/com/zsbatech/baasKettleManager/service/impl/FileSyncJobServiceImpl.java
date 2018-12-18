@@ -38,6 +38,9 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
     private String ftpJobUrl = ConfigUtil.getPropertyValue("file.ftpJobUrl");
 
     @Autowired
+    private FtpSourceManageDOMapper ftpSourceManageDOMapper;
+
+    @Autowired
     private JobMetaDOMapper jobMetaDOMapper;
 
     @Autowired
@@ -64,9 +67,11 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
      * @param jobStartStepDO
      * @param ftpDownLoadStepDO
      * @param jobName
+     * @param nickName
      * @return
      */
-    public String createDownloadJobMeta(JobStartStepDO jobStartStepDO, FTPDownLoadStepDO ftpDownLoadStepDO, String jobName) {
+    public String createDownloadJobMeta(JobStartStepDO jobStartStepDO, FTPDownLoadStepDO ftpDownLoadStepDO, String jobName, String nickName) {
+        FtpSourceManageDO ftpSourceManageDO = ftpSourceManageDOMapper.selectByName(nickName);
         try {
             KettleEnvironment.init();
         } catch (KettleException e) {
@@ -99,14 +104,12 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         jobMeta.addJobEntry(jobEntrySpecialCopy);
         JobEntryFTP jobEntryFTP = new JobEntryFTP();
         jobEntryFTP.setName(ftpDownLoadStepDO.getStepName());
-        jobEntryFTP.setServerName(ftpDownLoadStepDO.getServerName());
-        jobEntryFTP.setProxyHost(ftpDownLoadStepDO.getProxyHost());
-        jobEntryFTP.setUserName(ftpDownLoadStepDO.getUserName());
-        jobEntryFTP.setPassword(ftpDownLoadStepDO.getPassword());
-        jobEntryFTP.setProxyPort(ftpDownLoadStepDO.getProxyPort());
-        jobEntryFTP.setProxyPassword(ftpDownLoadStepDO.getProxyPassword());
-        jobEntryFTP.setProxyUsername(ftpDownLoadStepDO.getProxyUsername());
-        jobEntryFTP.setPort(ftpDownLoadStepDO.getPort());
+        if (ftpSourceManageDO != null) {
+            jobEntryFTP.setServerName(ftpSourceManageDO.getFtpHost());
+            jobEntryFTP.setUserName(ftpSourceManageDO.getUserName());
+            jobEntryFTP.setPassword(ftpSourceManageDO.getPassWord());
+            jobEntryFTP.setPort(ftpSourceManageDO.getFtpPort());
+        }
         jobEntryFTP.setTimeout(ftpDownLoadStepDO.getTimeout());
         if (ftpDownLoadStepDO.getBinaryMode() == 1) {
             jobEntryFTP.setBinaryMode(true);
@@ -130,7 +133,7 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         jobHopMeta.setUnconditional(true);
         jobMeta.addJobHop(jobHopMeta);
         if (saveJobMetaService.save(jobMeta, ftpJobUrl + jobName + ".kjb", true)) {
-            saveJobMetaService.saveFTPJobData(ftpJobUrl + jobName + ".kjb",0,ftpDownLoadStepDO.getFtpSourceId());
+            saveJobMetaService.saveFTPJobData(ftpJobUrl + jobName + ".kjb", 0, ftpDownLoadStepDO.getFtpSourceId());
             return ftpJobUrl + jobName + ".kjb";
         } else {
             return null;
@@ -145,7 +148,8 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
      * @param jobName
      * @return
      */
-    public String createPutJobMeta(JobStartStepDO jobStartStepDO, FTPPutStepDO ftpPutStepDO, String jobName) {
+    public String createPutJobMeta(JobStartStepDO jobStartStepDO, FTPPutStepDO ftpPutStepDO, String jobName, String nickName) {
+        FtpSourceManageDO ftpSourceManageDO = ftpSourceManageDOMapper.selectByName(nickName);
         try {
             KettleEnvironment.init();
         } catch (KettleException e) {
@@ -178,23 +182,21 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         jobMeta.addJobEntry(jobEntrySpecialCopy);
         JobEntryFTPPUT jobEntryFTPPUT = new JobEntryFTPPUT();
         jobEntryFTPPUT.setName(ftpPutStepDO.getStepName());
-        jobEntryFTPPUT.setServerName(ftpPutStepDO.getServerName());
-        jobEntryFTPPUT.setProxyHost(ftpPutStepDO.getProxyHost());
-        jobEntryFTPPUT.setUserName(ftpPutStepDO.getUserName());
-        jobEntryFTPPUT.setPassword(ftpPutStepDO.getPassword());
-        jobEntryFTPPUT.setProxyPort(ftpPutStepDO.getProxyPort());
-        jobEntryFTPPUT.setProxyPassword(ftpPutStepDO.getProxyPassword());
-        jobEntryFTPPUT.setProxyUsername(ftpPutStepDO.getProxyUsername());
-        jobEntryFTPPUT.setServerPort(ftpPutStepDO.getPort());
+        if (ftpSourceManageDO != null) {
+            jobEntryFTPPUT.setServerName(ftpSourceManageDO.getFtpHost());
+            jobEntryFTPPUT.setUserName(ftpSourceManageDO.getUserName());
+            jobEntryFTPPUT.setPassword(ftpSourceManageDO.getPassWord());
+            jobEntryFTPPUT.setServerPort(ftpSourceManageDO.getFtpPort());
+        }
         jobEntryFTPPUT.setTimeout(ftpPutStepDO.getTimeout());
         if (ftpPutStepDO.getBinaryMode() == 1) {
             jobEntryFTPPUT.setBinaryMode(true);
         }
         jobEntryFTPPUT.setControlEncoding(ftpPutStepDO.getControlEncoding());
 
-        FTPClient ftpClient = FTPUtil.loginFTP(ftpPutStepDO.getServerName(),Integer.valueOf(ftpPutStepDO.getPort()),ftpPutStepDO.getUserName(),ftpPutStepDO.getPassword());
+        FTPClient ftpClient = FTPUtil.loginFTP(ftpPutStepDO.getServerName(), Integer.valueOf(ftpPutStepDO.getPort()), ftpPutStepDO.getUserName(), ftpPutStepDO.getPassword());
         try {
-           ftpClient.makeDirectory(ftpPutStepDO.getFtpDirectory());
+            ftpClient.makeDirectory(ftpPutStepDO.getFtpDirectory());
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -210,7 +212,7 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         jobHopMeta.setUnconditional(true);
         jobMeta.addJobHop(jobHopMeta);
         if (saveJobMetaService.save(jobMeta, ftpJobUrl + jobName + ".kjb", true)) {
-            saveJobMetaService.saveFTPJobData(ftpJobUrl + jobName + ".kjb",ftpPutStepDO.getFtpSourceId(),0);
+            saveJobMetaService.saveFTPJobData(ftpJobUrl + jobName + ".kjb", ftpPutStepDO.getFtpSourceId(), 0);
             return ftpJobUrl + jobName + ".kjb";
         } else {
             return null;
@@ -226,7 +228,9 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
      * @param fileName
      * @return
      */
-    public String fileSyncFtpToFtpJobMeta(JobStartStepDO jobStartStepDO, FTPPutStepDO ftpPutStepDO, FTPDownLoadStepDO ftpDownLoadStepDO, String fileName) {
+    public String fileSyncFtpToFtpJobMeta(JobStartStepDO jobStartStepDO, FTPPutStepDO ftpPutStepDO, String srcNickName, FTPDownLoadStepDO ftpDownLoadStepDO, String dstNickName, String fileName) {
+        FtpSourceManageDO srcFtpSourceMangeDO = ftpSourceManageDOMapper.selectByName(srcNickName);
+        FtpSourceManageDO dstFtpSourceMangeDO = ftpSourceManageDOMapper.selectByName(dstNickName);
         try {
             KettleEnvironment.init();
         } catch (KettleException e) {
@@ -261,14 +265,12 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         //ftp下载
         JobEntryFTP jobEntryFTP = new JobEntryFTP();
         jobEntryFTP.setName("ftp下载");
-        jobEntryFTP.setServerName(ftpDownLoadStepDO.getServerName());
-        jobEntryFTP.setProxyHost(ftpDownLoadStepDO.getProxyHost());
-        jobEntryFTP.setUserName(ftpDownLoadStepDO.getUserName());
-        jobEntryFTP.setPassword(ftpDownLoadStepDO.getPassword());
-        jobEntryFTP.setProxyPort(ftpDownLoadStepDO.getProxyPort());
-        jobEntryFTP.setProxyPassword(ftpDownLoadStepDO.getProxyPassword());
-        jobEntryFTP.setProxyUsername(ftpDownLoadStepDO.getProxyUsername());
-        jobEntryFTP.setPort(ftpDownLoadStepDO.getPort());
+        if (ftpDownLoadStepDO != null) {
+            jobEntryFTP.setPort(srcFtpSourceMangeDO.getFtpPort());
+            jobEntryFTP.setServerName(srcFtpSourceMangeDO.getFtpHost());
+            jobEntryFTP.setUserName(srcFtpSourceMangeDO.getUserName());
+            jobEntryFTP.setPassword(srcFtpSourceMangeDO.getPassWord());
+        }
         jobEntryFTP.setTimeout(ftpDownLoadStepDO.getTimeout());
         if (ftpDownLoadStepDO.getBinaryMode() == 1) {
             jobEntryFTP.setBinaryMode(true);
@@ -295,21 +297,19 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         //ftp上传
         JobEntryFTPPUT jobEntryFTPPUT = new JobEntryFTPPUT();
         jobEntryFTPPUT.setName("ftp下载");
-        jobEntryFTPPUT.setServerName(ftpPutStepDO.getServerName());
-        jobEntryFTPPUT.setProxyHost(ftpPutStepDO.getProxyHost());
-        jobEntryFTPPUT.setUserName(ftpPutStepDO.getUserName());
-        jobEntryFTPPUT.setPassword(ftpPutStepDO.getPassword());
-        jobEntryFTPPUT.setProxyPort(ftpPutStepDO.getProxyPort());
-        jobEntryFTPPUT.setProxyPassword(ftpPutStepDO.getProxyPassword());
-        jobEntryFTPPUT.setProxyUsername(ftpPutStepDO.getProxyUsername());
-        jobEntryFTPPUT.setServerPort(ftpPutStepDO.getPort());
+        if (ftpDownLoadStepDO != null) {
+            jobEntryFTPPUT.setServerPort(dstFtpSourceMangeDO.getFtpPort());
+            jobEntryFTPPUT.setServerName(dstFtpSourceMangeDO.getFtpHost());
+            jobEntryFTPPUT.setUserName(dstFtpSourceMangeDO.getUserName());
+            jobEntryFTPPUT.setPassword(dstFtpSourceMangeDO.getPassWord());
+        }
         jobEntryFTPPUT.setTimeout(ftpPutStepDO.getTimeout());
         if (ftpPutStepDO.getBinaryMode() == 1) {
             jobEntryFTPPUT.setBinaryMode(true);
         }
         jobEntryFTPPUT.setControlEncoding(ftpPutStepDO.getControlEncoding());
 
-        FTPClient ftpClient = FTPUtil.loginFTP(ftpPutStepDO.getServerName(),Integer.valueOf(ftpPutStepDO.getPort()),ftpPutStepDO.getUserName(),ftpPutStepDO.getPassword());
+        FTPClient ftpClient = FTPUtil.loginFTP(ftpPutStepDO.getServerName(), Integer.valueOf(ftpPutStepDO.getPort()), ftpPutStepDO.getUserName(), ftpPutStepDO.getPassword());
         try {
             ftpClient.makeDirectory(ftpPutStepDO.getFtpDirectory());
         } catch (IOException e) {
