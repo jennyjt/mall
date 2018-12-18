@@ -1,9 +1,10 @@
 package com.zsbatech.baasTestManager;
 
+import com.zsbatech.baasKettleManager.model.FTPDownLoadStepDO;
+import com.zsbatech.baasKettleManager.model.JobStartStepDO;
 import com.zsbatech.baasKettleManager.service.*;
 import com.zsbatech.baasKettleManager.service.impl.FtpSourceManageServiceImpl;
 import com.zsbatech.baasKettleManager.service.impl.SaveTransMetaServiceImpl;
-import com.zsbatech.baasKettleManager.vo.FTPDownLoadStepVO;
 import com.zsbatech.base.constants.RequestField;
 import com.zsbatech.base.utils.JWTUtils;
 import org.junit.Test;
@@ -186,10 +187,10 @@ public class ApplicationTests {
 
     @Test
     public void testCreateDownloadJobMeta() {
-        JobStartStepVO jobStartStepVO = new JobStartStepVO();
+        JobStartStepDO jobStartStepVO = new JobStartStepDO();
         jobStartStepVO.setTimingType((short) 0);
         jobStartStepVO.setIsRepeat((short) 0);
-        FTPDownLoadStepVO ftpDownLoadStepVO = new FTPDownLoadStepVO();
+        FTPDownLoadStepDO ftpDownLoadStepVO = new FTPDownLoadStepDO();
         ftpDownLoadStepVO.setServerName("106.75.17.46");
         ftpDownLoadStepVO.setPort("21");
         ftpDownLoadStepVO.setUserName("kettletest");

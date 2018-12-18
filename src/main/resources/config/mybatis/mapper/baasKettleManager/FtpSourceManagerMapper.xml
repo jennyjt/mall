@@ -219,25 +219,25 @@
       status = #{status,jdbcType=TINYINT}
     where id = #{id,jdbcType=INTEGER}
   </update>
-  <select id="getFtpSourcesByParam" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="getFtpSourcesByParam" resultMap="BaseResultMap" parameterType="com.zsbatech.baasKettleManager.model.FtpSourceManager" >
     select
     <include refid="Base_Column_List" />
     from ftp_source_manager
     <where>
       <if test="id != null" >
-        and #{id,jdbcType=INTEGER}
+        and id = #{id,jdbcType=INTEGER}
       </if>
       <if test="ftpHost != null" >
-        and #{ftpHost,jdbcType=VARCHAR}
+        and ftp_host = #{ftpHost,jdbcType=VARCHAR}
       </if>
       <if test="ftpPort != null" >
-        and #{ftpPort,jdbcType=VARCHAR}
+        and ftp_port = #{ftpPort,jdbcType=VARCHAR}
       </if>
       <if test="userName != null" >
-        and #{userName,jdbcType=VARCHAR}
+        and user_name = #{userName,jdbcType=VARCHAR}
       </if>
       <if test="passWord != null" >
-        and #{passWord,jdbcType=VARCHAR}
+        and pass_word = #{passWord,jdbcType=VARCHAR}
       </if>
       <if test="proxyHost != null" >
         and proxy_host = #{proxyHost,jdbcType=VARCHAR}
@@ -252,19 +252,19 @@
         and proxy_pass_word = #{proxyPassWord,jdbcType=VARCHAR}
       </if>
       <if test="createTime != null" >
-        and #{createTime,jdbcType=TIMESTAMP}
+        and create_time = #{createTime,jdbcType=TIMESTAMP}
       </if>
       <if test="updateTime != null" >
-        and #{updateTime,jdbcType=TIMESTAMP}
+        and update_time = #{updateTime,jdbcType=TIMESTAMP}
       </if>
       <if test="createUser != null" >
-        and #{createUser,jdbcType=VARCHAR}
+        and create_user = #{createUser,jdbcType=VARCHAR}
       </if>
       <if test="updateUser != null" >
-        and #{updateUser,jdbcType=VARCHAR}
+        and update_user = #{updateUser,jdbcType=VARCHAR}
       </if>
       <if test="nickName != null">
-        and nick_name = #{nickName,jdbcType=VARCHAR}
+        and nick_name LIKE CONCAT(CONCAT('%',#{nickName}),'%')
       </if>
       <if test="useCount != null">
         and use_count = #{useCount,jdbcType=SMALLINT}
@@ -287,4 +287,15 @@
     set use_count = use_count - 1
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="getNormalFtpSourceByNickName" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List" />
+    from ftp_source_manager
+    <where>
+      status = 1 and nick_name = #{nickName,jdbcType=VARCHAR}
+    </where>
+    order by id desc
+  </select>
+
 </mapper>

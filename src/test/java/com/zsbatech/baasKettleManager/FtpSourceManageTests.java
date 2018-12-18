@@ -29,6 +29,7 @@ public class FtpSourceManageTests {
         conn.setFtpPort("22");
         conn.setUserName("root");
         conn.setPassWord("123456");
+        conn.setNickName("测试");
         boolean result = ftpService.createDataSource(conn);
         assertSame(true, result);
     }
@@ -38,7 +39,7 @@ public class FtpSourceManageTests {
         FtpSourceManager conn = new FtpSourceManager();
         conn.setId(2);
         conn.setFtpHost("127.0.0.1");
-        conn.setFtpPort("22000");
+        conn.setFtpPort("220");
         conn.setUserName("root");
         conn.setPassWord("123456");
         boolean result = ftpService.updateDataSource(conn);
@@ -47,8 +48,26 @@ public class FtpSourceManageTests {
 
     @Test
     public void testGetFtpSources(){
-        Pagination<FtpSourceManager> conns = ftpService.getDataSources(1, 2, null);
+        Pagination<FtpSourceManager> conns = ftpService.getDataSources(1, 2, new FtpSourceManager());
         assertNotNull(conns);
+    }
+
+    @Test
+    public void testDeleteFtpSource(){
+        boolean result = ftpService.deleteDataSource(2);
+        assertSame(true, result);
+    }
+
+    @Test
+    public void testDecreaseUseCount(){
+        boolean result = ftpService.decreaseUseCount(2);
+        assertSame(true, result);
+    }
+
+    @Test
+    public void testIncreaseUseCount(){
+        boolean result = ftpService.increaseUseCount(2);
+        assertSame(true, result);
     }
 
     @Test

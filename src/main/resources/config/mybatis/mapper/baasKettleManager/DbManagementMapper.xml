@@ -337,7 +337,7 @@
     where id = #{id,jdbcType=INTEGER}
   </update>
 
-  <select id="getDbManagentsByParam" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+  <select id="getDbManagentsByParam" resultMap="BaseResultMap" parameterType="com.zsbatech.baasKettleManager.model.DbManagement" >
     select
     <include refid="Base_Column_List" />
     from db_management
@@ -387,5 +387,15 @@
     set use_count = use_count - 1
     where id = #{id,jdbcType=INTEGER}
   </update>
+
+  <select id="getNormalDbManagentsByLinkName" resultMap="BaseResultMap" parameterType="java.lang.String">
+    select
+    <include refid="Base_Column_List" />
+    from db_management
+    <where>
+      status = 1 and link_name = #{linkName,jdbcType=VARCHAR}
+    </where>
+    order by id desc
+  </select>
 
 </mapper>

@@ -6,6 +6,8 @@ import com.zsbatech.base.common.Pagination;
 import com.zsbatech.base.common.ResponseData;
 import com.zsbatech.base.constants.RequestField;
 import com.zsbatech.base.constants.Response;
+import com.zsbatech.base.model.UniToken;
+import com.zsbatech.base.utils.JWTUtils;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,9 +43,23 @@ public class DataSourceController {
                                                         @RequestBody DbManagement dbConnection) {
         ResponseData<String> responseData = new ResponseData<>();
 
-        //UniToken uniToken = JWTUtils.validateToken(request);
+        //校验数据源是否能够连接
+        boolean result = dbManage.checkDataSource(dbConnection);
+        if (!result) {
+            responseData.setError("数据源连接失败!");
+            return responseData;
+        }
+        //校验数据源名称是否已存在
+        result = dbManage.checkUniqueLinkName(dbConnection);
+        if (!result) {
+            responseData.setError("数据源名称已存在!");
+            return responseData;
+        }
 
-        boolean result = dbManage.createDataSource(dbConnection);
+        UniToken uniToken = JWTUtils.validateToken(request);
+        dbConnection.setCreateUser(String.valueOf(uniToken.getUserId()));
+
+        result = dbManage.createDataSource(dbConnection);
         if(result){
             responseData.setOK("success", "success");
         }else{
@@ -65,7 +81,20 @@ public class DataSourceController {
                                                   @RequestBody DbManagement dbConnection) {
         ResponseData<String> responseData = new ResponseData<>();
 
-        boolean result = dbManage.updateDataSource(dbConnection);
+        //校验数据源是否能够连接
+        boolean result = dbManage.checkDataSource(dbConnection);
+        if (!result) {
+            responseData.setError("数据源连接失败!");
+            return responseData;
+        }
+        //校验数据源名称是否已存在
+        result = dbManage.checkUniqueLinkName(dbConnection);
+        if (!result) {
+            responseData.setError("数据源名称已存在!");
+            return responseData;
+        }
+
+        result = dbManage.updateDataSource(dbConnection);
         if(result){
             responseData.setOK("success", "success");
         }else{
@@ -126,31 +155,5 @@ public class DataSourceController {
         return responseData;
     }
 
-
-
-
-            @ApiOperation(value = "数据源连接测试", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-            @ApiResponses({@ApiResponse(code = Response.OK, message = "测试成功"),})
-            @ApiImplicitParams(
-                    value = {
-                            @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
-                    }
-            )
-                    @RequestMapping(value = "/test", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-                    @ResponseBody
-                    public ResponseData testDataSource(HttpServletRequest request,
-                            @RequestBody DbManagement dbManagement) {
-                        ResponseData responseData = new ResponseData<>();
-
-
-                        boolean result = dbManage.testDataSources(dbManagement);
-                        if (result) {
-                            responseData.setOK("success！", "连接成功！");
-                        }else{
-                            responseData.setError("连接失败!");
-
-                        }
-                        return responseData;
-                    }
 }
 
