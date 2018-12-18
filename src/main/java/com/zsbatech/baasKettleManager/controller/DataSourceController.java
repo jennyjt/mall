@@ -101,5 +101,27 @@ public class DataSourceController {
         }
         return responseData;
     }
+
+    @ApiOperation(value = "数据源删除", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiResponses({@ApiResponse(code = Response.OK, message = "查询成功"),})
+    @ApiImplicitParams(
+            value = {
+                    @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
+            }
+    )
+    @RequestMapping(value = "/delete", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseBody
+    public ResponseData<String> deleteDataSource(HttpServletRequest request,
+                                                                    @RequestParam(name = "id", required = false) String dataSourceId) {
+        ResponseData<String> responseData = new ResponseData<>();
+
+        boolean result = dbManage.deleteDataSource(Integer.valueOf(dataSourceId));
+        if(result){
+            responseData.setOK("success", "success");
+        }else{
+            responseData.setError("fail");
+        }
+        return responseData;
+    }
 }
 

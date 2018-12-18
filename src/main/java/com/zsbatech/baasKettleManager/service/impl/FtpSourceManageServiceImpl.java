@@ -25,17 +25,6 @@ import java.util.Set;
 public class FtpSourceManageServiceImpl implements FtpSouceManageService {
 
     @Autowired
-    private JobMetaVOMapper jobMetaVOMapper;
-
-    @Autowired
-    private FTPPutStepVOMapper ftpPutStepVOMapper;
-
-    @Autowired
-    private FTPDownLoadStepVOMapper ftpDownLoadStepVOMapper;
-
-    @Autowired
-    private FtpSourceManageVOMapper ftpSourceManageVOMapper;
-    @Autowired
     private FtpSourceManagerMapper ftpSourceMapper;
 
     @Override
@@ -68,5 +57,35 @@ public class FtpSourceManageServiceImpl implements FtpSouceManageService {
         List<FtpSourceManager> ftpSourceList = ftpSourceMapper.getFtpSourcesByParam(ftpSource);
         Pagination<FtpSourceManager> sourceInfo = new Pagination<FtpSourceManager>(ftpSourceList);
         return sourceInfo;
+    }
+
+    @Override
+    public boolean deleteDataSource(Integer id) {
+        int result = ftpSourceMapper.deleteByPrimaryKey(id);
+        if (result <= 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public boolean decreaseUseCount(Integer id) {
+        int result = ftpSourceMapper.decreaseUseCount(id);
+        if(result <= 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public boolean increaseUseCount(Integer id) {
+        int result = ftpSourceMapper.increaseUseCount(id);
+        if(result <= 0) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }

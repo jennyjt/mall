@@ -30,4 +30,27 @@ public interface DataSouceManageService {
      * @return
      */
     Pagination<DbManagement> getDataSources(Integer currPage, Integer pageSize, DbManagement dbManagement);
+
+    /**
+     * 删除数据源
+     * @param id
+     * @return
+     */
+    boolean deleteDataSource(Integer id);
+
+    /**
+     * 减少一次
+     * @param id
+     * @return
+     */
+    boolean decreaseUseCount(Integer id);
+
+    /**
+     * 增加一次
+     * @param id
+     * @return
+     */
+    boolean increaseUseCount(Integer id);
+
+
 }

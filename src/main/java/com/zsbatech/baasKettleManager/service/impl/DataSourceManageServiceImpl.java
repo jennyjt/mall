@@ -36,9 +36,9 @@ public class DataSourceManageServiceImpl implements DataSouceManageService {
         dbConnection.setUpdatedTime(DateUtils.currentDateTime());
         int result = dbMapper.updateByPrimaryKeySelective(dbConnection);
 
-        if(result <= 0){
+        if(result <= 0) {
             return false;
-        }else{
+        } else {
             return true;
         }
     }
@@ -49,5 +49,35 @@ public class DataSourceManageServiceImpl implements DataSouceManageService {
         List<DbManagement> dataSourceList = dbMapper.getDbManagentsByParam(dbManagement);
         Pagination<DbManagement> dataSourceInfo = new Pagination<DbManagement>(dataSourceList);
         return dataSourceInfo;
+    }
+
+    @Override
+    public boolean deleteDataSource(Integer id) {
+        int result = dbMapper.deleteByPrimaryKey(id);
+        if(result <= 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public boolean decreaseUseCount(Integer id) {
+        int result = dbMapper.decreaseUseCount(id);
+        if(result <= 0) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    @Override
+    public boolean increaseUseCount(Integer id) {
+        int result = dbMapper.increaseUseCount(id);
+        if(result <= 0) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }

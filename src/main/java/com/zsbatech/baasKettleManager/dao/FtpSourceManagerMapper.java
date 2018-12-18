@@ -18,4 +18,8 @@ public interface FtpSourceManagerMapper {
     int updateByPrimaryKey(FtpSourceManager record);
 
     List<FtpSourceManager> getFtpSourcesByParam(FtpSourceManager param);
+
+    int increaseUseCount(Integer id);
+
+    int decreaseUseCount(Integer id);
 }

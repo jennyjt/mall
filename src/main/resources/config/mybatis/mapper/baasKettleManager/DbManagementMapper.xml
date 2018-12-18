@@ -356,4 +356,17 @@
     </where>
     order by id desc
   </select>
+
+  <update id="increaseUseCount" parameterType="java.lang.Integer" >
+    update db_management
+    set use_count = use_count + 1
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="decreaseUseCount" parameterType="java.lang.Integer" >
+    update db_management
+    set use_count = use_count - 1
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
 </mapper>

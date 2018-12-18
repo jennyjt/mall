@@ -260,4 +260,16 @@
     </where>
     order by id desc
   </select>
+
+  <update id="increaseUseCount" parameterType="java.lang.Integer" >
+    update ftp_source_manager
+    set use_count = use_count + 1
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+
+  <update id="decreaseUseCount" parameterType="java.lang.Integer" >
+    update ftp_source_manager
+    set use_count = use_count - 1
+    where id = #{id,jdbcType=INTEGER}
+  </update>
 </mapper>
