@@ -23,7 +23,7 @@ public interface FtpSouceManageService {
     boolean updateDataSource(FtpSourceManager ftpSource);
 
     /**
-     * 查询数据源
+     * 查询未被删除的数据源
      * @param currPage
      * @param pageSize
      * @param ftpSource

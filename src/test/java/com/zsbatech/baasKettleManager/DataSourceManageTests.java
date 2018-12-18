@@ -28,6 +28,7 @@ public class DataSourceManageTests {
         conn.setDbName("my_test");
         conn.setDbUser("test");
         conn.setDbPassword("123456");
+        conn.setDbType("MYSQL");
         conn.setCreateTime(DateUtils.currentDateTime());
         conn.setUpdatedTime(DateUtils.currentDateTime());
         boolean result = dbService.createDataSource(conn);
@@ -38,7 +39,7 @@ public class DataSourceManageTests {
     public void testUpdateConnection(){
         DbManagement conn = new DbManagement();
         conn.setId(6);
-        conn.setLinkName("my_test");
+        conn.setLinkName("my_testxxx");
         conn.setDbHost("127.0.0.2");
         conn.setDbPort("3306");
         conn.setDbName("my_test1");
@@ -55,4 +56,9 @@ public class DataSourceManageTests {
         assertNotNull(conns);
     }
 
+    @Test
+    public void testDeleteDbConnection(){
+        boolean result = dbService.deleteDataSource(6);
+        assertSame(true, result);
+    }
 }

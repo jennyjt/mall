@@ -6,6 +6,8 @@ import com.zsbatech.base.common.Pagination;
 import com.zsbatech.base.common.ResponseData;
 import com.zsbatech.base.constants.RequestField;
 import com.zsbatech.base.constants.Response;
+import com.zsbatech.base.model.UniToken;
+import com.zsbatech.base.utils.JWTUtils;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +43,8 @@ public class FtpSourceController {
                                                         @RequestBody FtpSourceManager ftpSourceManager) {
         ResponseData<String> responseData = new ResponseData<>();
 
-        //UniToken uniToken = JWTUtils.validateToken(request);
+        UniToken uniToken = JWTUtils.validateToken(request);
+        ftpSourceManager.setCreateUser(String.valueOf(uniToken.getUserId()));
         boolean result = ftpService.createDataSource(ftpSourceManager);
         if (result) {
             responseData.setOK("success", "success");

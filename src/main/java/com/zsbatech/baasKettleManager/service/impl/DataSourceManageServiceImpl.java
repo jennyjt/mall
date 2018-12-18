@@ -23,6 +23,8 @@ public class DataSourceManageServiceImpl implements DataSouceManageService {
     @Override
     public boolean createDataSource(DbManagement dbConnection) {
         dbConnection.setCreateTime(DateUtils.currentDateTime());
+        dbConnection.setStatus(DataSourceConstant.NORMAL_STATUS);
+        dbConnection.setUseCount((short) 0);
         int result = dbMapper.insert(dbConnection);
 
         if(result <= 0){
@@ -47,6 +49,7 @@ public class DataSourceManageServiceImpl implements DataSouceManageService {
     @Override
     public Pagination<DbManagement> getDataSources(Integer currPage, Integer pageSize, DbManagement dbManagement) {
         PageMethod.startPage(currPage, pageSize);
+        dbManagement.setStatus(DataSourceConstant.NORMAL_STATUS);
         List<DbManagement> dataSourceList = dbMapper.getDbManagentsByParam(dbManagement);
         Pagination<DbManagement> dataSourceInfo = new Pagination<DbManagement>(dataSourceList);
         return dataSourceInfo;

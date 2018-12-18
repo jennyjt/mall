@@ -24,6 +24,8 @@ public class FtpSourceManageServiceImpl implements FtpSouceManageService {
     @Override
     public boolean createDataSource(FtpSourceManager ftpSource) {
         ftpSource.setCreateTime(DateUtils.currentDateTime());
+        ftpSource.setStatus(DataSourceConstant.NORMAL_STATUS);
+        ftpSource.setUseCount((short) 0);
         int result = ftpSourceMapper.insert(ftpSource);
 
         if (result <= 0) {
@@ -48,6 +50,7 @@ public class FtpSourceManageServiceImpl implements FtpSouceManageService {
     @Override
     public Pagination<FtpSourceManager> getDataSources(Integer currPage, Integer pageSize, FtpSourceManager ftpSource) {
         PageMethod.startPage(currPage, pageSize);
+        ftpSource.setStatus(DataSourceConstant.NORMAL_STATUS);
         List<FtpSourceManager> ftpSourceList = ftpSourceMapper.getFtpSourcesByParam(ftpSource);
         Pagination<FtpSourceManager> sourceInfo = new Pagination<FtpSourceManager>(ftpSourceList);
         return sourceInfo;

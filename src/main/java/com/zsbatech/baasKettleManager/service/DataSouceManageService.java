@@ -23,7 +23,7 @@ public interface DataSouceManageService {
     boolean updateDataSource(DbManagement dbConnection);
 
     /**
-     * 查询数据源
+     * 查询未被删除的数据源
      * @param currPage
      * @param pageSize
      * @param dbManagement
@@ -51,6 +51,4 @@ public interface DataSouceManageService {
      * @return
      */
     boolean increaseUseCount(Integer id);
-
-
 }
