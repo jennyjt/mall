@@ -2,6 +2,7 @@ package com.zsbatech.baasKettleManager.util;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.*;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -495,6 +496,46 @@ public class HttpUtils {
             e.printStackTrace();
         }
         return sslsf;
+    }
+
+    public static String getUserOrganIdByUserid(Long userId,String token) throws Exception{
+
+        String url = ConfigUtil.getPropertyValue("center.detail.url");
+//        postJsonString(String jsonString, String url, String token)
+        String paramJson = "{\"UserId\":"+userId+"}";
+        String returnValue = new HttpUtils().postJsonString(paramJson,url,token);
+        return returnValue;
+    }
+    public static String getUserOrgan(Long userId,String token){
+
+        try {
+            String userInfoString = getUserOrganIdByUserid(userId,token);
+            if(StringUtils.isBlank(userInfoString)){
+                return null;
+            }
+            JSONObject responseJson = JSON.parseObject(userInfoString);
+            if(StringUtils.isBlank(responseJson.getString("data"))){
+                return null;
+            }
+            String organization = responseJson.getJSONObject("data").getString("organization");
+            return organization;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static void main(String args[]){
+
+        try {
+            String token = "eyJhbGciOiJIUzI1NiJ9.eyJqdGkiOiIzNWQ2YmZiNy01NDgxLTRiZWEtOGFkYi1mMzYzMmM3ZGM5ODEiLCJ1c2VySWQiOjYyLCJ1c2VybmFtZSI6ImFkbWluIiwicm9sZSI6WzJdLCJpYXQiOjE1NDUyMDA1NTMsImV4cCI6MTU0NTI4Njk1MywibmJmIjoxNTQ1MjAwNTUzfQ.EcZZBGmoqJQGdlqJ5XqhgRIwmCSNfkujpjbdU_dhMa4";
+            String returnvalue = getUserOrgan(195l,token);
+            System.out.println(returnvalue);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 }
