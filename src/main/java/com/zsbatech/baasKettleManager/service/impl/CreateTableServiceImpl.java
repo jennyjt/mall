@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -127,13 +128,33 @@ public class CreateTableServiceImpl implements CreateTableService {
             String[] tablenames =db.getTablenames();
 
             db.disconnect();
-            responseData.set(200,"success",Arrays.toString(tablenames));
+            if (dataMig.getSrcTable()!=null){
+                tablenames = filterString(tablenames,dataMig.getSrcTable());
+            }
+            if(tablenames.length>0){
+                responseData.set(200,"success",Arrays.toString(tablenames));
+            }else{
+                responseData.set(202400,"不存在匹配的表名",Arrays.toString(tablenames));
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
             responseData.setError(500,"get table fail!","fail!");
         }
         return responseData;
+    }
+
+    public String[] filterString(String[] tablenames,String str){
+        List<String> list = new ArrayList<>();
+        for (int i =0;i<tablenames.length;i++){
+           if(tablenames[i].contains(str)){
+                list.add(tablenames[i]);
+            }
+
+        }
+        String[] array = new String[list.size()];
+        return list.toArray(array);
+
     }
 
 }
