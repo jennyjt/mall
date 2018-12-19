@@ -1,6 +1,7 @@
 package com.zsbatech.baasKettleManager.service;
 
 import com.zsbatech.baasKettleManager.model.DataMig;
+import com.zsbatech.baasKettleManager.model.DbJobInfo;
 import com.zsbatech.baasKettleManager.model.DbResponse;
 import com.zsbatech.baasKettleManager.model.JobMeta;
 import com.zsbatech.base.common.Pagination;
@@ -14,9 +15,8 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface DBMigrationService {
-    ResponseData<String> createMigration(DataMig dataMig);
     ResponseData<String> cycleMigration(DataMig dataMig);
-    ResponseData<DbResponse> insertupdateMigration(DataMig dataMig);
-    Pagination<JobMeta> getJobList(Integer currPage, Integer pageSize);
-    JobMeta getJobDetail(Integer jobId);
+    Pagination<DbJobInfo> getJobList(Integer currPage, Integer pageSize);
+    String generateKtr(DataMig dataMig);
+    DbJobInfo getJobDetail(String jobName);
 }

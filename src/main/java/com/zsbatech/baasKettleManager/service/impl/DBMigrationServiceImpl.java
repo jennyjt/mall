@@ -4,10 +4,7 @@ package com.zsbatech.baasKettleManager.service.impl;
 import com.github.pagehelper.page.PageMethod;
 import com.zsbatech.baasKettleManager.dao.*;
 import com.zsbatech.baasKettleManager.model.*;
-import com.zsbatech.baasKettleManager.service.DBMigrationService;
-import com.zsbatech.baasKettleManager.service.JobLogService;
-import com.zsbatech.baasKettleManager.service.SaveJobMetaService;
-import com.zsbatech.baasKettleManager.service.SaveTransMetaService;
+import com.zsbatech.baasKettleManager.service.*;
 import com.zsbatech.baasKettleManager.util.ConfigUtil;
 import com.zsbatech.baasKettleManager.util.TableUtil;
 import com.zsbatech.base.common.Pagination;
@@ -18,25 +15,22 @@ import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.plugins.PluginRegistry;
 import org.pentaho.di.core.plugins.StepPluginType;
 import org.pentaho.di.core.row.RowMetaInterface;
-import org.pentaho.di.job.Job;
+
 import org.pentaho.di.job.JobHopMeta;
 import org.pentaho.di.job.JobMeta;
 import org.pentaho.di.job.entries.special.JobEntrySpecial;
 import org.pentaho.di.job.entries.trans.JobEntryTrans;
 import org.pentaho.di.job.entry.JobEntryCopy;
-import org.pentaho.di.trans.Trans;
 import org.pentaho.di.trans.TransHopMeta;
 import org.pentaho.di.trans.TransMeta;
 import org.pentaho.di.trans.step.StepMeta;
 import org.pentaho.di.trans.steps.insertupdate.InsertUpdateMeta;
 import org.pentaho.di.trans.steps.tableinput.TableInputMeta;
-import org.pentaho.di.trans.steps.tableoutput.TableOutputMeta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Time;
-import java.util.Arrays;
-import java.util.Date;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -50,8 +44,8 @@ public class DBMigrationServiceImpl implements DBMigrationService {
 
     @Autowired
     private DbManagementMapper dbManagementMapper;
-    @Autowired
-    private JobMetaMapper jobMetaMapper;
+
+
     @Autowired
     SaveTransMetaService saveTransMetaService;
     @Autowired
@@ -64,118 +58,13 @@ public class DBMigrationServiceImpl implements DBMigrationService {
     private String ktrpath;
 
 
-    public ResponseData<String> createMigration(DataMig dataMig) {
-        ResponseData<String> responseData = new ResponseData<>();
-        try {
-
-            DbManagement srcdbManagement = dbManagementMapper.selectByPrimaryKey(dataMig.getSrcDbconnId());
-            DbManagement dstdbManagement = dbManagementMapper.selectByPrimaryKey(dataMig.getDstDbconnId());
-
-
-            KettleEnvironment.init();
-            org.pentaho.di.trans.TransMeta transMeta = new TransMeta();
-
-            //设置转换名称
-            transMeta.setName(dataMig.getTransName());
-
-        //添加转换数据库源连接
-            DatabaseMeta databaseMeta = new DatabaseMeta();
-
-            databaseMeta.setDatabaseType(srcdbManagement.getDbType());
-            databaseMeta.setDBName(srcdbManagement.getDbName());
-            databaseMeta.setHostname(srcdbManagement.getDbHost());
-            databaseMeta.setDBPort(srcdbManagement.getDbPort());
-            databaseMeta.setUsername(srcdbManagement.getDbUser());
-            databaseMeta.setPassword(srcdbManagement.getDbPassword());
-            databaseMeta.setName(srcdbManagement.getLinkName());
-//只读
-            databaseMeta.setReadOnly(true);
-
-            transMeta.addDatabase(databaseMeta);
-
-            //添加转换数据库目标连接
-            DatabaseMeta dstdatabaseMeta = new DatabaseMeta();
-            dstdatabaseMeta.setDatabaseType(dstdbManagement.getDbType());
-            dstdatabaseMeta.setDBName(dstdbManagement.getDbName());
-            dstdatabaseMeta.setHostname(dstdbManagement.getDbHost());
-            dstdatabaseMeta.setDBPort(dstdbManagement.getDbPort());
-            dstdatabaseMeta.setUsername(dstdbManagement.getDbUser());
-            dstdatabaseMeta.setPassword(dstdbManagement.getDbPassword());
-            dstdatabaseMeta.setName(dstdbManagement.getLinkName());
-//只读
-            dstdatabaseMeta.setReadOnly(false);
-            transMeta.addDatabase(dstdatabaseMeta);
-
-            PluginRegistry registry = PluginRegistry.getInstance();
-            //第一个表输入步骤(TableInputMeta)
-            TableInputMeta tableInputMeta = new TableInputMeta();
-            String tableInputPluginId = registry.getPluginId(StepPluginType.class,tableInputMeta);
-
-            //给表输入添加一个DatabaseMeta连接数据库
-            DatabaseMeta database_in = transMeta.findDatabase(srcdbManagement.getLinkName());
-            tableInputMeta.setDatabaseMeta(database_in);
-            String select_sql = "SELECT * FROM " + dataMig.getSrcTable();//表名必须传
-            tableInputMeta.setSQL(select_sql);
-
-            //添加TableInputMeta到转换中
-
-            StepMeta tableInputMetaStep = new StepMeta(tableInputPluginId,"table_input",tableInputMeta);
-            transMeta.addStep(tableInputMetaStep);
-
-            //第二个步骤插入与更新
-
-            TableOutputMeta tableOutputMeta = new TableOutputMeta();
-
-            String tableOutputPluginId = registry.getPluginId(StepPluginType.class,tableOutputMeta);
-            //添加数据库连接
-            DatabaseMeta database_out = transMeta.findDatabase(dstdbManagement.getLinkName());
-            tableOutputMeta.setDatabaseMeta(database_out);
-            //设置操作的表
-            tableOutputMeta.setTableName(dataMig.getDstTable());//
-
-            tableOutputMeta.setParentStepMeta(tableInputMetaStep);
-
-
-            //添加输出步骤到转换中
-
-            StepMeta tableOutputMetaStep = new StepMeta(tableOutputPluginId,"table_output",tableOutputMeta);
-            transMeta.addStep(tableOutputMetaStep);
-
-            //hop
-            transMeta.addTransHop(new TransHopMeta(tableInputMetaStep,tableOutputMetaStep));
-
-            if (saveTransMetaService.save(transMeta,DbMigTransUrl + dataMig.getTransName()+ ".ktr",true)) {
-               saveTransMetaService.saveTransData(DbMigTransUrl + dataMig.getTransName()+ ".ktr",dataMig.getSrcDbconnId(),dataMig.getDstDbconnId());
-
-            TransMeta transMeta1 = new TransMeta(DbMigTransUrl + dataMig.getTransName()+ ".ktr");
-            Trans trans = new Trans(transMeta1);
-            trans.prepareExecution(null);
-            trans.startThreads();
-            trans.waitUntilFinished();
-            if (trans.getErrors()!= 0 ){
-                responseData.setError(500,"同步失败，请尝试增量同步","fail");
-            }else {
-                responseData.setOK(200,"success",DbMigTransUrl + dataMig.getTransName()+ ".ktr");
-            }
-
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            responseData.setError(500,"fail","fail");
-        }
-
-        return responseData;
-    }
-
     public ResponseData<String> cycleMigration(DataMig dataMig) {
-        DbResponse dbResponse = insertupdateMigration(dataMig).getResult();
+
 
         ResponseData<String> responseData = new ResponseData<>();
-        JobLog jobLog = new JobLog();
         try {
 
-            ktrpath = dbResponse.getKtrPath();
+            ktrpath = generateKtr(dataMig);
             KettleEnvironment.init();
 
 
@@ -187,21 +76,31 @@ public class DBMigrationServiceImpl implements DBMigrationService {
 
 
             switch (dataMig.getSchedulerType()){
+                case 1:
+                    jobEntrySpecial.setSchedulerType(1);
+                    jobEntrySpecial.setIntervalSeconds(10);
+                    jobEntrySpecial.setIntervalMinutes(0);
+                    break;
+
+
                 case 2:
                     jobEntrySpecial.setSchedulerType(2);
                     jobEntrySpecial.setHour(12);
+                    break;
                 case 3:
                     jobEntrySpecial.setSchedulerType(3);
                     jobEntrySpecial.setWeekDay(1);
+                    break;
                 case 4:
                     jobEntrySpecial.setSchedulerType(4);
                     jobEntrySpecial.setDayOfMonth(1);
-                    default:
-                        jobEntrySpecial.setSchedulerType(1);
-                        jobEntrySpecial.setIntervalSeconds(10);
-                        jobEntrySpecial.setIntervalMinutes(0);
-            }
+                    break;
+                default:
+                    jobEntrySpecial.setSchedulerType(0);
+                    jobEntrySpecial.setRepeat(false);
+                    break;
 
+            }
 
             jobEntrySpecial.setStart(true);
             JobEntryCopy specialCopy = new JobEntryCopy(jobEntrySpecial);
@@ -219,46 +118,24 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             jobHopMeta.setUnconditional(true);
             jobMeta.addJobHop(jobHopMeta);
 
-            saveJobMetaService.save(jobMeta,DbMigJobUrl+dataMig.getJobName()+".kjb",true);
-            saveJobMetaService.saveTransJobData(DbMigJobUrl+dataMig.getJobName()+".kjb");
-            JobMeta jobMeta1 = new JobMeta(DbMigJobUrl+dataMig.getJobName()+".kjb",null);
-            Job job = new Job(null,jobMeta1);
-            jobLog.setStartTime(new Date());
-            job.start();
-            Thread.currentThread().setName("aaa");
-//            job.waitUntilFinished();
-            jobLog.setEndTime(new Date());
-            jobLog.setJobName(dataMig.getJobName());
-            jobLog.setStatus((byte)2);
+           boolean savektr = saveJobMetaService.save(jobMeta,DbMigJobUrl+dataMig.getJobName()+".kjb",true);
+           boolean savejob = saveJobMetaService.saveTransJobData(DbMigJobUrl+dataMig.getJobName()+".kjb");
+           if (savektr&&savejob){
+               responseData.set(200,"success",DbMigJobUrl+dataMig.getJobName()+".kjb");
+           }
 
-            Thread.sleep(11000);
-            if (job.getErrors() > 0 ){
-                jobLog.setStatus((byte)3);
-                jobLog.setErrors(job.getErrors());
-                jobLog.setLogField("执行失败");
-                responseData.setError(500,"任务失败，请确认输入参数是否正确","失败任务："+DbMigJobUrl+dataMig.getJobName()+".kjb");
-            }else {
-                jobLog.setStatus((byte)3);
-                jobLog.setLogField("success");
-                jobLog.setLinesSuccessed(dbResponse.getLinesSuccessed().intValue());
 
-                responseData.setOK(200,"success",DbMigJobUrl+dataMig.getJobName()+".kjb");
-            }
+    } catch (Exception e) {
+        e.printStackTrace();
+        responseData.setError(500,"创建任务异常，请确认输入参数是否正确",DbMigJobUrl+dataMig.getJobName()+".kjb");
+    }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            jobLog.setLogField("执行失败");
-            jobLog.setLogField(e.toString());
-            responseData.setError(500,"任务异常，请确认输入参数是否正确","失败任务："+DbMigJobUrl+dataMig.getJobName()+".kjb");
-        }
-
-        jobLogService.addJobLog(jobLog);
         return responseData;
     }
 
-    public ResponseData<DbResponse> insertupdateMigration(DataMig dataMig) {
-        ResponseData<DbResponse> responseData = new ResponseData<>();
-        DbResponse dbResponse = new DbResponse();
+
+    public String generateKtr(DataMig dataMig) {
+
         try {
 
             DbManagement srcdbManagement = dbManagementMapper.selectByPrimaryKey(dataMig.getSrcDbconnId());
@@ -294,7 +171,7 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             databaseMeta.setPassword(srcdbManagement.getDbPassword());
             databaseMeta.setName(srcdbManagement.getLinkName());
             databaseMeta.addExtraOption(srcdbManagement.getDbType(),"characterEncoding","utf-8");
-         //只读
+            //只读
             databaseMeta.setReadOnly(true);
 
             transMeta.addDatabase(databaseMeta);
@@ -359,9 +236,9 @@ public class DBMigrationServiceImpl implements DBMigrationService {
 
             List<String> list = dataMig.getUpdateLookup();
             if (list == null || list.size() == 0){
-                 updatelookup =  fields;
+                updatelookup =  fields;
             }else{
-                 updatelookup = list.toArray(new String[list.size()]);
+                updatelookup = list.toArray(new String[list.size()]);
             }
 
             String[] updateStream = updatelookup;
@@ -388,44 +265,148 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             //hop
             transMeta.addTransHop(new TransHopMeta(tableInputMetaStep,tableOutputMetaStep));
 
-            if (saveTransMetaService.save(transMeta,DbMigTransUrl + dataMig.getTransName()+ ".ktr",true)) {
-                saveTransMetaService.saveTransData(DbMigTransUrl + dataMig.getTransName()+ ".ktr",dataMig.getSrcDbconnId(),dataMig.getDstDbconnId());
-                org.pentaho.di.trans.TransMeta transMeta1 = new TransMeta(DbMigTransUrl + dataMig.getTransName()+ ".ktr");
-                Trans trans = new Trans(transMeta1);
-                trans.prepareExecution(null);
-                trans.startThreads();
-                trans.waitUntilFinished();
-                if (trans.getErrors()!= 0 ){
-                    responseData.set(500,"同步失败，请确认输入是否正确",dbResponse);
-                }else {
-                    dbResponse.setLinesSuccessed(trans.getLastProcessed());
-                    dbResponse.setKtrPath(DbMigTransUrl + dataMig.getTransName()+ ".ktr");
-                    responseData.set(200,"success",dbResponse);
+            if (saveTransMetaService.save(transMeta,DbMigTransUrl + dataMig.getJobName()+ ".ktr",true) &&
+                    saveTransMetaService.saveTransData(DbMigTransUrl + dataMig.getJobName()+ ".ktr",dataMig.getSrcDbconnId(),dataMig.getDstDbconnId())){
+              return DbMigTransUrl + dataMig.getJobName()+ ".ktr";
+
+            } else {
+                return "";
                 }
-            }
+
 
         } catch (Exception e) {
             e.printStackTrace();
-            responseData.setError(500,"fail",dbResponse);
+            return "";
         }
 
-        return responseData;
+
     }
 
-    public Pagination<com.zsbatech.baasKettleManager.model.JobMeta> getJobList(Integer currPage, Integer pageSize) {
+
+
+    public DbJobInfo getJobDetail (String jobName) {
+
+        DbJobInfo dbJobInfo = new DbJobInfo();
+
+        Connection conn;
+        String driver = "com.mysql.jdbc.Driver";
+        String url = "jdbc:mysql://106.75.73.34:8306/kettle_manager?allowMultiQueries=true&serverTimezone=UTC&useSSL=false&useUnicode=true&characterEncoding=UTF-8";
+        String username = "root";
+        String password = "Zsba@mysql2018*";
+
+        try {
+            Class.forName(driver);
+            conn = DriverManager.getConnection(url,username,password);
+            Statement stmt = conn.createStatement();
+
+            String sql = "select a.job_name,a.createtime,a.updatetime,a.execute_status,a.job_type,b.db_connection_name ,b.exc_sql,c.src_table,c.src_column " +
+                    "from job_meta a,tableinput_step b,src_db_connection c where a.trans_meta_id = b.trans_meta_id and b.id= c.step_id and a.job_name = "+"\""+jobName+"\"";
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while(rs.next()){
+                dbJobInfo = new DbJobInfo();
+                rs.getString("job_name");
+                dbJobInfo.setJobName(rs.getString("job_name"));
+                dbJobInfo.setLinkName(rs.getString("db_connection_name"));
+                dbJobInfo.setPathStr("job");
+                if (rs.getString("job_type").trim().equals("0")){
+
+                    dbJobInfo.setJobType("单次任务");
+                }else{
+                    dbJobInfo.setJobType("周期任务");
+                }
+
+                if(rs.getInt("execute_status")==1){
+                    dbJobInfo.setExecuteStatus("执行中");
+                }else{
+                    dbJobInfo.setExecuteStatus("未执行");
+                }
+
+                dbJobInfo.setCreatetime(rs.getDate("createtime"));
+                dbJobInfo.setUpdatetime(rs.getDate("updatetime"));
+                dbJobInfo.setTableName(rs.getString("src_table"));
+                dbJobInfo.setUpdateType("增量更新");
+                dbJobInfo.setExecuteSql(rs.getString("exc_sql"));
+                if (rs.getString("src_column")!=null && rs.getString("src_column")!=""){
+                    dbJobInfo.setLookup(rs.getString("src_column"));
+                }
+
+            }
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return dbJobInfo;
+    }
+
+
+    public Pagination<DbJobInfo> getJobList(Integer currPage, Integer pageSize) {
         PageMethod.startPage(currPage, pageSize);
-        JobMetaExample jobMetaExample = new JobMetaExample();
-        JobMetaExample.Criteria criteria = jobMetaExample.createCriteria();
-        criteria.andIdIsNotNull();
-        List<com.zsbatech.baasKettleManager.model.JobMeta> jobMetaList = jobMetaMapper.selectByExample(jobMetaExample);
-        Pagination<com.zsbatech.baasKettleManager.model.JobMeta> jobMetaPagination = new Pagination<com.zsbatech.baasKettleManager.model.JobMeta>(jobMetaList);
-        return jobMetaPagination;
+        List<DbJobInfo> dbJobInfoList = new ArrayList<DbJobInfo>();
+        DbJobInfo dbJobInfo = null;
+
+        Connection conn;
+        String driver = "com.mysql.jdbc.Driver";
+        String url = "jdbc:mysql://106.75.73.34:8306/kettle_manager?allowMultiQueries=true&serverTimezone=UTC&useSSL=false&useUnicode=true&characterEncoding=UTF-8";
+        String username = "root";
+        String password = "Zsba@mysql2018*";
+
+        try {
+            Class.forName(driver);
+            conn = DriverManager.getConnection(url,username,password);
+            Statement stmt = conn.createStatement();
+
+            String sql = "select a.job_name,a.createtime,a.updatetime,a.execute_status,a.job_type,b.db_connection_name ,b.exc_sql,c.src_table,c.src_column " +
+                    "from job_meta a,tableinput_step b,src_db_connection c where a.trans_meta_id = b.trans_meta_id and b.id= c.step_id";
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while(rs.next()){
+                dbJobInfo = new DbJobInfo();
+                 rs.getString("job_name");
+                dbJobInfo.setJobName(rs.getString("job_name"));
+                dbJobInfo.setLinkName(rs.getString("db_connection_name"));
+                dbJobInfo.setPathStr("job");
+                if (rs.getString("job_type").trim().equals("0")){
+
+                    dbJobInfo.setJobType("单次任务");
+                }else{
+                    dbJobInfo.setJobType("周期任务");
+                }
+
+                if(rs.getInt("execute_status")==1){
+                    dbJobInfo.setExecuteStatus("执行中");
+                }else{
+                    dbJobInfo.setExecuteStatus("未执行");
+                }
+
+                dbJobInfo.setCreatetime(rs.getDate("createtime"));
+                dbJobInfo.setUpdatetime(rs.getDate("updatetime"));
+                dbJobInfo.setTableName(rs.getString("src_table"));
+                dbJobInfo.setUpdateType("增量更新");
+                dbJobInfo.setExecuteSql(rs.getString("exc_sql"));
+                if (rs.getString("src_column")!=null && rs.getString("src_column")!=""){
+                    dbJobInfo.setLookup(rs.getString("src_column"));
+                }
+
+                dbJobInfoList.add(dbJobInfo);
+            }
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+        Pagination<DbJobInfo> dbJobInfoPagination = new Pagination<DbJobInfo>(dbJobInfoList);
+        return dbJobInfoPagination;
+
     }
-
-    public com.zsbatech.baasKettleManager.model.JobMeta getJobDetail (Integer jobId) {
-
-        com.zsbatech.baasKettleManager.model.JobMeta jobMeta = jobMetaMapper.selectByPrimaryKey(jobId);
-        return jobMeta;
-    }
-
 }

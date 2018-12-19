@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping(value = "/data_center/job/test")
+@RequestMapping(value = "/a")
 public class JobTestController {
 
     @Autowired
@@ -39,7 +39,7 @@ public class JobTestController {
     public ResponseData<String> saveByDb(@RequestBody DataMig dataMig) {
         ResponseData<String> responseData = new ResponseData<>();
 //        saveJobMetaService.saveFtpIncrJobByDB(dataMig.getJobName());
-        saveJobMetaService.saveIncrJobByDB("job");
+        saveJobMetaService.saveIncrJobByDB("job2");
         responseData.setOK(200, "success", "success");
         return responseData;
     }
