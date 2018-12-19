@@ -12,11 +12,11 @@ import com.zsbatech.baasKettleManager.model.JobStartStepDO;
  */
 public class FTPSyncSetp {
 
-    private JobStartStepDO jobStartStepVO;
+    private JobStartStepDO jobStartStepDO;
 
-    private FTPDownLoadStepDO ftpDownLoadStepVO;
+    private FTPDownLoadStepDO ftpDownLoadStepDO;
 
-    private FTPPutStepDO ftpPutStepVO;
+    private FTPPutStepDO ftpPutStepDO;
 
     private String jobName;
 
@@ -24,20 +24,20 @@ public class FTPSyncSetp {
 
     private String dstNickName;
 
-    public JobStartStepDO getJobStartStepVO() {
-        return jobStartStepVO;
+    public JobStartStepDO getJobStartStepDO() {
+        return jobStartStepDO;
     }
 
-    public FTPDownLoadStepDO getFtpDownLoadStepVO() {
-        return ftpDownLoadStepVO;
+    public FTPDownLoadStepDO getFtpDownLoadStepDO() {
+        return ftpDownLoadStepDO;
     }
 
     public String getJobName() {
         return jobName;
     }
 
-    public FTPPutStepDO getFtpPutStepVO() {
-        return ftpPutStepVO;
+    public FTPPutStepDO getFtpPutStepDO() {
+        return ftpPutStepDO;
     }
 
     public String getSrcNickName() {
@@ -48,20 +48,20 @@ public class FTPSyncSetp {
         return dstNickName;
     }
 
-    public void setJobStartStepVO(JobStartStepDO jobStartStepVO) {
-        this.jobStartStepVO = jobStartStepVO;
+    public void setJobStartStepDO(JobStartStepDO jobStartStepDO) {
+        this.jobStartStepDO = jobStartStepDO;
     }
 
-    public void setFtpDownLoadStepVO(FTPDownLoadStepDO ftpDownLoadStepVO) {
-        this.ftpDownLoadStepVO = ftpDownLoadStepVO;
+    public void setFtpDownLoadStepDO(FTPDownLoadStepDO ftpDownLoadStepDO) {
+        this.ftpDownLoadStepDO = ftpDownLoadStepDO;
     }
 
     public void setJobName(String jobName) {
         this.jobName = jobName;
     }
 
-    public void setFtpPutStepVO(FTPPutStepDO ftpPutStepVO) {
-        this.ftpPutStepVO = ftpPutStepVO;
+    public void setFtpPutStepDO(FTPPutStepDO ftpPutStepDO) {
+        this.ftpPutStepDO = ftpPutStepDO;
     }
 
     public void setSrcNickName(String srcNickName) {

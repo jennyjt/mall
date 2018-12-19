@@ -43,9 +43,9 @@ public class FileSyncJobController {
     @ResponseBody
     public ResponseData<String> createDownloadJobMeta(@RequestBody FTPSyncSetp ftpSyncSetp) {
         ResponseData<String> responseData = new ResponseData<>();
-        String fileName = fileSyncJobService.createDownloadJobMeta(ftpSyncSetp.getJobStartStepVO(), ftpSyncSetp.getFtpDownLoadStepVO(), ftpSyncSetp.getJobName(),ftpSyncSetp.getSrcNickName());
+        String fileName = fileSyncJobService.createDownloadJobMeta(ftpSyncSetp.getJobStartStepDO(), ftpSyncSetp.getFtpDownLoadStepDO(), ftpSyncSetp.getJobName(),ftpSyncSetp.getSrcNickName());
         if (fileName != null) {
-            if (saveJobMetaService.saveFTPJobData(fileName,0,ftpSyncSetp.getFtpDownLoadStepVO().getFtpSourceId())) {
+            if (saveJobMetaService.saveFTPJobData(fileName,null,ftpSyncSetp.getSrcNickName())) {
                 responseData.setOK(200, "创建文件同步job成功", "success");
             }else {
                 responseData.setError("创建文件同步job失败");
@@ -67,9 +67,9 @@ public class FileSyncJobController {
     @ResponseBody
     public ResponseData<String> createPutJobMeta(@RequestBody FTPSyncSetp ftpSyncSetp) {
         ResponseData<String> responseData = new ResponseData<>();
-        String fileName = fileSyncJobService.createPutJobMeta(ftpSyncSetp.getJobStartStepVO(), ftpSyncSetp.getFtpPutStepVO(), ftpSyncSetp.getJobName(),ftpSyncSetp.getDstNickName());
+        String fileName = fileSyncJobService.createPutJobMeta(ftpSyncSetp.getJobStartStepDO(), ftpSyncSetp.getFtpPutStepDO(), ftpSyncSetp.getJobName(),ftpSyncSetp.getDstNickName());
         if(fileName != null) {
-            if(saveJobMetaService.saveFTPJobData(fileName,ftpSyncSetp.getFtpPutStepVO().getFtpSourceId(),0)) {
+            if(saveJobMetaService.saveFTPJobData(fileName,ftpSyncSetp.getDstNickName(),null)) {
                 responseData.setOK(200, "创建文件上传同步job成功", "SUCCESS");
             }else {
                 responseData.setError("创建文件上传同步job失败");
@@ -91,9 +91,9 @@ public class FileSyncJobController {
     @ResponseBody
     public ResponseData<String> fileSyncFtpToFtpJobMeta(@RequestBody FTPSyncSetp ftpSyncSetp) {
         ResponseData<String> responseData = new ResponseData<>();
-        String fileName = fileSyncJobService.fileSyncFtpToFtpJobMeta(ftpSyncSetp.getJobStartStepVO(), ftpSyncSetp.getFtpPutStepVO(),ftpSyncSetp.getSrcNickName(), ftpSyncSetp.getFtpDownLoadStepVO(), ftpSyncSetp.getDstNickName(),ftpSyncSetp.getJobName());
+        String fileName = fileSyncJobService.fileSyncFtpToFtpJobMeta(ftpSyncSetp.getJobStartStepDO(), ftpSyncSetp.getFtpPutStepDO(),ftpSyncSetp.getSrcNickName(), ftpSyncSetp.getFtpDownLoadStepDO(), ftpSyncSetp.getDstNickName(),ftpSyncSetp.getJobName());
         if(fileName != null){
-            if(saveJobMetaService.saveFTPJobData(fileName,ftpSyncSetp.getFtpPutStepVO().getFtpSourceId(),ftpSyncSetp.getFtpDownLoadStepVO().getFtpSourceId())) {
+            if(saveJobMetaService.saveFTPJobData(fileName,ftpSyncSetp.getDstNickName(),ftpSyncSetp.getSrcNickName())) {
                 responseData.setOK(200, "创建ftp文件同步job成功", "success");
             }else {
                 responseData.setError("创建ftp文件同步job失败");

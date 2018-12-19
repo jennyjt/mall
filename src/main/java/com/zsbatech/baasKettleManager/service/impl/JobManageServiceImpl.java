@@ -1,14 +1,10 @@
 package com.zsbatech.baasKettleManager.service.impl;
 
-import com.zsbatech.baasKettleManager.dao.ExceptionLogDOMapper;
-import com.zsbatech.baasKettleManager.dao.JobMetaDOMapper;
-import com.zsbatech.baasKettleManager.model.ExceptionLogDO;
-import com.zsbatech.baasKettleManager.model.JobMetaDO;
-import com.zsbatech.baasKettleManager.service.FileSyncJobService;
-import com.zsbatech.baasKettleManager.service.JobManageService;
-import com.zsbatech.baasKettleManager.service.SaveJobMetaService;
-import com.zsbatech.baasKettleManager.service.SaveTransMetaService;
+import com.zsbatech.baasKettleManager.dao.*;
+import com.zsbatech.baasKettleManager.model.*;
+import com.zsbatech.baasKettleManager.service.*;
 import com.zsbatech.baasKettleManager.vo.FTPSyncSetp;
+import com.zsbatech.baasKettleManager.vo.JobInfo;
 import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.exception.KettleException;
 import org.pentaho.di.core.logging.KettleLogStore;
@@ -34,6 +30,18 @@ public class JobManageServiceImpl implements JobManageService {
     private static Logger logger = LoggerFactory.getLogger(JobManageServiceImpl.class);
 
     private static Map<String, Job> jobMap = new HashMap<>();
+
+    @Autowired
+    private JobLogService jobLogService;
+
+    @Autowired
+    private JobStartStepDOMapper jobStartStepDOMapper;
+
+    @Autowired
+    private FTPDownLoadStepDOMapper ftpDownLoadStepDOMapper;
+
+    @Autowired
+    private FTPPutStepDOMapper ftpPutStepDOMapper;
 
     @Autowired
     private FileSyncJobService fileSyncJobService;
@@ -115,17 +123,33 @@ public class JobManageServiceImpl implements JobManageService {
     }
 
     public boolean modifyJob(FTPSyncSetp ftpSyncSetp) {
-        boolean isModifyJob = false;
+        boolean isSuccess = false;
         JobMetaDO jobMetaDO = jobMetaDOMapper.selectByJobName(ftpSyncSetp.getJobName());
-        if(jobMetaDO.getTransMetaId() != 0){
-            if(ftpSyncSetp.getFtpDownLoadStepVO() != null && ftpSyncSetp.getFtpPutStepVO() != null) {
-                String fileName = fileSyncJobService.fileSyncFtpToFtpJobMeta(ftpSyncSetp.getJobStartStepVO(), ftpSyncSetp.getFtpPutStepVO(),ftpSyncSetp.getSrcNickName(), ftpSyncSetp.getFtpDownLoadStepVO(), ftpSyncSetp.getDstNickName(),ftpSyncSetp.getJobName());
-            }else if(ftpSyncSetp.getFtpDownLoadStepVO() != null){
-                String fileName = fileSyncJobService.createDownloadJobMeta(ftpSyncSetp.getJobStartStepVO(), ftpSyncSetp.getFtpDownLoadStepVO(), ftpSyncSetp.getJobName(),ftpSyncSetp.getSrcNickName());
-            }else {
-                String fileName = fileSyncJobService.createPutJobMeta(ftpSyncSetp.getJobStartStepVO(), ftpSyncSetp.getFtpPutStepVO(), ftpSyncSetp.getJobName(),ftpSyncSetp.getDstNickName());
+        if (jobMetaDO != null) {
+        }
+        if (jobMetaDO.getTransMetaId() == 0) {
+            if (ftpSyncSetp.getFtpDownLoadStepDO() != null && ftpSyncSetp.getFtpPutStepDO() != null) {
+                String fileName = fileSyncJobService.fileSyncFtpToFtpJobMeta(ftpSyncSetp.getJobStartStepDO(), ftpSyncSetp.getFtpPutStepDO(), ftpSyncSetp.getSrcNickName(), ftpSyncSetp.getFtpDownLoadStepDO(), ftpSyncSetp.getDstNickName(), ftpSyncSetp.getJobName());
+                if (fileName != null) {
+                    isSuccess = true;
+                }
+            } else if (ftpSyncSetp.getFtpDownLoadStepDO() != null) {
+                String fileName = fileSyncJobService.createDownloadJobMeta(ftpSyncSetp.getJobStartStepDO(), ftpSyncSetp.getFtpDownLoadStepDO(), ftpSyncSetp.getJobName(), ftpSyncSetp.getSrcNickName());
+                if (fileName != null) {
+                    isSuccess = true;
+                }
+            } else {
+                String fileName = fileSyncJobService.createPutJobMeta(ftpSyncSetp.getJobStartStepDO(), ftpSyncSetp.getFtpPutStepDO(), ftpSyncSetp.getJobName(), ftpSyncSetp.getDstNickName());
+                if (fileName != null) {
+                    isSuccess = true;
+                }
             }
         }
-        return isModifyJob;
+        return isSuccess;
+    }
+
+    public List<JobMetaDO> queryJob(String jobType){
+//        jobMetaDOMapper.selectByJobName();
+        return null;
     }
 }

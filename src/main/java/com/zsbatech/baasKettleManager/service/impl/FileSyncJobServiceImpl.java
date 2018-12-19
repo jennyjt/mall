@@ -35,6 +35,8 @@ import java.util.Map;
 @Service
 public class FileSyncJobServiceImpl implements FileSyncJobService {
 
+    private String rootCatalog = ConfigUtil.getPropertyValue("file.rootUrl");
+
     private String ftpJobUrl = ConfigUtil.getPropertyValue("file.ftpJobUrl");
 
     @Autowired
@@ -118,12 +120,11 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
 
         //创建目录
         List<String> fileContents = new ArrayList<>();
-        fileContents.add(ftpDownLoadStepDO.getFtpDirectory());
         fileContents.add(ftpDownLoadStepDO.getTargetDirectory());
         catalogManageService.createCatalogs(fileContents);
 
-        jobEntryFTP.setFtpDirectory(ftpDownLoadStepDO.getFtpDirectory());
         jobEntryFTP.setTargetDirectory(ftpDownLoadStepDO.getTargetDirectory());
+        jobEntryFTP.setFtpDirectory(ftpDownLoadStepDO.getFtpDirectory());
         jobEntryFTP.setWildcard(ftpDownLoadStepDO.getFtpFileName());
         JobEntryCopy jobEntryFTPCopy = new JobEntryCopy(jobEntryFTP);
         jobEntryFTPCopy.setDrawn(true);
@@ -133,7 +134,7 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         jobHopMeta.setUnconditional(true);
         jobMeta.addJobHop(jobHopMeta);
         if (saveJobMetaService.save(jobMeta, ftpJobUrl + jobName + ".kjb", true)) {
-            saveJobMetaService.saveFTPJobData(ftpJobUrl + jobName + ".kjb", 0, ftpDownLoadStepDO.getFtpSourceId());
+            saveJobMetaService.saveFTPJobData(ftpJobUrl + jobName + ".kjb", null, nickName);
             return ftpJobUrl + jobName + ".kjb";
         } else {
             return null;
@@ -194,7 +195,7 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         }
         jobEntryFTPPUT.setControlEncoding(ftpPutStepDO.getControlEncoding());
 
-        FTPClient ftpClient = FTPUtil.loginFTP(ftpPutStepDO.getServerName(), Integer.valueOf(ftpPutStepDO.getPort()), ftpPutStepDO.getUserName(), ftpPutStepDO.getPassword());
+        FTPClient ftpClient = FTPUtil.loginFTP(ftpSourceManageDO.getFtpHost(), Integer.valueOf(ftpSourceManageDO.getFtpPort()), ftpSourceManageDO.getUserName(), ftpSourceManageDO.getPassWord());
         try {
             ftpClient.makeDirectory(ftpPutStepDO.getFtpDirectory());
         } catch (IOException e) {
@@ -212,7 +213,7 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         jobHopMeta.setUnconditional(true);
         jobMeta.addJobHop(jobHopMeta);
         if (saveJobMetaService.save(jobMeta, ftpJobUrl + jobName + ".kjb", true)) {
-            saveJobMetaService.saveFTPJobData(ftpJobUrl + jobName + ".kjb", ftpPutStepDO.getFtpSourceId(), 0);
+            saveJobMetaService.saveFTPJobData(ftpJobUrl + jobName + ".kjb", nickName, null);
             return ftpJobUrl + jobName + ".kjb";
         } else {
             return null;
@@ -279,7 +280,6 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
 
         //创建目录
         List<String> fileCataLogs = new ArrayList<>();
-        fileCataLogs.add(ftpDownLoadStepDO.getFtpDirectory());
         fileCataLogs.add(ftpDownLoadStepDO.getTargetDirectory());
         catalogManageService.createCatalogs(fileCataLogs);
 
@@ -309,7 +309,7 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
         }
         jobEntryFTPPUT.setControlEncoding(ftpPutStepDO.getControlEncoding());
 
-        FTPClient ftpClient = FTPUtil.loginFTP(ftpPutStepDO.getServerName(), Integer.valueOf(ftpPutStepDO.getPort()), ftpPutStepDO.getUserName(), ftpPutStepDO.getPassword());
+        FTPClient ftpClient = FTPUtil.loginFTP(dstFtpSourceMangeDO.getFtpHost(), Integer.valueOf(dstFtpSourceMangeDO.getFtpPort()), dstFtpSourceMangeDO.getUserName(), dstFtpSourceMangeDO.getPassWord());
         try {
             ftpClient.makeDirectory(ftpPutStepDO.getFtpDirectory());
         } catch (IOException e) {

@@ -20,7 +20,7 @@
       createtime, updatetime, trans_meta_id,
       execute_status, job_type)
     values (#{id,jdbcType=INTEGER}, #{jobName,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR},
-      #{createtime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{transMetaId,jdbcType=INTEGER},
+      #{createTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{transMetaId,jdbcType=INTEGER},
       #{executeStatus,jdbcType=TINYINT}, #{jobType,jdbcType=VARCHAR})
   </insert>
 
@@ -65,4 +65,5 @@
     </set>
     where job_name = #{jobName,jdbcType=VARCHAR}
    </update>
+
 </mapper>

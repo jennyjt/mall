@@ -2,7 +2,6 @@ package com.zsbatech.baasKettleManager.controller;
 
 import com.zsbatech.baasKettleManager.service.FileSyncJobService;
 import com.zsbatech.baasKettleManager.service.JobManageService;
-import com.zsbatech.baasKettleManager.service.impl.JobManageServiceImpl;
 import com.zsbatech.baasKettleManager.vo.FTPSyncSetp;
 import com.zsbatech.base.common.ResponseData;
 import com.zsbatech.base.constants.RequestField;
@@ -13,7 +12,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created with IntelliJ IDEA.
@@ -88,8 +86,11 @@ public class JobManageController {
     @ResponseBody
     public ResponseData<String> modifyJob(@RequestParam FTPSyncSetp ftpSyncSetp) {
         ResponseData<String> responseData = new ResponseData<>();
-        jobManageService.modifyJob(ftpSyncSetp);
-        responseData.setOK(200,"修改成功",ftpSyncSetp.getJobName());
+        if(jobManageService.modifyJob(ftpSyncSetp)) {
+            responseData.setOK(200, "修改成功", ftpSyncSetp.getJobName());
+        }else {
+            responseData.setError(500,"修改失败",ftpSyncSetp.getJobName());
+        }
         return responseData;
     }
 
@@ -111,4 +112,24 @@ public class JobManageController {
         }
         return responseData;
     }
+
+    @ApiOperation(value = "查询文件job", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiResponses({@ApiResponse(code = Response.OK, message = "查询job成功"),})
+    @ApiImplicitParams(
+            value = {
+                    @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
+            }
+    )
+    @RequestMapping(value = "/queryJob", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseBody
+    public ResponseData<String> queryJob(@RequestParam String jobType) {
+        ResponseData<String> responseData = new ResponseData<>();
+//        if(jobManageService.queryJob(jobType)) {
+//            responseData.setOK(200, "修改成功", ftpSyncSetp.getJobName());
+//        }else {
+//            responseData.setError(500,"修改失败",ftpSyncSetp.getJobName());
+//        }
+        return responseData;
+    }
+
 }
