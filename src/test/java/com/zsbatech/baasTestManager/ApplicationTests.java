@@ -199,7 +199,7 @@ public class ApplicationTests {
         ftpDownLoadStepVO.setControlEncoding("UTF-8");
         ftpDownLoadStepVO.setFtpDirectory("");
         ftpDownLoadStepVO.setTargetDirectory("C:\\Users\\zhang\\Desktop\\新建文件夹");
-        fileSyncJobService.createDownloadJobMeta(jobStartStepVO, ftpDownLoadStepVO, "aaa");
+//        fileSyncJobService.createDownloadJobMeta(jobStartStepVO, ftpDownLoadStepVO, "aaa");
     }
 
     @Test
