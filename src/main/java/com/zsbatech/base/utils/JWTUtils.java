@@ -60,6 +60,13 @@ public class JWTUtils {
         }
         return uniToken;
     }
+    public static UniToken validateTokenAndOrgan(String token){
+        UniToken uniToken = validateToken(token);
+
+        uniToken.setOrganization(com.zsbatech.baasKettleManager.util.HttpUtils.getUserOrgan(uniToken.getUserId(),token));
+
+        return uniToken;
+    }
 
     /**
      * 生成秘钥

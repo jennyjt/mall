@@ -22,6 +22,7 @@ public class UniToken implements Serializable {
     private List<Long> role;
     private String token;
     private Long expireTime;
+    private String organization;
 
     public Long getUserId() {
         return userId;
@@ -79,6 +80,15 @@ public class UniToken implements Serializable {
         return false;
     }
 
+    public String getOrganization() {
+        return organization;
+    }
+
+    public UniToken setOrganization(String organization) {
+        this.organization = organization;
+        return this;
+    }
+
     @Override
     public String toString() {
         return "UniToken{" +
@@ -87,6 +97,18 @@ public class UniToken implements Serializable {
                 ", role=" + role +
                 ", token='" + token + '\'' +
                 ", expireTime=" + expireTime +
+                ", organization='" + organization + '\'' +
                 '}';
     }
+
+    /*    @Override
+    public String toString() {
+        return "UniToken{" +
+                "userId=" + userId +
+                ", username='" + username + '\'' +
+                ", role=" + role +
+                ", token='" + token + '\'' +
+                ", expireTime=" + expireTime +
+                '}';
+    }*/
 }
