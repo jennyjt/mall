@@ -26,6 +26,8 @@ public class FtpSourceManageServiceImpl implements FtpSouceManageService {
     @Override
     public boolean createDataSource(FtpSourceManager ftpSource) {
         ftpSource.setCreateTime(DateUtils.currentDateTime());
+        ftpSource.setStatus(DataSourceConstant.NORMAL_STATUS);
+        ftpSource.setUseCount((short) 0);
         int result = ftpSourceMapper.insert(ftpSource);
 
         if (result <= 0) {
@@ -50,6 +52,7 @@ public class FtpSourceManageServiceImpl implements FtpSouceManageService {
     @Override
     public Pagination<FtpSourceManager> getDataSources(Integer currPage, Integer pageSize, FtpSourceManager ftpSource) {
         PageMethod.startPage(currPage, pageSize);
+        ftpSource.setStatus(DataSourceConstant.NORMAL_STATUS);
         List<FtpSourceManager> ftpSourceList = ftpSourceMapper.getFtpSourcesByParam(ftpSource);
         Pagination<FtpSourceManager> sourceInfo = new Pagination<FtpSourceManager>(ftpSourceList);
         return sourceInfo;
@@ -89,13 +92,26 @@ public class FtpSourceManageServiceImpl implements FtpSouceManageService {
     }
 
     @Override
-    public boolean isFtpConnected(Integer id) {
-        boolean isFtpConnected = false;
-        FtpSourceManager ftpSourceManager = ftpSourceMapper.selectByPrimaryKey(id);
+    public boolean isFtpConnected(FtpSourceManager ftpSourceManager) {
         FTPClient ftpClient = FTPUtil.loginFTP(ftpSourceManager.getFtpHost(), Integer.valueOf(ftpSourceManager.getFtpPort()), ftpSourceManager.getUserName(), ftpSourceManager.getPassWord());
         if (ftpClient != null) {
-            isFtpConnected = true;
+            return true;
         }
-        return isFtpConnected;
+        return false;
+    }
+
+    @Override
+    public boolean checkUniqueNickName(FtpSourceManager ftpSourceManager) {
+        List<FtpSourceManager> resultList = ftpSourceMapper.getNormalFtpSourceByNickName(ftpSourceManager.getNickName());
+
+        if(resultList == null || resultList.isEmpty()){ //如果同名数量为0，则名称可使用
+            return true;
+        }else if(resultList.size() > 1){ //如果同名数量超过1，则名称不可使用
+            return false;
+        }else if(resultList.get(0).getId() == ftpSourceManager.getId()){ //如果同名数据源是当前数据源，则名称可使用
+            return true;
+        }else{
+            return false;
+        }
     }
 }

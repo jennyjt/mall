@@ -1,11 +1,13 @@
 package com.zsbatech.baasKettleManager.controller;
 
 import com.zsbatech.baasKettleManager.model.DataMig;
-import com.zsbatech.baasKettleManager.model.DbResponse;
-import com.zsbatech.baasKettleManager.model.JobMeta;
+import com.zsbatech.baasKettleManager.model.DbJobInfo;
 import com.zsbatech.baasKettleManager.service.DBMigrationService;
 import com.zsbatech.base.common.Pagination;
 import com.zsbatech.base.common.ResponseData;
+import com.zsbatech.base.constants.RequestField;
+import com.zsbatech.base.constants.Response;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
@@ -15,25 +17,24 @@ import javax.servlet.http.HttpServletRequest;
 
 
 @Controller
-//@RequestMapping (value = "/data_center/migrate")
+@RequestMapping (value = "/data_center/migrate")
 
-@RequestMapping (value = "/a")
+
 public class DBMigrationController {
 
     @Autowired
     private DBMigrationService dbMigrationService;
 
 
-    @RequestMapping(value = "/create",method = RequestMethod.POST)
-    @ResponseBody
-    public ResponseData<String> createMigration(@RequestBody DataMig dataMig) {
-        ResponseData<String> responseData = new ResponseData<>();
 
-             responseData = dbMigrationService.createMigration(dataMig);
-            return responseData;
+    @ApiOperation(value = "创建任务", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiResponses({@ApiResponse(code = Response.OK, message = "创建成功"),})
 
-    }
-
+    @ApiImplicitParams(
+            value = {
+                    @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
+            }
+    )
     @RequestMapping(value = "/cycle",method = RequestMethod.POST)
     @ResponseBody
     public ResponseData<String> cycleMigration(@RequestBody DataMig dataMig) {
@@ -44,26 +45,26 @@ public class DBMigrationController {
 
     }
 
-    @RequestMapping(value = "/incr",method = RequestMethod.POST)
-    @ResponseBody
-    public ResponseData<DbResponse> insertupdateMigration(@RequestBody DataMig dataMig) {
-        ResponseData<DbResponse> responseData = new ResponseData<>();
 
-        responseData = dbMigrationService.insertupdateMigration(dataMig);
-        return responseData;
 
-    }
+    @ApiOperation(value = "获取任务列表", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiResponses({@ApiResponse(code = Response.OK, message = "查询成功"),})
 
+    @ApiImplicitParams(
+            value = {
+                    @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
+            }
+    )
 
     @RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public ResponseData<Pagination<JobMeta>> getJobList(HttpServletRequest request,
+    public ResponseData<Pagination<DbJobInfo>> getJobList(HttpServletRequest request,
                                                         @RequestParam(name = "curr_page", defaultValue = "1") Integer currPage,
                                                         @RequestParam(name = "page_size", defaultValue = "10") Integer pageSize)
                                                         {
-        ResponseData<Pagination<JobMeta>> responseData = new ResponseData<>();
+        ResponseData<Pagination<DbJobInfo>> responseData = new ResponseData<>();
 
-        Pagination<JobMeta> result  = dbMigrationService.getJobList(currPage, pageSize);
+        Pagination<DbJobInfo> result  = dbMigrationService.getJobList(currPage, pageSize);
         if (result != null) {
             responseData.setOK(200, "success", result);
         }else{
@@ -73,14 +74,25 @@ public class DBMigrationController {
 
     }
 
+
+
+
+    @ApiOperation(value = "获取任务详情", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiResponses({@ApiResponse(code = Response.OK, message = "查询成功"),})
+
+    @ApiImplicitParams(
+            value = {
+                    @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
+            }
+    )
     @RequestMapping(value = "/detail",method = RequestMethod.GET)
     @ResponseBody
-    public ResponseData<JobMeta> getJobDetail(HttpServletRequest request,
-                                              @RequestParam(name = "jobId", defaultValue = "1") Integer jobId) {
-        ResponseData<JobMeta> responseData = new ResponseData<>();
+    public ResponseData<DbJobInfo> getJobDetail(HttpServletRequest request,
+                                              @RequestParam(name = "jobName") String jobName) {
+        ResponseData<DbJobInfo> responseData = new ResponseData<>();
 
-      JobMeta  result = dbMigrationService.getJobDetail(jobId);
-      if (result != null) {
+        DbJobInfo result = dbMigrationService.getJobDetail(jobName);
+      if (result.getJobName() != null) {
           responseData.setOK(200, "success", result);
       }else{
           responseData.setError("Fail!");

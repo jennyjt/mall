@@ -23,7 +23,7 @@ public interface FtpSouceManageService {
     boolean updateDataSource(FtpSourceManager ftpSource);
 
     /**
-     * 查询数据源
+     * 查询未被删除的数据源
      * @param currPage
      * @param pageSize
      * @param ftpSource
@@ -55,8 +55,15 @@ public interface FtpSouceManageService {
 
     /**
      * ftp数据源是否链接
-     * @param id
+     * @param ftpSourceManager
      * @return
      */
-    boolean isFtpConnected(Integer id);
+    boolean isFtpConnected(FtpSourceManager ftpSourceManager);
+
+    /**
+     * 校验数据源名称对唯一性
+     * @param ftpSourceManager
+     * @return 未被使用，返回true
+     */
+    boolean checkUniqueNickName(FtpSourceManager ftpSourceManager);
 }

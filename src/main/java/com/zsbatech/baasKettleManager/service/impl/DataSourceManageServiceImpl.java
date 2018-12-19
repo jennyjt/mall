@@ -14,7 +14,6 @@ import org.pentaho.di.core.database.DatabaseMeta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -28,6 +27,8 @@ public class DataSourceManageServiceImpl implements DataSouceManageService {
     @Override
     public boolean createDataSource(DbManagement dbConnection) {
         dbConnection.setCreateTime(DateUtils.currentDateTime());
+        dbConnection.setStatus(DataSourceConstant.NORMAL_STATUS);
+        dbConnection.setUseCount((short) 0);
         int result = dbMapper.insert(dbConnection);
 
         if(result <= 0){
@@ -52,6 +53,7 @@ public class DataSourceManageServiceImpl implements DataSouceManageService {
     @Override
     public Pagination<DbManagement> getDataSources(Integer currPage, Integer pageSize, DbManagement dbManagement) {
         PageMethod.startPage(currPage, pageSize);
+        dbManagement.setStatus(DataSourceConstant.NORMAL_STATUS);
         List<DbManagement> dataSourceList = dbMapper.getDbManagentsByParam(dbManagement);
         Pagination<DbManagement> dataSourceInfo = new Pagination<DbManagement>(dataSourceList);
         return dataSourceInfo;
@@ -91,7 +93,7 @@ public class DataSourceManageServiceImpl implements DataSouceManageService {
     }
 
     @Override
-    public boolean testDataSources(DbManagement dbManagement) {
+    public boolean checkDataSource(DbManagement dbManagement) {
 
         try {
             KettleEnvironment.init();
@@ -110,5 +112,19 @@ public class DataSourceManageServiceImpl implements DataSouceManageService {
         }
 
         return true;
+    }
+
+    @Override
+    public boolean checkUniqueLinkName(DbManagement dbManagement) {
+        List<DbManagement> resultList = dbMapper.getNormalDbManagentsByLinkName(dbManagement.getLinkName());
+        if(resultList == null || resultList.isEmpty()){ //如果同名数量为0，则名称可使用
+            return true;
+        }else if(resultList.size() > 1){ //如果同名数量超过1，则名称不可使用
+            return false;
+        }else if(resultList.get(0).getId() == dbManagement.getId()){ //如果同名数据源是当前数据源，则名称可使用
+            return true;
+        }else{
+            return false;
+        }
     }
 }

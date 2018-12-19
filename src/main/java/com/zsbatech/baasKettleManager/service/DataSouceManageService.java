@@ -23,7 +23,7 @@ public interface DataSouceManageService {
     boolean updateDataSource(DbManagement dbConnection);
 
     /**
-     * 查询数据源
+     * 查询未被删除的数据源
      * @param currPage
      * @param pageSize
      * @param dbManagement
@@ -52,7 +52,17 @@ public interface DataSouceManageService {
      */
     boolean increaseUseCount(Integer id);
 
+    /**
+     * 校验数据源是否能够连接
+     * @param dbManagement
+     * @return
+     */
+    boolean checkDataSource(DbManagement dbManagement);
 
-     boolean testDataSources(DbManagement dbManagement);
-
+    /**
+     * 校验数据源名称
+     * @param dbManagement
+     * @return 未被使用，返回true
+     */
+    boolean checkUniqueLinkName(DbManagement dbManagement);
 }
