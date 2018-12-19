@@ -6,6 +6,5 @@ import com.zsbatech.base.common.ResponseData;
 public interface JobTransService {
 
     ResponseData<String> modifyJob(DataMig dataMig);
-    ResponseData<String> modifyTrans(DataMig dataMig);
 
 }
