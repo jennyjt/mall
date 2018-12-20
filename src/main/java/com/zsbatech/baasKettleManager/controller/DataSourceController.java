@@ -60,7 +60,7 @@ public class DataSourceController {
         dbConnection.setCreateUser(uniToken.getOrganization());
 
         result = dbManage.createDataSource(dbConnection);
-        if(result){
+        if (result) {
             responseData.setOK("success", "success");
         }else{
             responseData.setError("fail");
@@ -95,7 +95,7 @@ public class DataSourceController {
         }
 
         result = dbManage.updateDataSource(dbConnection);
-        if(result){
+        if (result) {
             responseData.setOK("success", "success");
         }else{
             responseData.setError("fail");
@@ -113,19 +113,23 @@ public class DataSourceController {
     @RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public ResponseData<Pagination<DbManagement>> getDataSourceList(HttpServletRequest request,
-                                                                       @RequestParam(name = "curr_page", defaultValue = "1") Integer currPage,
-                                                                       @RequestParam(name = "page_size", defaultValue = "10") Integer pageSize,
-                                                                       @RequestParam(name = "link_name", required = false) String linkName) {
+                                                                       @RequestParam(name = "curr_page", required = false, defaultValue = "1") Integer currPage,
+                                                                       @RequestParam(name = "page_size", required = false, defaultValue = "10") Integer pageSize,
+                                                                       @RequestParam(name = "link_name", required = false) String linkName,
+                                                                       @RequestParam(name = "id", required = false) String dataSourceId) {
         ResponseData<Pagination<DbManagement>> responseData = new ResponseData<>();
 
         DbManagement param = new DbManagement();
         param.setLinkName(linkName);
+        if (dataSourceId != null) {
+            param.setId(Integer.valueOf(dataSourceId));
+        }
 
         UniToken uniToken = JWTUtils.validateTokenAndOrgan(request);
         param.setCreateUser(uniToken.getOrganization());
 
         Pagination<DbManagement> result = dbManage.getDataSources(currPage, pageSize, param);
-        if(result != null){
+        if (result != null) {
             responseData.setOK("success", result);
         }else{
             responseData.setError("fail");
@@ -148,7 +152,7 @@ public class DataSourceController {
         ResponseData<String> responseData = new ResponseData<>();
 
         boolean result = dbManage.deleteDataSource(Integer.valueOf(dataSourceId));
-        if(result){
+        if (result) {
             responseData.setOK("success", "success");
         }else{
             responseData.setError("fail");
