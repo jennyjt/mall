@@ -62,7 +62,7 @@ public class JWTUtils {
     }
     public static UniToken validateTokenAndOrgan(HttpServletRequest request) {
         String token = request.getHeader("token");
-        return validateToken(token);
+        return validateTokenAndOrgan(token);
     }
     public static UniToken validateTokenAndOrgan(String token){
         UniToken uniToken = validateToken(token);
