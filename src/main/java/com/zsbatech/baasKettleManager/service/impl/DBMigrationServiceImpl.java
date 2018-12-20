@@ -299,8 +299,10 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             conn = DriverManager.getConnection(url,username,password);
             Statement stmt = conn.createStatement();
 
-            String sql = "select a.job_name,a.createtime,a.updatetime,a.execute_status,a.job_type,b.db_connection_name ,b.exc_sql,c.src_table,c.src_column " +
-                    "from job_meta a,tableinput_step b,src_db_connection c where a.trans_meta_id = b.trans_meta_id and b.id= c.step_id and a.job_name = "+"\""+jobName+"\"";
+            String sql = "select a.job_name,a.updatetime,a.createtime,a.execute_status,a.job_type,b.exc_sql ,b.db_connection_name," +
+                    "c.target_table,c.update_lookup ,d.create_user from job_meta a,tableinput_step b,insert_update_step c, " +
+                    "db_management d where a.trans_meta_id = b.trans_meta_id and b.trans_meta_id= c.trans_meta_id and " +
+                    "d.id = b.db_management_id and a.job_name = "+"\""+jobName+"\"";
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
@@ -322,13 +324,14 @@ public class DBMigrationServiceImpl implements DBMigrationService {
                     dbJobInfo.setExecuteStatus("未执行");
                 }
 
+                dbJobInfo.setCreateUser(rs.getString("create_user"));
                 dbJobInfo.setCreatetime(rs.getDate("createtime"));
                 dbJobInfo.setUpdatetime(rs.getDate("updatetime"));
-                dbJobInfo.setTableName(rs.getString("src_table"));
+                dbJobInfo.setTableName(rs.getString("target_table"));
                 dbJobInfo.setUpdateType("增量更新");
                 dbJobInfo.setExecuteSql(rs.getString("exc_sql"));
-                if (rs.getString("src_column")!=null && rs.getString("src_column")!=""){
-                    dbJobInfo.setLookup(rs.getString("src_column"));
+                if (rs.getString("update_lookup")!=null && rs.getString("update_lookup")!=""){
+                    dbJobInfo.setLookup(rs.getString("update_lookup"));
                 }
 
             }
@@ -361,8 +364,11 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             conn = DriverManager.getConnection(url,username,password);
             Statement stmt = conn.createStatement();
 
-            String sql = "select a.job_name,a.createtime,a.updatetime,a.execute_status,a.job_type,b.db_connection_name ,b.exc_sql,c.src_table,c.src_column " +
-                    "from job_meta a,tableinput_step b,src_db_connection c where a.trans_meta_id = b.trans_meta_id and b.id= c.step_id";
+
+            String sql = "select a.job_name,a.updatetime,a.createtime,a.execute_status,a.job_type,b.exc_sql ,b.db_connection_name," +
+                    "c.target_table,c.update_lookup from job_meta a,tableinput_step b,insert_update_step c where " +
+                    "a.trans_meta_id = b.trans_meta_id and b.trans_meta_id= c.trans_meta_id";
+
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
@@ -371,7 +377,7 @@ public class DBMigrationServiceImpl implements DBMigrationService {
                 dbJobInfo.setJobName(rs.getString("job_name"));
                 dbJobInfo.setLinkName(rs.getString("db_connection_name"));
                 dbJobInfo.setPathStr("job");
-                if (rs.getString("job_type").trim().equals("0")){
+                if ("0".equals(rs.getString("job_type").trim())){
 
                     dbJobInfo.setJobType("单次任务");
                 }else{
@@ -386,11 +392,11 @@ public class DBMigrationServiceImpl implements DBMigrationService {
 
                 dbJobInfo.setCreatetime(rs.getDate("createtime"));
                 dbJobInfo.setUpdatetime(rs.getDate("updatetime"));
-                dbJobInfo.setTableName(rs.getString("src_table"));
+                dbJobInfo.setTableName(rs.getString("target_table"));
                 dbJobInfo.setUpdateType("增量更新");
                 dbJobInfo.setExecuteSql(rs.getString("exc_sql"));
-                if (rs.getString("src_column")!=null && rs.getString("src_column")!=""){
-                    dbJobInfo.setLookup(rs.getString("src_column"));
+                if (rs.getString("update_lookup")!=null && rs.getString("update_lookup")!=""){
+                    dbJobInfo.setLookup(rs.getString("update_lookup"));
                 }
 
                 dbJobInfoList.add(dbJobInfo);

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping(value = "/data_center/database")
+
 public class CreateTableController {
     @Autowired
     private CreateTableService createTableService;
@@ -43,7 +44,7 @@ public class CreateTableController {
 
 
 
-    @ApiOperation(value = "获取表名", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "获取列名", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiResponses({@ApiResponse(code = Response.OK, message = "查询成功"),})
 
     @ApiImplicitParams(
@@ -62,7 +63,7 @@ public class CreateTableController {
     }
 
 
-    @ApiOperation(value = "获取列名", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "获取表名", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiResponses({@ApiResponse(code = Response.OK, message = "查询成功"),})
 
     @ApiImplicitParams(
