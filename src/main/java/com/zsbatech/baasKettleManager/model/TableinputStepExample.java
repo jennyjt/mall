@@ -554,6 +554,66 @@ public class TableinputStepExample {
             addCriterion("updatetime not between", value1, value2, "updatetime");
             return (Criteria) this;
         }
+
+        public Criteria andDbManagementIdIsNull() {
+            addCriterion("db_management_id is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDbManagementIdIsNotNull() {
+            addCriterion("db_management_id is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andDbManagementIdEqualTo(Integer value) {
+            addCriterion("db_management_id =", value, "dbManagementId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDbManagementIdNotEqualTo(Integer value) {
+            addCriterion("db_management_id <>", value, "dbManagementId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDbManagementIdGreaterThan(Integer value) {
+            addCriterion("db_management_id >", value, "dbManagementId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDbManagementIdGreaterThanOrEqualTo(Integer value) {
+            addCriterion("db_management_id >=", value, "dbManagementId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDbManagementIdLessThan(Integer value) {
+            addCriterion("db_management_id <", value, "dbManagementId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDbManagementIdLessThanOrEqualTo(Integer value) {
+            addCriterion("db_management_id <=", value, "dbManagementId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDbManagementIdIn(List<Integer> values) {
+            addCriterion("db_management_id in", values, "dbManagementId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDbManagementIdNotIn(List<Integer> values) {
+            addCriterion("db_management_id not in", values, "dbManagementId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDbManagementIdBetween(Integer value1, Integer value2) {
+            addCriterion("db_management_id between", value1, value2, "dbManagementId");
+            return (Criteria) this;
+        }
+
+        public Criteria andDbManagementIdNotBetween(Integer value1, Integer value2) {
+            addCriterion("db_management_id not between", value1, value2, "dbManagementId");
+            return (Criteria) this;
+        }
     }
 
     public static class Criteria extends GeneratedCriteria {

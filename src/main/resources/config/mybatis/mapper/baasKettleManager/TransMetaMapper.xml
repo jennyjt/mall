@@ -100,9 +100,6 @@
     </if>
   </delete>
   <insert id="insert" parameterType="com.zsbatech.baasKettleManager.model.TransMeta" >
-    <selectKey resultType="int" keyProperty="id" order="AFTER">
-      select LAST_INSERT_ID()
-    </selectKey>
     insert into trans_meta (id, trans_name, file_name, 
       createtime, updatetime)
     values (#{id,jdbcType=INTEGER}, #{transName,jdbcType=VARCHAR}, #{fileName,jdbcType=VARCHAR}, 

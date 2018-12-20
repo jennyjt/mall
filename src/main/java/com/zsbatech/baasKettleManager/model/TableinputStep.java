@@ -17,8 +17,7 @@ public class TableinputStep {
 
     private Date updatetime;
 
-    public TableinputStep() {
-    }
+    private Integer dbManagementId;
 
     public Integer getId() {
         return id;
@@ -74,5 +73,13 @@ public class TableinputStep {
 
     public void setUpdatetime(Date updatetime) {
         this.updatetime = updatetime;
+    }
+
+    public Integer getDbManagementId() {
+        return dbManagementId;
+    }
+
+    public void setDbManagementId(Integer dbManagementId) {
+        this.dbManagementId = dbManagementId;
     }
 }

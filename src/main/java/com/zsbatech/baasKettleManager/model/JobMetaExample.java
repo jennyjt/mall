@@ -235,73 +235,73 @@ public class JobMetaExample {
             return (Criteria) this;
         }
 
-        public Criteria andFilenameIsNull() {
-            addCriterion("filename is null");
+        public Criteria andFileNameIsNull() {
+            addCriterion("file_name is null");
             return (Criteria) this;
         }
 
-        public Criteria andFilenameIsNotNull() {
-            addCriterion("filename is not null");
+        public Criteria andFileNameIsNotNull() {
+            addCriterion("file_name is not null");
             return (Criteria) this;
         }
 
-        public Criteria andFilenameEqualTo(String value) {
-            addCriterion("filename =", value, "filename");
+        public Criteria andFileNameEqualTo(String value) {
+            addCriterion("file_name =", value, "fileName");
             return (Criteria) this;
         }
 
-        public Criteria andFilenameNotEqualTo(String value) {
-            addCriterion("filename <>", value, "filename");
+        public Criteria andFileNameNotEqualTo(String value) {
+            addCriterion("file_name <>", value, "fileName");
             return (Criteria) this;
         }
 
-        public Criteria andFilenameGreaterThan(String value) {
-            addCriterion("filename >", value, "filename");
+        public Criteria andFileNameGreaterThan(String value) {
+            addCriterion("file_name >", value, "fileName");
             return (Criteria) this;
         }
 
-        public Criteria andFilenameGreaterThanOrEqualTo(String value) {
-            addCriterion("filename >=", value, "filename");
+        public Criteria andFileNameGreaterThanOrEqualTo(String value) {
+            addCriterion("file_name >=", value, "fileName");
             return (Criteria) this;
         }
 
-        public Criteria andFilenameLessThan(String value) {
-            addCriterion("filename <", value, "filename");
+        public Criteria andFileNameLessThan(String value) {
+            addCriterion("file_name <", value, "fileName");
             return (Criteria) this;
         }
 
-        public Criteria andFilenameLessThanOrEqualTo(String value) {
-            addCriterion("filename <=", value, "filename");
+        public Criteria andFileNameLessThanOrEqualTo(String value) {
+            addCriterion("file_name <=", value, "fileName");
             return (Criteria) this;
         }
 
-        public Criteria andFilenameLike(String value) {
-            addCriterion("filename like", value, "filename");
+        public Criteria andFileNameLike(String value) {
+            addCriterion("file_name like", value, "fileName");
             return (Criteria) this;
         }
 
-        public Criteria andFilenameNotLike(String value) {
-            addCriterion("filename not like", value, "filename");
+        public Criteria andFileNameNotLike(String value) {
+            addCriterion("file_name not like", value, "fileName");
             return (Criteria) this;
         }
 
-        public Criteria andFilenameIn(List<String> values) {
-            addCriterion("filename in", values, "filename");
+        public Criteria andFileNameIn(List<String> values) {
+            addCriterion("file_name in", values, "fileName");
             return (Criteria) this;
         }
 
-        public Criteria andFilenameNotIn(List<String> values) {
-            addCriterion("filename not in", values, "filename");
+        public Criteria andFileNameNotIn(List<String> values) {
+            addCriterion("file_name not in", values, "fileName");
             return (Criteria) this;
         }
 
-        public Criteria andFilenameBetween(String value1, String value2) {
-            addCriterion("filename between", value1, value2, "filename");
+        public Criteria andFileNameBetween(String value1, String value2) {
+            addCriterion("file_name between", value1, value2, "fileName");
             return (Criteria) this;
         }
 
-        public Criteria andFilenameNotBetween(String value1, String value2) {
-            addCriterion("filename not between", value1, value2, "filename");
+        public Criteria andFileNameNotBetween(String value1, String value2) {
+            addCriterion("file_name not between", value1, value2, "fileName");
             return (Criteria) this;
         }
 
@@ -482,6 +482,136 @@ public class JobMetaExample {
 
         public Criteria andTransMetaIdNotBetween(Integer value1, Integer value2) {
             addCriterion("trans_meta_id not between", value1, value2, "transMetaId");
+            return (Criteria) this;
+        }
+
+        public Criteria andExecuteStatusIsNull() {
+            addCriterion("execute_status is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andExecuteStatusIsNotNull() {
+            addCriterion("execute_status is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andExecuteStatusEqualTo(Byte value) {
+            addCriterion("execute_status =", value, "executeStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andExecuteStatusNotEqualTo(Byte value) {
+            addCriterion("execute_status <>", value, "executeStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andExecuteStatusGreaterThan(Byte value) {
+            addCriterion("execute_status >", value, "executeStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andExecuteStatusGreaterThanOrEqualTo(Byte value) {
+            addCriterion("execute_status >=", value, "executeStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andExecuteStatusLessThan(Byte value) {
+            addCriterion("execute_status <", value, "executeStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andExecuteStatusLessThanOrEqualTo(Byte value) {
+            addCriterion("execute_status <=", value, "executeStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andExecuteStatusIn(List<Byte> values) {
+            addCriterion("execute_status in", values, "executeStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andExecuteStatusNotIn(List<Byte> values) {
+            addCriterion("execute_status not in", values, "executeStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andExecuteStatusBetween(Byte value1, Byte value2) {
+            addCriterion("execute_status between", value1, value2, "executeStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andExecuteStatusNotBetween(Byte value1, Byte value2) {
+            addCriterion("execute_status not between", value1, value2, "executeStatus");
+            return (Criteria) this;
+        }
+
+        public Criteria andJobTypeIsNull() {
+            addCriterion("job_type is null");
+            return (Criteria) this;
+        }
+
+        public Criteria andJobTypeIsNotNull() {
+            addCriterion("job_type is not null");
+            return (Criteria) this;
+        }
+
+        public Criteria andJobTypeEqualTo(String value) {
+            addCriterion("job_type =", value, "jobType");
+            return (Criteria) this;
+        }
+
+        public Criteria andJobTypeNotEqualTo(String value) {
+            addCriterion("job_type <>", value, "jobType");
+            return (Criteria) this;
+        }
+
+        public Criteria andJobTypeGreaterThan(String value) {
+            addCriterion("job_type >", value, "jobType");
+            return (Criteria) this;
+        }
+
+        public Criteria andJobTypeGreaterThanOrEqualTo(String value) {
+            addCriterion("job_type >=", value, "jobType");
+            return (Criteria) this;
+        }
+
+        public Criteria andJobTypeLessThan(String value) {
+            addCriterion("job_type <", value, "jobType");
+            return (Criteria) this;
+        }
+
+        public Criteria andJobTypeLessThanOrEqualTo(String value) {
+            addCriterion("job_type <=", value, "jobType");
+            return (Criteria) this;
+        }
+
+        public Criteria andJobTypeLike(String value) {
+            addCriterion("job_type like", value, "jobType");
+            return (Criteria) this;
+        }
+
+        public Criteria andJobTypeNotLike(String value) {
+            addCriterion("job_type not like", value, "jobType");
+            return (Criteria) this;
+        }
+
+        public Criteria andJobTypeIn(List<String> values) {
+            addCriterion("job_type in", values, "jobType");
+            return (Criteria) this;
+        }
+
+        public Criteria andJobTypeNotIn(List<String> values) {
+            addCriterion("job_type not in", values, "jobType");
+            return (Criteria) this;
+        }
+
+        public Criteria andJobTypeBetween(String value1, String value2) {
+            addCriterion("job_type between", value1, value2, "jobType");
+            return (Criteria) this;
+        }
+
+        public Criteria andJobTypeNotBetween(String value1, String value2) {
+            addCriterion("job_type not between", value1, value2, "jobType");
             return (Criteria) this;
         }
     }
