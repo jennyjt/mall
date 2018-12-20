@@ -116,14 +116,18 @@ public class FtpSourceController {
     @RequestMapping(value = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public ResponseData<Pagination<FtpSourceManager>> getFtpDataSourceList(HttpServletRequest request,
-                                                                       @RequestParam(name = "curr_page", defaultValue = "1") Integer currPage,
-                                                                       @RequestParam(name = "page_size", defaultValue = "10") Integer pageSize,
-                                                                       @RequestParam(name = "nick_name", required = false) String nickName) {
+                                                                       @RequestParam(name = "curr_page", required = false, defaultValue = "1") Integer currPage,
+                                                                       @RequestParam(name = "page_size", required = false, defaultValue = "10") Integer pageSize,
+                                                                       @RequestParam(name = "nick_name", required = false) String nickName,
+                                                                       @RequestParam(name = "id", required = false) String ftpSourceId) {
         ResponseData<Pagination<FtpSourceManager>> responseData = new ResponseData<>();
 
 
         FtpSourceManager param = new FtpSourceManager();
         param.setNickName(nickName);
+        if (ftpSourceId != null) {
+            param.setId(Integer.valueOf(ftpSourceId));
+        }
 
         UniToken uniToken = JWTUtils.validateTokenAndOrgan(request);
         param.setCreateUser(uniToken.getOrganization());
