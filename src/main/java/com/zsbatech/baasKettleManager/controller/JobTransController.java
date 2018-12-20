@@ -16,9 +16,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 
 @Controller
-//@RequestMapping(value = "/data_center/jobtrans/modify")
+@RequestMapping(value = "/data_center/jobtrans/modify")
 
-@RequestMapping(value = "/b")
 
 public class JobTransController {
 
