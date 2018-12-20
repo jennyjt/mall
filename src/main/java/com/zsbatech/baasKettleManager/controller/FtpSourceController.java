@@ -56,8 +56,8 @@ public class FtpSourceController {
             return responseData;
         }
 
-        UniToken uniToken = JWTUtils.validateToken(request);
-        ftpSourceManager.setCreateUser(String.valueOf(uniToken.getUserId()));
+        UniToken uniToken = JWTUtils.validateTokenAndOrgan(request);
+        ftpSourceManager.setCreateUser(uniToken.getOrganization());
 
         result = ftpService.createDataSource(ftpSourceManager);
         if (result) {
@@ -118,13 +118,15 @@ public class FtpSourceController {
     public ResponseData<Pagination<FtpSourceManager>> getFtpDataSourceList(HttpServletRequest request,
                                                                        @RequestParam(name = "curr_page", defaultValue = "1") Integer currPage,
                                                                        @RequestParam(name = "page_size", defaultValue = "10") Integer pageSize,
-                                                                       @RequestParam(name = "ftp_host", required = false) String ftpHost,
-                                                                       @RequestParam(name = "user_id", required = false) String createUser) {
+                                                                       @RequestParam(name = "nick_name", required = false) String nickName) {
         ResponseData<Pagination<FtpSourceManager>> responseData = new ResponseData<>();
 
+
         FtpSourceManager param = new FtpSourceManager();
-        param.setFtpHost(ftpHost);
-        param.setCreateUser(createUser);
+        param.setNickName(nickName);
+
+        UniToken uniToken = JWTUtils.validateTokenAndOrgan(request);
+        param.setCreateUser(uniToken.getOrganization());
         Pagination<FtpSourceManager> result = ftpService.getDataSources(currPage, pageSize, param);
         if (result != null) {
             responseData.setOK("success", result);
@@ -144,7 +146,7 @@ public class FtpSourceController {
     @RequestMapping(value = "/delete", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public ResponseData<String> deleteFtpDataSource(HttpServletRequest request,
-                                                                           @RequestParam(name = "id", required = false) String ftpSourceId) {
+                                                                           @RequestParam(name = "id", required = true) String ftpSourceId) {
         ResponseData<String> responseData = new ResponseData<>();
 
         boolean result = ftpService.deleteDataSource(Integer.valueOf(ftpSourceId));
