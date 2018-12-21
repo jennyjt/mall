@@ -30,6 +30,9 @@ public class FileDownloadServiceImpl implements FileUpDownloadService {
 
     private byte DOWNLOAD_OPERATION = 1;
 
+    //文件来源-"本地上传"
+    private String UPLOAD_FILE_SOURCE = "upload";
+
     @Autowired
     private CatalogManageService catalogManageService;
 
@@ -38,55 +41,6 @@ public class FileDownloadServiceImpl implements FileUpDownloadService {
 
     @Autowired
     private FilesFileCatalogDOMapper filesFileCatalogDOMapper;
-
-    @Override
-    public boolean fileUpload(MultipartFile file, String userId, String fileDirectory, Integer catalogId) {
-        //文件要上传的路径
-        String path = fileDirectory;
-        String oldFileName = file.getOriginalFilename();
-        String newFileName = DateUtils.currentTimestamp() + oldFileName.substring(oldFileName.lastIndexOf("."));
-
-        File targetFile = new File(path + File.separator + newFileName);
-        //如果目标文件路径不存在就报错
-        if(!targetFile.getParentFile().exists()){
-            return false;
-        }
-        try {
-            //文件复制
-            file.transferTo(targetFile);
-            //文件表插入数据
-            FilesDO filesDO = new FilesDO();
-            filesDO.setOriginName(oldFileName);
-            filesDO.setCreateTime(DateUtils.currentDateTime());
-            filesDO.setCreateUser(userId);
-            filesDO.setFileCatalog(path);
-            filesDO.setFileName(newFileName);
-            boolean result = catalogManageService.saveFile(filesDO);
-            if(!result){
-                return false;
-            }
-            //文件关联表插入一条数据
-            FilesFileCatalogDO filesRelateInfo =  new FilesFileCatalogDO();
-            filesRelateInfo.setFileId(filesDO.getId());
-            filesRelateInfo.setFileCatalogId(catalogId);
-            filesFileCatalogDOMapper.insert(filesRelateInfo);
-
-            //插入一条日志信息
-            UpdownloadLog log = new UpdownloadLog();
-            log.setFileId(filesDO.getId());
-            log.setOperation(UPLOAD_OPERATION);
-            log.setCreateTime(DateUtils.currentDateTime());
-            log.setCreateUser(userId);
-            updownloadLogMapper.insert(log);
-        } catch (IllegalStateException e) {
-            e.printStackTrace();
-            return false;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
 
     @Override
     public boolean multiFilesUpload(List<MultipartFile> files, String userId, String fileDirectory, Integer catalogId) {
@@ -112,6 +66,7 @@ public class FileDownloadServiceImpl implements FileUpDownloadService {
                 filesDO.setCreateUser(userId);
                 filesDO.setFileCatalog(path);
                 filesDO.setFileName(newFileName);
+                filesDO.setFileSource(UPLOAD_FILE_SOURCE);
                 boolean result = catalogManageService.saveFile(filesDO);
                 if(!result){
                     return false;

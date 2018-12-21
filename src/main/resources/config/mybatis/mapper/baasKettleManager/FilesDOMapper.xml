@@ -9,30 +9,30 @@
         <result column="createtime" property="createTime" jdbcType="VARCHAR"/>
         <result column="updatetime" property="updateTime" jdbcType="VARCHAR"/>
         <result column="create_user" property="createUser" jdbcType="VARCHAR"/>
+        <result column="file_source" jdbcType="VARCHAR" property="fileSource" />
     </resultMap>
     <sql id="Base_Column_List">
-    id, file_name, file_catalog,origin_name,createtime, updatetime,create_user
+    id, file_name, file_catalog,origin_name,createtime, updatetime, create_user, file_source
   </sql>
 
     <insert id="insert" parameterType="com.zsbatech.baasKettleManager.model.FilesDO" useGeneratedKeys="true" keyProperty="id">
     insert into files (id, file_name, file_catalog,origin_name,
-      createtime, updatetime,create_user)
+      createtime, updatetime, create_user, file_source)
     values
-    (#{id,jdbcType=INTEGER}, #{fileName,jdbcType=VARCHAR},#{fileCatalog,jdbcType=VARCHAR},
-    #{originName,jdbcType=VARCHAR},#{createTime,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR},
-    #{createUser,jdbcType=VARCHAR})
+    (#{id,jdbcType=INTEGER}, #{fileName,jdbcType=VARCHAR}, #{fileCatalog,jdbcType=VARCHAR},
+    #{originName,jdbcType=VARCHAR}, #{createTime,jdbcType=VARCHAR}, #{updateTime,jdbcType=VARCHAR},
+    #{createUser,jdbcType=VARCHAR}, #{fileSource,jdbcType=VARCHAR})
   </insert>
 
     <insert id="insertBatch" parameterType="java.util.List">
         insert into files (id, file_name, file_catalog, origin_name,
-        createtime, updatetime, create_user)
+        createtime, updatetime, create_user, file_source)
         values
         <foreach collection="list" item="item" index="index" separator=",">
             (
             #{item.id,jdbcType=INTEGER}, #{item.fileName,jdbcType=VARCHAR},#{item.fileCatalog,jdbcType=VARCHAR},
-            #{item.originName,jdbcType=VARCHAR},#{item.createTime,jdbcType=VARCHAR},
-            #{item.updateTime,jdbcType=VARCHAR},
-            #{item.createUser,jdbcType=INTEGER}
+            #{item.originName,jdbcType=VARCHAR}, #{item.createTime,jdbcType=VARCHAR}, #{item.updateTime,jdbcType=VARCHAR},
+            #{item.createUser,jdbcType=INTEGER}, #{item.fileSource,jdbcType=VARCHAR}
             )
         </foreach>
     </insert>
