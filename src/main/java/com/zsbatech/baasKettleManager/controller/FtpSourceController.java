@@ -30,7 +30,7 @@ public class FtpSourceController {
     @Autowired
     private FtpSouceManageService ftpService;
 
-    @ApiOperation(value = "FTP数据源新增", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "FTP数据源新增与修改", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiResponses({@ApiResponse(code = Response.OK, message = "新增成功"),})
     @ApiImplicitParams(
             value = {
@@ -57,47 +57,15 @@ public class FtpSourceController {
         }
 
         UniToken uniToken = JWTUtils.validateTokenAndOrgan(request);
-        ftpSourceManager.setCreateUser(uniToken.getOrganization());
 
-        result = ftpService.createDataSource(ftpSourceManager);
-        if (result) {
-            responseData.setOK("success", "success");
-        } else {
-            responseData.setError("fail");
-        }
-        return responseData;
-    }
-
-    @ApiOperation(value = "FTP数据源修改", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ApiResponses({@ApiResponse(code = Response.OK, message = "修改成功"),})
-    @ApiImplicitParams(
-            value = {
-                    @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
-            }
-    )
-    @RequestMapping(value = "/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ResponseBody
-    public ResponseData<String> updateFtpDataSource(HttpServletRequest request,
-                                                    @RequestBody FtpSourceManager ftpSourceManager) {
-        ResponseData<String> responseData = new ResponseData<>();
-        //校验数据源是否能够连接
-        boolean result = ftpService.isFtpConnected(ftpSourceManager);
-        if (!result) {
-            responseData.setError("FTP源连接失败!");
-            return responseData;
+        if (ftpSourceManager.getId() != null) { //修改
+            ftpSourceManager.setUpdateUser(uniToken.getOrganization());
+            result = ftpService.updateDataSource(ftpSourceManager);
+        } else { //新增
+            ftpSourceManager.setCreateUser(uniToken.getOrganization());
+            result = ftpService.createDataSource(ftpSourceManager);
         }
 
-        //校验数据源名称是否已存在
-        result = ftpService.checkUniqueNickName(ftpSourceManager);
-        if (!result) {
-            responseData.setError("数据源名称已存在!");
-            return responseData;
-        }
-
-        UniToken uniToken = JWTUtils.validateToken(request);
-        ftpSourceManager.setUpdateUser(String.valueOf(uniToken.getUserId()));
-
-        result = ftpService.updateDataSource(ftpSourceManager);
         if (result) {
             responseData.setOK("success", "success");
         } else {
