@@ -16,6 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.sql.ResultSet;
 import java.util.*;
 
 /**
@@ -106,21 +107,21 @@ public class JobManageServiceImpl implements JobManageService {
     }
 
 
-    public boolean stopJobs(List<String> jobNames) {
-        int jobMapStartSize = jobMap.size();
-        boolean isStopped = false;
-        for (String jobName : jobNames) {
-            Job job = jobMap.get(jobName);
-            job.stopAll();
-            jobMap.remove(jobName);
-        }
-        int jobMapEndSize = jobMap.size();
-        if (jobMapStartSize == jobMapEndSize + jobNames.size()) {
-            isStopped = true;
-
-        }
-        return isStopped;
-    }
+//    public boolean stopJobs(List<String> jobNames) {
+//        int jobMapStartSize = jobMap.size();
+//        boolean isStopped = false;
+//        for (String jobName : jobNames) {
+//            Job job = jobMap.get(jobName);
+//            job.stopAll();
+//            jobMap.remove(jobName);
+//        }
+//        int jobMapEndSize = jobMap.size();
+//        if (jobMapStartSize == jobMapEndSize + jobNames.size()) {
+//            isStopped = true;
+//
+//        }
+//        return isStopped;
+//    }
 
     public boolean modifyJob(FTPSyncSetp ftpSyncSetp) {
         boolean isSuccess = false;
@@ -148,8 +149,10 @@ public class JobManageServiceImpl implements JobManageService {
         return isSuccess;
     }
 
-    public List<JobMetaDO> queryJob(String jobType){
-//        jobMetaDOMapper.selectByJobName();
+    public JobInfo queryJob(String jobName){
+        String sql = "select a.job_name,a.createtime,a.updatetime,a.execute_status,a.job_type,b.db_connection_name ,b.exc_sql,c.src_table,c.src_column " +
+                "from job_meta a,tableinput_step b,src_db_connection c where a.trans_meta_id = b.trans_meta_id and b.id= c.step_id and a.job_name = "+"\""+jobName+"\"";
+
         return null;
     }
 }

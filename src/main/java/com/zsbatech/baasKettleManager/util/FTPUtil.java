@@ -1,16 +1,15 @@
 package com.zsbatech.baasKettleManager.util;
 
-import com.zsbatech.baasKettleManager.vo.FtpcatalogNode;
+import com.zsbatech.baasKettleManager.model.FileCatalogDO;
+import com.zsbatech.baasKettleManager.vo.CatalogFileCountVO;
+import com.zsbatech.baasKettleManager.vo.FileCatalogNode;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
 import org.apache.commons.net.ftp.FTPReply;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created with IntelliJ IDEA.
@@ -115,15 +114,20 @@ public class FTPUtil {
      * @param ftpClient
      * @return
      */
-    public static List<String> ftpCatalog(FTPClient ftpClient, String pathName) {
-        List<String> stringList = ListSingleton.getListInstance();
+    public static List<CatalogFileCountVO> ftpCatalog(FTPClient ftpClient, String pathName) {
+        List<CatalogFileCountVO> stringList = Singleton.getListInstance();
         try {
             FTPFile[] ftpFiles = ftpClient.listFiles(pathName);
             if (ftpFiles != null && ftpFiles.length != 0) {
                 for (FTPFile ftpFile : ftpFiles) {
                     if (ftpFile.isDirectory()) {
-                        stringList.add(pathName + ftpFile.getName() + "/");
+                        CatalogFileCountVO catalogFileCountVO = new CatalogFileCountVO();
+                        catalogFileCountVO.setCatalogName(pathName + ftpFile.getName() + "/");
+                        catalogFileCountVO.setCount(ftpClient.listFiles(pathName + ftpFile.getName() + "/").length);
+                        stringList.add(catalogFileCountVO);
                         ftpCatalog(ftpClient, pathName + ftpFile.getName() + "/");
+//                        stringList.add(pathName + ftpFile.getName() + "/");
+//                        ftpCatalog(ftpClient, pathName + ftpFile.getName() + "/");
                     }
                 }
             }
@@ -134,27 +138,43 @@ public class FTPUtil {
     }
 
     /**
-     * 还原目录树形结构
+     * 获取目录对象信息
      *
      * @param ftpCatalogList
      * @return
      */
 
-    public static List<FtpcatalogNode> ftpCatalog(List<String> ftpCatalogList) {
-        List<FtpcatalogNode> nodeList = new ArrayList<>();
+    public static List<FileCatalogNode> ftpCatalog(List<CatalogFileCountVO> ftpCatalogList) {
+        List<FileCatalogNode> nodeList = new ArrayList<>();
+        Set<FileCatalogNode> nodeSet = new HashSet<>();
         for (int i = 0; i < ftpCatalogList.size(); i++) {
-            FtpcatalogNode node = new FtpcatalogNode();
-            String[] strings = ftpCatalogList.get(i).split("/");
+            FileCatalogNode node = new FileCatalogNode();
+            String[] strings = ftpCatalogList.get(i).getCatalogName().split("/");
             int length = strings.length;
             if (length >= 2) {
-                node.setName(strings[length-1]);
-                node.setParentName(strings[length-2]);
-            } else if(length == 1){
-                node.setName(strings[length - 1]);
+                node.setNodeName(strings[length - 1]);
+                node.setParentName(strings[length - 2]);
+                node.setLayer((short) (length - 1));
+                node.setFileCount(ftpCatalogList.get(i).getCount());
+            } else if (length == 1) {
+                node.setNodeName(strings[length - 1]);
+                node.setLayer((short) 0);
+                node.setFileCount(ftpCatalogList.get(i).getCount());
             }
-            nodeList.add(node);
+            nodeSet.add(node);
         }
-
+        nodeList.addAll(nodeSet);
+        if (nodeList.get(0).getParentName() != null) {
+            FileCatalogNode fileCatalogNode = null;
+            for (int i = 1; i < nodeList.size(); i++) {
+                if (nodeList.get(i).getParentName() == null) {
+                    fileCatalogNode = nodeList.get(0);
+                    nodeList.set(0, nodeList.get(i));
+                    nodeList.set(i, fileCatalogNode);
+                    break;
+                }
+            }
+        }
         return nodeList;
     }
 }

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.ResultSet;
 import java.util.List;
 
 /**
@@ -94,24 +95,24 @@ public class JobManageController {
         return responseData;
     }
 
-    @ApiOperation(value = "停止job", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ApiResponses({@ApiResponse(code = Response.OK, message = "停止job成功"),})
-    @ApiImplicitParams(
-            value = {
-                    @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
-            }
-    )
-    @RequestMapping(value = "/stopJobs", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ResponseBody
-    public ResponseData<List> stopJobs(@RequestBody List<String> jobNames) {
-        ResponseData<List> responseData = new ResponseData<>();
-        if(jobManageService.stopJobs(jobNames)){
-            responseData.setOK(200,"job已经停止",jobNames);
-        }else {
-            responseData.setError("job停止失败");
-        }
-        return responseData;
-    }
+//    @ApiOperation(value = "停止job", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+//    @ApiResponses({@ApiResponse(code = Response.OK, message = "停止job成功"),})
+//    @ApiImplicitParams(
+//            value = {
+//                    @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
+//            }
+//    )
+//    @RequestMapping(value = "/stopJobs", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+//    @ResponseBody
+//    public ResponseData<List> stopJobs(@RequestBody List<String> jobNames) {
+//        ResponseData<List> responseData = new ResponseData<>();
+//        if(jobManageService.stopJobs(jobNames)){
+//            responseData.setOK(200,"job已经停止",jobNames);
+//        }else {
+//            responseData.setError("job停止失败");
+//        }
+//        return responseData;
+//    }
 
     @ApiOperation(value = "查询文件job", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiResponses({@ApiResponse(code = Response.OK, message = "查询job成功"),})
@@ -122,12 +123,11 @@ public class JobManageController {
     )
     @RequestMapping(value = "/queryJob", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public ResponseData<String> queryJob(@RequestParam String jobType) {
-        ResponseData<String> responseData = new ResponseData<>();
-//        if(jobManageService.queryJob(jobType)) {
-//            responseData.setOK(200, "修改成功", ftpSyncSetp.getJobName());
-//        }else {
-//            responseData.setError(500,"修改失败",ftpSyncSetp.getJobName());
+    public ResponseData<ResultSet> queryJob(@RequestParam String jobName) {
+        ResponseData<ResultSet> responseData = new ResponseData<>();
+//          ResultSet resultSet = jobManageService.queryJob(jobType);
+//          if()
+//
 //        }
         return responseData;
     }

@@ -10,6 +10,7 @@ import com.zsbatech.baasKettleManager.model.FilesFileCatalogDO;
 import com.zsbatech.baasKettleManager.model.FtpSourceManageDO;
 import com.zsbatech.baasKettleManager.service.CatalogManageService;
 import com.zsbatech.baasKettleManager.util.FTPUtil;
+import com.zsbatech.baasKettleManager.util.Singleton;
 import com.zsbatech.baasKettleManager.util.StringUtil;
 import com.zsbatech.baasKettleManager.vo.*;
 import org.apache.commons.net.ftp.FTPClient;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.Inet4Address;
 import java.util.*;
 
 /**
@@ -159,7 +161,7 @@ public class CatalogManageServiceImpl implements CatalogManageService {
         Set<String> strings = new HashSet<>();
         List<FilesDO> filesVOList = filesDOMapper.queryFile(code, fileName);
         System.out.println(filesVOList.size());
-        List<FileCatalogDO> fileCatalogDOList =null;
+        List<FileCatalogDO> fileCatalogDOList = null;
         if (filesVOList != null && filesVOList.size() != 0) {
             for (FilesDO filesDO : filesVOList) {
                 List<FilesFileCatalogDO> filesFileCatalogDOList = filesFileCatalogDOMapper.queryByFileId(filesDO.getId());
@@ -167,9 +169,9 @@ public class CatalogManageServiceImpl implements CatalogManageService {
                 for (FilesFileCatalogDO filesFileCatalogDO : filesFileCatalogDOList) {
                     cataLogIdList.add(filesFileCatalogDO.getFileCatalogId());
                 }
-                if(cataLogIdList == null || cataLogIdList.size() == 0){
+                if (cataLogIdList == null || cataLogIdList.size() == 0) {
                     return null;
-                }else {
+                } else {
                     fileCatalogDOList = fileCatalogDOMapper.queryCatalogById(cataLogIdList);
                 }
                 String cataLog = new String();
@@ -230,21 +232,107 @@ public class CatalogManageServiceImpl implements CatalogManageService {
      * @param nickName
      * @return
      */
-    public List<FtpcatalogNode> getFtpCatalog(String nickName){
-        FtpSourceManageDO ftpSourceManageDO = ftpSourceManageDOMapper.selectByName(nickName);
-        FTPClient ftpClient = FTPUtil.loginFTP(ftpSourceManageDO.getFtpHost(),Integer.valueOf(ftpSourceManageDO.getFtpPort()),ftpSourceManageDO.getUserName(),ftpSourceManageDO.getPassWord());
-        return FTPUtil.ftpCatalog(FTPUtil.ftpCatalog(ftpClient,""));
+    public List<FileCatalogVO> getFtpCatalog(String nickName) {
+        List<FileCatalogNode> nodeList = getFileCatalogDO(nickName);
+        List<FileCatalogVO> fileCatalogVOList = getFileCataLogVO(nodeList);
+        return fileCatalogVOList;
     }
 
+    public List<FileCatalogNode> getFileCatalogDO(String nickName) {
+        FtpSourceManageDO ftpSourceManageDO = ftpSourceManageDOMapper.selectByName(nickName);
+        FTPClient ftpClient = FTPUtil.loginFTP(ftpSourceManageDO.getFtpHost(), Integer.valueOf(ftpSourceManageDO.getFtpPort()), ftpSourceManageDO.getUserName(), ftpSourceManageDO.getPassWord());
+        return FTPUtil.ftpCatalog(FTPUtil.ftpCatalog(ftpClient, ""));
+    }
+
+    public List<FileCatalogVO> getFileCataLogVO(List<FileCatalogNode> nodeList) {
+        List<FileCatalogVO> fileCatalogVOList = new ArrayList<>();
+        try {
+            List<FileCatalogVO> fileCatalogVOS = null;
+            for (FileCatalogNode fileCatalogNode : nodeList) {
+                if (fileCatalogNode.getParentName() == null) {
+                    FileCatalogVO fileCatalogVO = new FileCatalogVO();
+                    fileCatalogVO.setSourceCatalog(fileCatalogNode.getNodeName());
+                    fileCatalogVO.setLayer(fileCatalogNode.getLayer());
+                    fileCatalogVO.setFileCount(fileCatalogNode.getFileCount());
+                    fileCatalogVOS = new ArrayList<>();
+                    for (FileCatalogNode fileCatalog : nodeList) {
+                        if (fileCatalog.getParentName() != null && fileCatalog.getParentName().equals(fileCatalogVO.getSourceCatalog())) {
+                            FileCatalogVO fileCatalogVO1 = new FileCatalogVO();
+                            fileCatalogVO1.setSourceCatalog(fileCatalog.getNodeName());
+                            fileCatalogVO1.setLayer(fileCatalog.getLayer());
+                            fileCatalogVO1.setFileCount(fileCatalogNode.getFileCount());
+                            fileCatalogVOS.add(fileCatalogVO1);
+                            fileCatalogVO.setFileCatalogVOList(fileCatalogVOS);
+                        }
+                    }
+                    fileCatalogVOList.add(fileCatalogVO);
+
+                } else {
+                    if (fileCatalogVOList != null && fileCatalogVOList.size() != 0) {
+                        Singleton.getListInstance().clear();
+
+                        fileCatalogVOList = getFileCatalogVOByRecur(fileCatalogVOList, fileCatalogNode);
+                    }
+
+                }
+            }
+        } catch (Exception e) {
+            return null;
+        } finally {
+            Singleton.getListInstance().clear();
+        }
+        return fileCatalogVOList;
+    }
+
+    public List<FileCatalogVO> getFileCatalogVOByRecur(List<FileCatalogVO> fileCatalogVOList, FileCatalogNode fileCatalogNode) {
+        FileCatalogVO fileCatalogVO1 = null;
+        for (FileCatalogVO fileCatalogVO : fileCatalogVOList) {
+            if (fileCatalogNode.getParentName().equals(fileCatalogVO.getSourceCatalog())) {
+                if (fileCatalogVO.getFileCatalogVOList() != null && fileCatalogVO.getFileCatalogVOList().size() != 0) {
+                    for (FileCatalogVO ff : fileCatalogVO.getFileCatalogVOList()) {
+                        if (fileCatalogNode.getNodeName().equals(ff.getSourceCatalog())) {
+                            return fileCatalogVOList;
+                        }
+                    }
+                    fileCatalogVO1 = new FileCatalogVO();
+                    fileCatalogVO1.setLayer(fileCatalogNode.getLayer());
+                    fileCatalogVO1.setSourceCatalog(fileCatalogNode.getNodeName());
+                    fileCatalogVO1.setFileCount(fileCatalogNode.getFileCount());
+                    fileCatalogVO.getFileCatalogVOList().add(fileCatalogVO1);
+                } else {
+                    fileCatalogVO1 = new FileCatalogVO();
+                    fileCatalogVO1.setLayer(fileCatalogNode.getLayer());
+                    fileCatalogVO1.setSourceCatalog(fileCatalogNode.getNodeName());
+                    if (fileCatalogVO.getFileCatalogVOList() != null && fileCatalogVO.getFileCatalogVOList().size() != 0) {
+                        fileCatalogVO.getFileCatalogVOList().add(fileCatalogVO1);
+                    } else {
+                        List<FileCatalogVO> fileCatalogVOList1 = new ArrayList<>();
+                        fileCatalogVOList1.add(fileCatalogVO1);
+                        fileCatalogVO.setFileCatalogVOList(fileCatalogVOList1);
+                    }
+
+                }
+            } else {
+                if (fileCatalogVO.getFileCatalogVOList() != null && fileCatalogVO.getFileCatalogVOList().size() != 0) {
+                    getFileCatalogVOByRecur(fileCatalogVO.getFileCatalogVOList(), fileCatalogNode);
+                }
+            }
+        }
+        return fileCatalogVOList;
+    }
 
     @Override
     public String getFullPathByCatalogId(Integer catalogId) {
         StringBuilder sb = new StringBuilder();
         List<FileCatalogDO> catalogList = fileCatalogDOMapper.getFullPathByCatalogId(catalogId);
-        for(FileCatalogDO fileCatalog: catalogList) {
+        for (FileCatalogDO fileCatalog : catalogList) {
             sb.append(File.separator).append(fileCatalog.getSourceCatalog());
         }
         return sb.toString();
+    }
+
+    public int insert(List<String> catalogs) {
+        return 1;
     }
 
 }

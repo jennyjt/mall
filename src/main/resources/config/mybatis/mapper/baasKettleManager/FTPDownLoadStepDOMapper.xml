@@ -63,4 +63,23 @@
         from ftp_download_step
         where ftp_source_id = #{ftpSourceId,jdbcType=INTEGER}
     </select>
+
+    <update id="updateByJobId" parameterType="com.zsbatech.baasKettleManager.model.FTPDownLoadStepDO" >
+        update trans_meta
+        <set >
+            <if test="transName != null" >
+                trans_name = #{transName,jdbcType=VARCHAR},
+            </if>
+            <if test="fileName != null" >
+                file_name = #{fileName,jdbcType=VARCHAR},
+            </if>
+            <if test="createtime != null" >
+                createtime = #{createtime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updatetime != null" >
+                updatetime = #{updatetime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=INTEGER}
+    </update>
 </mapper>
