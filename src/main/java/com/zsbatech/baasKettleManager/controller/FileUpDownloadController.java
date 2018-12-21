@@ -36,7 +36,7 @@ public class FileUpDownloadController {
     @Autowired
     private CatalogManageService catalogService;
 
-    @ApiOperation(value = "上传文件到指定目录", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "上传文件到指定目录-支持多文件上传，无法使用swagger测试", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiResponses({@ApiResponse(code = Response.OK, message = "上传成功"),})
     @ApiImplicitParams(
             value = {
@@ -64,7 +64,7 @@ public class FileUpDownloadController {
             catalogId = Integer.valueOf(catalogIdStr);
             fileDirectory = catalogService.getFullPathByCatalogId(catalogId);
         } else {
-
+            
         }
 
         boolean result = fileService.multiFilesUpload(files, uniToken.getOrganization(), fileDirectory, catalogId);
