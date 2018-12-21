@@ -5,6 +5,8 @@ import com.zsbatech.baasKettleManager.service.FileUpDownloadService;
 import com.zsbatech.base.common.ResponseData;
 import com.zsbatech.base.constants.RequestField;
 import com.zsbatech.base.constants.Response;
+import com.zsbatech.base.model.UniToken;
+import com.zsbatech.base.utils.JWTUtils;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,66 +40,34 @@ public class FileUpDownloadController {
     @ApiResponses({@ApiResponse(code = Response.OK, message = "上传成功"),})
     @ApiImplicitParams(
             value = {
-                    @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
-                    @ApiImplicitParam(paramType = "query", name = "org_id", dataType = "String", required = true, value = "机构编号"),
-                    @ApiImplicitParam(paramType = "query", name = "catalog_id", dataType = "String", required = true, value = "目录id"),
-            }
-    )
-    @RequestMapping(value = "/upload", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ResponseBody
-    public ResponseData<String> fileUpload(HttpServletRequest request,
-                                           @RequestParam(name = "file", required = true) MultipartFile file,
-                                           @RequestParam(name = "org_id", required = true) String orgNo,
-                                           @RequestParam(name = "catalog_id", required = true) Integer catalogId) {
-        ResponseData<String> responseData = new ResponseData<>();
-        //UniToken uniToken = JWTUtils.validateToken(request);
-        //TODO 是否校验上传文件的大小和类型
-        if(file.isEmpty()){
-            responseData.setError("empty file!");
-            return responseData;
-        }
-
-        String fileDirectory = catalogService.getFullPathByCatalogId(catalogId);
-
-        boolean result = fileService.fileUpload(file, orgNo, fileDirectory, catalogId);
-        if(result) {
-            responseData.setOK("success", "success");
-        }else{
-            responseData.setError("fail", "upload fail");
-        }
-
-        return responseData;
-    }
-
-    @ApiOperation(value = "上传文件到指定目录", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ApiResponses({@ApiResponse(code = Response.OK, message = "上传成功"),})
-    @ApiImplicitParams(
-            value = {
-                    @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
-                    @ApiImplicitParam(paramType = "query", name = "org_id", dataType = "String", required = true, value = "机构编号"),
-                    @ApiImplicitParam(paramType = "query", name = "catalog_id", dataType = "String", required = true, value = "目录id"),
-                    @ApiImplicitParam(paramType = "query", name = "file", dataType = "MultipartFile", required = true, value = "文件list"),
+                    @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token")
             }
     )
     @RequestMapping(value = "/multipleUpload", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
     public ResponseData<String> multipleFilesUpload(HttpServletRequest request) {
         ResponseData<String> responseData = new ResponseData<>();
-        //UniToken uniToken = JWTUtils.validateToken(request);
+        UniToken uniToken = JWTUtils.validateTokenAndOrgan(request);
 
         List<MultipartFile> files =((MultipartHttpServletRequest)request).getFiles("file");
 
-        if(files == null || files.isEmpty()){
+        if (files == null || files.isEmpty()) {
             responseData.setError("empty file!");
             return responseData;
         }
 
-        Integer catalogId = Integer.valueOf(request.getParameter("catalogId"));
-        String orgNo = request.getParameter("orgId");
+        String catalogIdStr = request.getParameter("catalog_id");
 
-        String fileDirectory = catalogService.getFullPathByCatalogId(catalogId);
+        String fileDirectory = "";
+        Integer catalogId = 0;
+        if (catalogIdStr != null) {
+            catalogId = Integer.valueOf(catalogIdStr);
+            fileDirectory = catalogService.getFullPathByCatalogId(catalogId);
+        } else {
 
-        boolean result = fileService.multiFilesUpload(files, orgNo, fileDirectory, catalogId);
+        }
+
+        boolean result = fileService.multiFilesUpload(files, uniToken.getOrganization(), fileDirectory, catalogId);
         if(result) {
             responseData.setOK("success", "success");
         }else{

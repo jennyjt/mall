@@ -30,7 +30,7 @@ public class DataSourceController {
     @Autowired
     private DataSouceManageService dbManage;
 
-    @ApiOperation(value = "数据源新增", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "数据源新增与修改", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiResponses({@ApiResponse(code = Response.OK, message = "新增成功"),})
     @ApiImplicitParams(
             value = {
@@ -56,45 +56,16 @@ public class DataSourceController {
             return responseData;
         }
 
-        UniToken uniToken = JWTUtils.validateTokenAndOrgan(request);
-        dbConnection.setCreateUser(uniToken.getOrganization());
 
-        result = dbManage.createDataSource(dbConnection);
-        if (result) {
-            responseData.setOK("success", "success");
-        }else{
-            responseData.setError("fail");
-        }
-        return responseData;
-    }
-
-    @ApiOperation(value = "数据源修改", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ApiResponses({@ApiResponse(code = Response.OK, message = "修改成功"),})
-    @ApiImplicitParams(
-            value = {
-                    @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
-            }
-    )
-    @RequestMapping(value = "/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ResponseBody
-    public ResponseData<String> updateDataSource(HttpServletRequest request,
-                                                  @RequestBody DbManagement dbConnection) {
-        ResponseData<String> responseData = new ResponseData<>();
-
-        //校验数据源是否能够连接
-        boolean result = dbManage.checkDataSource(dbConnection);
-        if (!result) {
-            responseData.setError("数据源连接失败!");
-            return responseData;
-        }
-        //校验数据源名称是否已存在
-        result = dbManage.checkUniqueLinkName(dbConnection);
-        if (!result) {
-            responseData.setError("数据源名称已存在!");
-            return responseData;
+        if (dbConnection.getId() != null) { //修改
+            result = dbManage.updateDataSource(dbConnection);
+        } else { //新增
+            UniToken uniToken = JWTUtils.validateTokenAndOrgan(request);
+            dbConnection.setCreateUser(uniToken.getOrganization());
+            result = dbManage.createDataSource(dbConnection);
         }
 
-        result = dbManage.updateDataSource(dbConnection);
+
         if (result) {
             responseData.setOK("success", "success");
         }else{
