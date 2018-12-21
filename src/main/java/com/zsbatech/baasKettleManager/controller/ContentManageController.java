@@ -160,4 +160,26 @@ public class ContentManageController {
         }
         return responseData;
     }
+
+    @ApiOperation(value = "获取目录的子目录", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiResponses({@ApiResponse(code = Response.OK, message = "获取目录的子目录"),})
+    @ApiImplicitParams(
+            value = {
+                    @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
+            }
+    )
+    @RequestMapping(value = "/queryNodeCatalog", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseBody
+    public ResponseData<FileCatalogVO> queryNodeCatalog(@RequestParam(name = "id") Integer id) {
+        FileCatalogVO fileCatalogVO = catalogManageService.queryNodeCatalog(id);
+        ResponseData<FileCatalogVO> responseData = new ResponseData<>();
+        if (fileCatalogVO != null ) {
+            responseData.setOK(200, "查询成功", fileCatalogVO);
+        }else if(fileCatalogVO == null) {
+            responseData.setOK(200,"没有目录存在",null);
+        }else {
+            responseData.setError("查询错误");
+        }
+        return responseData;
+    }
 }

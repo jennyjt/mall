@@ -1,5 +1,6 @@
 package com.zsbatech.baasKettleManager.service;
 
+import com.zsbatech.baasKettleManager.model.FileCatalogDO;
 import com.zsbatech.baasKettleManager.model.FilesDO;
 import com.zsbatech.baasKettleManager.vo.FileCatalogVO;
 
@@ -13,6 +14,8 @@ import java.util.Map;
  * Date: 2018/11/20
  */
 public interface CatalogManageService {
+
+    FileCatalogVO queryNodeCatalog(Integer id);
 
     int insert(List<String> catalogs);
 

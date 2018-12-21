@@ -20,4 +20,6 @@ public interface FileCatalogDOMapper {
     List<FileCatalogDO> queryCatalogById(List<Integer> idList);
 
     List<FileCatalogDO> getFullPathByCatalogId(Integer id);
+
+    List<FileCatalogDO> getAllChildCatalogById(Integer id);
 }
