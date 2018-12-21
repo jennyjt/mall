@@ -1,12 +1,10 @@
 package com.zsbatech.baasKettleManager.dao;
 
-import com.zsbatech.baasKettleManager.model.*;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Repository;
-
+import com.zsbatech.baasKettleManager.model.TableinputStep;
+import com.zsbatech.baasKettleManager.model.TableinputStepExample;
 import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
-@Repository
 public interface TableinputStepMapper {
     int countByExample(TableinputStepExample example);
 

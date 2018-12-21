@@ -80,6 +80,6 @@ public class JobMeta {
     }
 
     public void setJobType(String jobType) {
-        this.jobType = jobType;
+        this.jobType = jobType == null ? null : jobType.trim();
     }
 }

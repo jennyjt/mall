@@ -2,9 +2,14 @@ package com.zsbatech.baasKettleManager.service.impl;
 
 
 import com.github.pagehelper.page.PageMethod;
-import com.zsbatech.baasKettleManager.dao.*;
-import com.zsbatech.baasKettleManager.model.*;
-import com.zsbatech.baasKettleManager.service.*;
+import com.zsbatech.baasKettleManager.dao.DbManagementMapper;
+import com.zsbatech.baasKettleManager.model.DataMig;
+import com.zsbatech.baasKettleManager.model.DbJobInfo;
+import com.zsbatech.baasKettleManager.model.DbManagement;
+import com.zsbatech.baasKettleManager.service.DBMigrationService;
+import com.zsbatech.baasKettleManager.service.JobLogService;
+import com.zsbatech.baasKettleManager.service.SaveJobMetaService;
+import com.zsbatech.baasKettleManager.service.SaveTransMetaService;
 import com.zsbatech.baasKettleManager.util.ConfigUtil;
 import com.zsbatech.baasKettleManager.util.TableUtil;
 import com.zsbatech.base.common.Pagination;
@@ -15,7 +20,6 @@ import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.plugins.PluginRegistry;
 import org.pentaho.di.core.plugins.StepPluginType;
 import org.pentaho.di.core.row.RowMetaInterface;
-
 import org.pentaho.di.job.JobHopMeta;
 import org.pentaho.di.job.JobMeta;
 import org.pentaho.di.job.entries.special.JobEntrySpecial;
@@ -63,6 +67,8 @@ public class DBMigrationServiceImpl implements DBMigrationService {
 
         ResponseData<String> responseData = new ResponseData<>();
         try {
+
+            //查询job名称，如果存在，则返回。
 
             ktrpath = generateKtr(dataMig);
             KettleEnvironment.init();
@@ -155,10 +161,10 @@ public class DBMigrationServiceImpl implements DBMigrationService {
 
             db.disconnect();
 
-            org.pentaho.di.trans.TransMeta transMeta = new TransMeta();
+            TransMeta transMeta = new TransMeta();
 
             //设置转换名称
-            transMeta.setName(dataMig.getTransName());
+            transMeta.setName(dataMig.getJobName());
 
             //添加转换数据库源连接
             DatabaseMeta databaseMeta = new DatabaseMeta();
@@ -207,6 +213,9 @@ public class DBMigrationServiceImpl implements DBMigrationService {
                 select_sql = "SELECT * FROM " + dataMig.getSrcTable()+ " where "+ dataMig.getTimeStamp() + " > " +"\""+dataMig.getUpdatetime()+"\"";
             }
 
+            if(dataMig.getSqlString() != null){
+                select_sql = dataMig.getSqlString();
+            }
             tableInputMeta.setSQL(select_sql);
 
             //添加TableInputMeta到转换中
