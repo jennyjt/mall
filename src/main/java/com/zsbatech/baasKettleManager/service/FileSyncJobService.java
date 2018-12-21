@@ -26,4 +26,5 @@ public interface FileSyncJobService {
     List<FileCatalogDO> saveFileCatalogInfo(List<FileCatalogDO> fileCatalogDOList);
 
     String selectByJobName(String jobName);
+
 }

@@ -10,15 +10,17 @@
     <result column="parent_id" property="parentId" jdbcType="INTEGER" />
     <result column="layer" property="layer" jdbcType="TINYINT" />
     <result column="alias_name" property="aliasName" jdbcType="VARCHAR" />
+    <result column="file_count" property="fileCount" jdbcType="INTEGER"/>
   </resultMap>
   <sql id="Base_Column_List">
-    id, source_catalog, createtime, updatetime,create_user,parent_id,layer,alias_name
+    id, source_catalog, createtime, updatetime,create_user,parent_id,layer,alias_name,file_count
   </sql>
 
   <insert id="insert" parameterType="com.zsbatech.baasKettleManager.model.FileCatalogDO" >
-    insert into file_catalog (id, source_catalog, createtime, updatetime,create_user,parent_id,layer,alias_name)
+    insert into file_catalog (id, source_catalog, createtime, updatetime,create_user,parent_id,layer,alias_name,file_count)
     values (#{id,jdbcType=INTEGER}, #{sourceCatalog,jdbcType=VARCHAR},#{createTime,jdbcType=VARCHAR},
-    #{updateTime,jdbcType=VARCHAR},#{createUser,jdbcType=VARCHAR},#{parentId,jdbcType=INTEGER},#{layer,jdbcType=TINYINT},#{aliasName,jdbcType=VARCHAR})
+    #{updateTime,jdbcType=VARCHAR},#{createUser,jdbcType=VARCHAR},#{parentId,jdbcType=INTEGER},#{layer,jdbcType=TINYINT},
+    #{aliasName,jdbcType=VARCHAR},#{fileCount,jdbcType=INTEGER})
   </insert>
 
   <select id="select" resultMap="BaseResultMap" parameterType="com.zsbatech.baasKettleManager.model.FileCatalogDO" >

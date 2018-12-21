@@ -1,9 +1,10 @@
 package com.zsbatech.baasKettleManager.controller;
 
+import com.zsbatech.baasKettleManager.model.FileCatalogDO;
 import com.zsbatech.baasKettleManager.model.FilesDO;
 import com.zsbatech.baasKettleManager.service.CatalogManageService;
+import com.zsbatech.baasKettleManager.vo.FileCatalogVO;
 import com.zsbatech.baasKettleManager.vo.FileQueryVO;
-import com.zsbatech.baasKettleManager.vo.FtpcatalogNode;
 import com.zsbatech.base.common.ResponseData;
 import com.zsbatech.base.constants.RequestField;
 import com.zsbatech.base.constants.Response;
@@ -147,9 +148,9 @@ public class ContentManageController {
     )
     @RequestMapping(value = "/queryFtpCatalog", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public ResponseData<List<FtpcatalogNode>> queryFtpCatalog( @RequestParam(name = "nickName") String nickName) {
-        List<FtpcatalogNode> catalogList = catalogManageService.getFtpCatalog(nickName);
-        ResponseData<List<FtpcatalogNode>> responseData = new ResponseData<>();
+    public ResponseData<List<FileCatalogVO>> queryFtpCatalog(@RequestParam(name = "nickName") String nickName) {
+        List<FileCatalogVO> catalogList = catalogManageService.getFtpCatalog(nickName);
+        ResponseData<List<FileCatalogVO>> responseData = new ResponseData<>();
         if (catalogList != null && catalogList.size() != 0) {
             responseData.setOK(200, "查询成功", catalogList);
         }else if(catalogList == null || catalogList.size() == 0) {

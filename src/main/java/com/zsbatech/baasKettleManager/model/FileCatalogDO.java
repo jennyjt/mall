@@ -26,6 +26,8 @@ public class FileCatalogDO {
 
     private String aliasName;
 
+    private int fileCount;
+
     public int getId() {
         return id;
     }
@@ -58,6 +60,10 @@ public class FileCatalogDO {
         return aliasName;
     }
 
+    public int getFileCount() {
+        return fileCount;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -88,5 +94,9 @@ public class FileCatalogDO {
 
     public void setAliasName(String aliasName) {
         this.aliasName = aliasName;
+    }
+
+    public void setFileCount(int fileCount) {
+        this.fileCount = fileCount;
     }
 }

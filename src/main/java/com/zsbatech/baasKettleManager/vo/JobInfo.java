@@ -1,66 +1,52 @@
 package com.zsbatech.baasKettleManager.vo;
 
 
+import com.zsbatech.baasKettleManager.model.FTPDownLoadStepDO;
+import com.zsbatech.baasKettleManager.model.FTPPutStepDO;
+import com.zsbatech.baasKettleManager.model.FtpSourceManageDO;
+import com.zsbatech.baasKettleManager.model.JobMetaDO;
+
+import java.util.List;
+
 public class JobInfo {
 
-    private String jobName;
+    private JobMetaDO jobMetaDO;
 
-    private String excuteType;
+    private FTPPutStepDO ftpPutStepDO;
 
-    private String sourceNickName;
+    private FTPDownLoadStepDO ftpDownLoadStepDO;
 
-    private String catalogNickName;
+    private List<FtpSourceManageDO> ftpSourceManageDO;
 
-    private String timingType;
-
-    private String updateTime;
-
-
-    public String getJobName() {
-        return jobName;
+    public JobMetaDO getJobMetaDO() {
+        return jobMetaDO;
     }
 
-    public void setJobName(String jobName) {
-        this.jobName = jobName;
+    public void setJobMetaDO(JobMetaDO jobMetaDO) {
+        this.jobMetaDO = jobMetaDO;
     }
 
-    public String getExcuteType() {
-        return excuteType;
+    public FTPPutStepDO getFtpPutStepDO() {
+        return ftpPutStepDO;
     }
 
-    public void setExcuteType(String excuteType) {
-        this.excuteType = excuteType;
+    public void setFtpPutStepDO(FTPPutStepDO ftpPutStepDO) {
+        this.ftpPutStepDO = ftpPutStepDO;
     }
 
-    public String getSourceNickName() {
-        return sourceNickName;
+    public FTPDownLoadStepDO getFtpDownLoadStepDO() {
+        return ftpDownLoadStepDO;
     }
 
-    public void setSourceNickName(String sourceNickName) {
-        this.sourceNickName = sourceNickName;
+    public void setFtpDownLoadStepDO(FTPDownLoadStepDO ftpDownLoadStepDO) {
+        this.ftpDownLoadStepDO = ftpDownLoadStepDO;
     }
 
-    public String getCatalogNickName() {
-        return catalogNickName;
+    public List<FtpSourceManageDO> getFtpSourceManageDO() {
+        return ftpSourceManageDO;
     }
 
-    public void setCatalogNickName(String catalogNickName) {
-        this.catalogNickName = catalogNickName;
-    }
-
-    public String getTimingType() {
-        return timingType;
-    }
-
-    public void setTimingType(String timingType) {
-        this.timingType = timingType;
-    }
-
-    public String getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(String updateTime) {
-        this.updateTime = updateTime;
+    public void setFtpSourceManageDO(List<FtpSourceManageDO> ftpSourceManageDO) {
+        this.ftpSourceManageDO = ftpSourceManageDO;
     }
 }
