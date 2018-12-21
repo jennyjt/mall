@@ -10,13 +10,6 @@ import java.util.List;
  * FileUpDownloadService
  */
 public interface FileUpDownloadService {
-    /**
-     * 文件上传
-     * @param file
-     * @param userId
-     * @return
-     */
-    boolean fileUpload(MultipartFile file, String userId, String fileDirectory, Integer catalogId);
 
     /**
      * 文件上传
