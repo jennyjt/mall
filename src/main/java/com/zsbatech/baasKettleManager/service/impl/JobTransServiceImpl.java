@@ -163,7 +163,7 @@ public class JobTransServiceImpl implements JobTransService {
         try {
 
             DbManagement srcdbManagement = dbManagementMapper.selectByPrimaryKey(dataMig.getSrcDbconnId());
-            DbManagement dstdbManagement = dbManagementMapper.selectByPrimaryKey(dataMig.getDstDbconnId());
+            DbManagement dstdbManagement = dbManagementMapper.selectByPrimaryKey(13);
 
 
             KettleEnvironment.init();
@@ -251,7 +251,7 @@ public class JobTransServiceImpl implements JobTransService {
             DatabaseMeta database_out = transMeta.findDatabase(dstdbManagement.getLinkName());
             tableOutputMeta.setDatabaseMeta(database_out);
             //设置操作的表
-            tableOutputMeta.setTableName(dataMig.getDstTable());//
+            tableOutputMeta.setTableName(dataMig.getSrcTable());//
             //设置用来查询的关键字
             tableOutputMeta.setKeyLookup(new String[]{"ID"});
             tableOutputMeta.setKeyStream(new String[]{"ID"});
@@ -294,13 +294,6 @@ public class JobTransServiceImpl implements JobTransService {
 
             if (saveTransMetaService.save(transMeta, DbMigTransUrl + dataMig.getJobName() + ".ktr", true)) {
 
-                //1、 trans   trans_name,file_name,createtime ,updatetime   ----生成id
-                //2、 tableinput_step
-                //3、 insertupdate_step
-
-//                JobLogExample jobLogExample = new JobLogExample();
-//                JobLogExample.Criteria criteria = jobLogExample.createCriteria();
-//                List<JobLog> jobLogs = jobLogMapper.selectByExample(jobLogExample);
 
 
                 com.zsbatech.baasKettleManager.model.TransMeta dbTransMeta = new com.zsbatech.baasKettleManager.model.TransMeta();
@@ -309,11 +302,7 @@ public class JobTransServiceImpl implements JobTransService {
                 transMetaList.get(0).setUpdatetime(new Date());
                 transMetaMapper.updateByPrimaryKey(transMetaList.get(0));
 
-//                TransMetaExample transMetaExample = new TransMetaExample();
-//                TransMetaExample.Criteria criteria = transMetaExample.createCriteria();
-//                criteria.andTransNameEqualTo(dataMig.getJobName());
-//                List<com.zsbatech.baasKettleManager.model.TransMeta> transMetaList = transMetaMapper.selectByExample(transMetaExample);
-
+//
                 TableinputStepExample tableinputStepExample = new TableinputStepExample();
                 TableinputStepExample.Criteria tableCriteria = tableinputStepExample.createCriteria();
                 tableCriteria.andTransMetaIdEqualTo(transMetaId);

@@ -3,9 +3,11 @@ package com.zsbatech.baasKettleManager.service.impl;
 
 import com.github.pagehelper.page.PageMethod;
 import com.zsbatech.baasKettleManager.dao.DbManagementMapper;
+import com.zsbatech.baasKettleManager.dao.JobMetaMapper;
 import com.zsbatech.baasKettleManager.model.DataMig;
 import com.zsbatech.baasKettleManager.model.DbJobInfo;
 import com.zsbatech.baasKettleManager.model.DbManagement;
+import com.zsbatech.baasKettleManager.model.JobMetaExample;
 import com.zsbatech.baasKettleManager.service.DBMigrationService;
 import com.zsbatech.baasKettleManager.service.JobLogService;
 import com.zsbatech.baasKettleManager.service.SaveJobMetaService;
@@ -56,12 +58,14 @@ public class DBMigrationServiceImpl implements DBMigrationService {
     SaveJobMetaService saveJobMetaService;
     @Autowired
     JobLogService jobLogService;
+    @Autowired
+    JobMetaMapper jobMetaMapper;
 
     private String DbMigTransUrl = ConfigUtil.getPropertyValue("dbmig.transMetaUrl");
     private String DbMigJobUrl = ConfigUtil.getPropertyValue("file.jobMetaUrl");
     private String ktrpath;
 
-
+    @Override
     public ResponseData<String> cycleMigration(DataMig dataMig) {
 
 
@@ -139,13 +143,13 @@ public class DBMigrationServiceImpl implements DBMigrationService {
         return responseData;
     }
 
-
+    @Override
     public String generateKtr(DataMig dataMig) {
 
         try {
 
             DbManagement srcdbManagement = dbManagementMapper.selectByPrimaryKey(dataMig.getSrcDbconnId());
-            DbManagement dstdbManagement = dbManagementMapper.selectByPrimaryKey(dataMig.getDstDbconnId());
+            DbManagement dstdbManagement = dbManagementMapper.selectByPrimaryKey(13);
 
 
             KettleEnvironment.init();
@@ -233,7 +237,7 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             DatabaseMeta database_out = transMeta.findDatabase(dstdbManagement.getLinkName());
             tableOutputMeta.setDatabaseMeta(database_out);
             //设置操作的表
-            tableOutputMeta.setTableName(dataMig.getDstTable());//
+            tableOutputMeta.setTableName(dataMig.getSrcTable());//
             //设置用来查询的关键字
             tableOutputMeta.setKeyLookup(new String[]{"ID"});
             tableOutputMeta.setKeyStream(new String[]{"ID"});
@@ -291,8 +295,7 @@ public class DBMigrationServiceImpl implements DBMigrationService {
 
     }
 
-
-
+    @Override
     public DbJobInfo getJobDetail (String jobName) {
 
         DbJobInfo dbJobInfo = new DbJobInfo();
@@ -356,7 +359,7 @@ public class DBMigrationServiceImpl implements DBMigrationService {
         return dbJobInfo;
     }
 
-
+    @Override
     public Pagination<DbJobInfo> getJobList(Integer currPage, Integer pageSize) {
         PageMethod.startPage(currPage, pageSize);
         List<DbJobInfo> dbJobInfoList = new ArrayList<DbJobInfo>();
@@ -376,7 +379,7 @@ public class DBMigrationServiceImpl implements DBMigrationService {
 
             String sql = "select a.job_name,a.updatetime,a.createtime,a.execute_status,a.job_type,b.exc_sql ,b.db_connection_name," +
                     "c.target_table,c.update_lookup from job_meta a,tableinput_step b,insert_update_step c where " +
-                    "a.trans_meta_id = b.trans_meta_id and b.trans_meta_id= c.trans_meta_id";
+                    "a.trans_meta_id = b.trans_meta_id and b.trans_meta_id= c.trans_meta_id and a.trans_meta_id>0";
 
             ResultSet rs = stmt.executeQuery(sql);
 
@@ -423,5 +426,18 @@ public class DBMigrationServiceImpl implements DBMigrationService {
         Pagination<DbJobInfo> dbJobInfoPagination = new Pagination<DbJobInfo>(dbJobInfoList);
         return dbJobInfoPagination;
 
+    }
+
+
+    @Override
+    public boolean checkUniqueJobName(String jobName) {
+        JobMetaExample jobMetaExample = new JobMetaExample();
+        JobMetaExample.Criteria criteria = jobMetaExample.createCriteria();
+        criteria.andJobNameEqualTo(jobName);
+        List<com.zsbatech.baasKettleManager.model.JobMeta> jobMetaList = jobMetaMapper.selectByExample(jobMetaExample);
+        if (jobMetaList == null || jobMetaList.isEmpty()){
+            return true;
+        }
+        return false;
     }
 }
