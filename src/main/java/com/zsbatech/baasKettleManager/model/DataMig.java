@@ -14,6 +14,9 @@ public class DataMig extends DataMigration {
     private String timeStamp;
     private List<String> updateLookup;
 
+    //接口类型
+    private Integer createOrUpdate;
+
     //周期同步
     private String cycleTime;
     private String jobName;
@@ -53,6 +56,14 @@ public class DataMig extends DataMigration {
 
     private String dstSql;
 
+
+    public Integer getCreateOrUpdate() {
+        return createOrUpdate;
+    }
+
+    public void setCreateOrUpdate(Integer createOrUpdate) {
+        this.createOrUpdate = createOrUpdate;
+    }
 
     public String getCycleTime() {
         return cycleTime;

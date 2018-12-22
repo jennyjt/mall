@@ -3,6 +3,7 @@ package com.zsbatech.baasKettleManager.controller;
 import com.zsbatech.baasKettleManager.model.DataMig;
 import com.zsbatech.baasKettleManager.model.DbJobInfo;
 import com.zsbatech.baasKettleManager.service.DBMigrationService;
+import com.zsbatech.baasKettleManager.service.JobTransService;
 import com.zsbatech.base.common.Pagination;
 import com.zsbatech.base.common.ResponseData;
 import com.zsbatech.base.constants.RequestField;
@@ -20,10 +21,13 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping (value = "/data_center/migrate")
 
 
+
 public class DBMigrationController {
 
     @Autowired
     private DBMigrationService dbMigrationService;
+    @Autowired
+    private JobTransService jobTransService;
 
 
 
@@ -39,6 +43,18 @@ public class DBMigrationController {
     @ResponseBody
     public ResponseData<String> cycleMigration(@RequestBody DataMig dataMig) {
         ResponseData<String> responseData = new ResponseData<>();
+
+
+        if(dataMig.getCreateOrUpdate()==1) {
+            responseData = jobTransService.modifyJob(dataMig);
+            return responseData;
+        }
+
+        boolean result = dbMigrationService.checkUniqueJobName(dataMig.getJobName());
+        if(!result){
+            responseData.setOK(200,"任务名称已存在!",dataMig.getJobName());
+            return responseData;
+        }
 
         responseData = dbMigrationService.cycleMigration(dataMig);
         return responseData;

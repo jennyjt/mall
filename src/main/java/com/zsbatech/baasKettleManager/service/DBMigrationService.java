@@ -19,4 +19,5 @@ public interface DBMigrationService {
     Pagination<DbJobInfo> getJobList(Integer currPage, Integer pageSize);
     String generateKtr(DataMig dataMig);
     DbJobInfo getJobDetail(String jobName);
+    boolean checkUniqueJobName(String jobName);
 }
