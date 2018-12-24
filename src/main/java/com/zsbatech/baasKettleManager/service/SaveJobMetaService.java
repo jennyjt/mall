@@ -20,7 +20,7 @@ public interface SaveJobMetaService {
 
     boolean saveMeta(EngineMetaInterface meta, String filename);
 
-    boolean saveFTPJobData(String fileName,String upSourceNickName,String downSourceNickName);
+    boolean saveFTPJobData(String fileName,int upFtpSourceId,int downFtpSourceId);
 
     boolean saveTransJobData(String fileName);
 

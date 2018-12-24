@@ -13,4 +13,6 @@ public interface FtpSourceManageDOMapper {
     int insert(FtpSourceManageDO ftpSourceManageDO);
 
     FtpSourceManageDO selectByName(String nickName);
+
+    FtpSourceManageDO selectById(Integer id);
 }

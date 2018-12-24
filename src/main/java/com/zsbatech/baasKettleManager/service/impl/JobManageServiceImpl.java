@@ -85,7 +85,7 @@ public class JobManageServiceImpl implements JobManageService {
         Job job = new Job(null, jobMeta);
         jobMap.put(jobMeta.getName(), job);
         job.start();
-        job.getJobTracker().clear();
+        job.waitUntilFinished(10000);
         if (job.getErrors() != 0) {
             logger.info(job.getName());
             String[] errMsgList = KettleLogStore.getAppender().getBuffer(job.getLogChannelId(), false).toString().split("\n\r\n");
@@ -144,7 +144,7 @@ public class JobManageServiceImpl implements JobManageService {
         }
         if (jobMetaId != 0 && executeStatus == 0) {
             if (ftpSyncSetp.getFtpDownLoadStepDO() != null && ftpSyncSetp.getFtpPutStepDO() != null) {
-                String fileName = fileSyncJobService.fileSyncFtpToFtpJobMeta(ftpSyncSetp.getJobStartStepDO(), ftpSyncSetp.getFtpPutStepDO(), ftpSyncSetp.getSrcNickName(), ftpSyncSetp.getFtpDownLoadStepDO(), ftpSyncSetp.getDstNickName(), ftpSyncSetp.getJobName());
+                String fileName = fileSyncJobService.fileSyncFtpToFtpJobMeta(ftpSyncSetp.getJobStartStepDO(), ftpSyncSetp.getFtpPutStepDO(), ftpSyncSetp.getSrcId(), ftpSyncSetp.getFtpDownLoadStepDO(), ftpSyncSetp.getDstId(), ftpSyncSetp.getJobName());
                 if (fileName == null) return false;
                 if (ftpDownLoadStepDOMapper.updateByJobId(ftpSyncSetp.getFtpDownLoadStepDO()) > 0 &&
                         ftpPutStepDOMapper.updateByJobId(ftpSyncSetp.getFtpPutStepDO()) > 0 &&
@@ -153,14 +153,14 @@ public class JobManageServiceImpl implements JobManageService {
 
                 }
             } else if (ftpSyncSetp.getFtpDownLoadStepDO() != null) {
-                String fileName = fileSyncJobService.createDownloadJobMeta(ftpSyncSetp.getJobStartStepDO(), ftpSyncSetp.getFtpDownLoadStepDO(), ftpSyncSetp.getJobName(), ftpSyncSetp.getSrcNickName());
+                String fileName = fileSyncJobService.createDownloadJobMeta(ftpSyncSetp.getJobStartStepDO(), ftpSyncSetp.getFtpDownLoadStepDO(), ftpSyncSetp.getJobName(), ftpSyncSetp.getSrcId());
                 if (fileName == null) return false;
                 if (ftpDownLoadStepDOMapper.updateByJobId(ftpSyncSetp.getFtpDownLoadStepDO()) > 0 &&
                         jobStartStepDOMapper.updateByJobId(ftpSyncSetp.getJobStartStepDO()) > 0) {
                     isSuccess = true;
                 }
             } else {
-                String fileName = fileSyncJobService.createPutJobMeta(ftpSyncSetp.getJobStartStepDO(), ftpSyncSetp.getFtpPutStepDO(), ftpSyncSetp.getJobName(), ftpSyncSetp.getDstNickName());
+                String fileName = fileSyncJobService.createPutJobMeta(ftpSyncSetp.getJobStartStepDO(), ftpSyncSetp.getFtpPutStepDO(), ftpSyncSetp.getJobName(), ftpSyncSetp.getDstId());
                 if (fileName == null) return false;
                 if (ftpPutStepDOMapper.updateByJobId(ftpSyncSetp.getFtpPutStepDO()) > 0 &&
                         jobStartStepDOMapper.updateByJobId(ftpSyncSetp.getJobStartStepDO()) > 0) {

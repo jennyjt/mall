@@ -45,4 +45,12 @@
         where nick_name = #{nickName,jdbcType=INTEGER}
         limit 1
     </select>
+
+    <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from ftp_source_manager
+        where id = #{id,jdbcType=INTEGER}
+        limit 1
+    </select>
 </mapper>

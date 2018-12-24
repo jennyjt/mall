@@ -100,15 +100,7 @@ public class SaveJobMetaServiceImpl implements SaveJobMetaService {
     }
 
     @Transactional
-    public boolean saveFTPJobData(String fileName,String upSourceNickName,String downSourceNickName) {
-        int upFtpSourceId = 0;
-        if(upSourceNickName != null) {
-            upFtpSourceId = ftpSourceManageDOMapper.selectByName(upSourceNickName).getId();
-        }
-        int downFtpSourceId =0;
-        if (downSourceNickName != null) {
-            downFtpSourceId = ftpSourceManageDOMapper.selectByName(downSourceNickName).getId();
-        }
+    public boolean saveFTPJobData(String fileName,int upFtpSourceId,int downFtpSourceId) {
         JobMeta jobMeta = null;
         try {
             KettleEnvironment.init();
