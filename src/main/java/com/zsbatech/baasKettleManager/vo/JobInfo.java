@@ -1,10 +1,7 @@
 package com.zsbatech.baasKettleManager.vo;
 
 
-import com.zsbatech.baasKettleManager.model.FTPDownLoadStepDO;
-import com.zsbatech.baasKettleManager.model.FTPPutStepDO;
-import com.zsbatech.baasKettleManager.model.FtpSourceManageDO;
-import com.zsbatech.baasKettleManager.model.JobMetaDO;
+import com.zsbatech.baasKettleManager.model.*;
 
 import java.util.List;
 
@@ -16,7 +13,7 @@ public class JobInfo {
 
     private FTPDownLoadStepDO ftpDownLoadStepDO;
 
-    private List<FtpSourceManageDO> ftpSourceManageDO;
+    private JobStartStepDO jobStartStepDO;
 
     public JobMetaDO getJobMetaDO() {
         return jobMetaDO;
@@ -42,11 +39,12 @@ public class JobInfo {
         this.ftpDownLoadStepDO = ftpDownLoadStepDO;
     }
 
-    public List<FtpSourceManageDO> getFtpSourceManageDO() {
-        return ftpSourceManageDO;
+
+    public JobStartStepDO getJobStartStepDO() {
+        return jobStartStepDO;
     }
 
-    public void setFtpSourceManageDO(List<FtpSourceManageDO> ftpSourceManageDO) {
-        this.ftpSourceManageDO = ftpSourceManageDO;
+    public void setJobStartStepDO(JobStartStepDO jobStartStepDO) {
+        this.jobStartStepDO = jobStartStepDO;
     }
 }

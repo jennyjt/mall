@@ -19,4 +19,6 @@ public interface FTPPutStepDOMapper {
     FTPPutStepDO selectFTPPutStepVOById(Integer jobMetaId);
 
     List<FTPPutStepDO> selectBySourceId(int ftpSourceId);
+
+    int updateByJobId(FTPPutStepDO ftpPutStepDO);
 }

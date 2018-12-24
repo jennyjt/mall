@@ -35,8 +35,6 @@ import java.util.Map;
 @Service
 public class FileSyncJobServiceImpl implements FileSyncJobService {
 
-    private String rootCatalog = ConfigUtil.getPropertyValue("file.rootUrl");
-
     private String ftpJobUrl = ConfigUtil.getPropertyValue("file.ftpJobUrl");
 
     @Autowired

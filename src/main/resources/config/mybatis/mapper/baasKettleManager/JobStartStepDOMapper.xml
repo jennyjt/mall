@@ -36,4 +36,21 @@
     where job_step_name = #{stepName,jdbcType=INTEGER}
     limit 1
   </select>
+
+  <update id="updateByJobId" parameterType="com.zsbatech.baasKettleManager.model.FTPPutStepDO">
+    update job_start_step
+    <set>
+
+      <if test="timing_type != null ">
+        timing_type = #{timingType,jdbcType=TINYINT},
+      </if>
+      <if test="timing_time != null">
+        timing_time = #{timingTime,jdbcType=TINYINT},
+      </if>
+      <if test="is_repeat != null">
+        is_repeat = #{isRepeat,jdbcType=TINYINT},
+      </if>
+    </set>
+    where job_meta_id = #{jobMetaId,jdbcType=INTEGER}
+  </update>
 </mapper>

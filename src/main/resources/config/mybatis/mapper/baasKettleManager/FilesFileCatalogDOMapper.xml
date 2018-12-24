@@ -29,4 +29,12 @@
         where file_id = #{fileId,jdbcType=INTEGER}
     </select>
 
+    <select id="queryByCatalogId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
+        select
+        <include refid="Base_Column_List"/>
+        from files_file_catalog
+        where file_catalog_id = #{fileCatalogId,jdbcType=INTEGER}
+    </select>
+
+
 </mapper>

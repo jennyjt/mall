@@ -1,7 +1,6 @@
 package com.zsbatech.baasKettleManager.dao;
 
 import com.zsbatech.baasKettleManager.model.JobMetaDO;
-import com.zsbatech.baasKettleManager.vo.JobInfo;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -23,6 +22,7 @@ public interface JobMetaDOMapper {
 
     int updateByJobName(JobMetaDO jobMetaDO);
 
-    List<JobInfo> queryJob(String jobType);
+
+    int deleteByJobName(String jobName);
 
 }

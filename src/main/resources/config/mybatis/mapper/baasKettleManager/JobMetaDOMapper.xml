@@ -15,6 +15,10 @@
     id, job_name, file_name, createtime, updatetime,trans_meta_id,execute_status,job_type
   </sql>
 
+    <sql id="Union_Column_List">
+    id, job_name, file_name, createtime, updatetime,trans_meta_id,execute_status,job_type,id AS fp_id, ftp_source_id, time_out,binary_mode,control_encoding,ftp_directory,ftp_file_name, target_directory,job_meta_id,create_time, update_time,step_name
+  ,id As fd_id, ftp_source_id, time_out,binary_mode,control_encoding,ftp_directory,put_file_name, target_directory,job_meta_id,create_time, update_time,step_name
+  </sql>
     <insert id="insert" parameterType="com.zsbatech.baasKettleManager.model.JobMetaDO">
     insert into job_meta (id, job_name, file_name,
       createtime, updatetime, trans_meta_id,
@@ -45,25 +49,30 @@
     </select>
 
     <update id="updateByJobName" parameterType="com.zsbatech.baasKettleManager.model.JobMetaDO">
-    update job_meta
-    <set >
-        <if test="fileName != null" >
-            file_name = #{fileName,jdbcType=VARCHAR},
-        </if>
-        <if test="createTime != null" >
-            createtime = #{createTime,jdbcType=VARCHAR},
-        </if>
-        <if test="updateTime != null" >
-            updatetime = #{updateTime,jdbcType=VARCHAR},
-        </if>
-        <if test="transMetaId != null" >
-            trans_meta_id = #{transMetaId,jdbcType=INTEGER},
-        </if>
-        <if test="executeStatus != null">
-            execute_status = #{executeStatus,jdbcType=TINYINT}
-        </if>
-    </set>
-    where job_name = #{jobName,jdbcType=VARCHAR}
-   </update>
+        update job_meta
+        <set>
+            <if test="fileName != null">
+                file_name = #{fileName,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                createtime = #{createTime,jdbcType=VARCHAR},
+            </if>
+            <if test="updateTime != null">
+                updatetime = #{updateTime,jdbcType=VARCHAR},
+            </if>
+            <if test="transMetaId != null">
+                trans_meta_id = #{transMetaId,jdbcType=INTEGER},
+            </if>
+            <if test="executeStatus != null">
+                execute_status = #{executeStatus,jdbcType=TINYINT}
+            </if>
+        </set>
+        where job_name = #{jobName,jdbcType=VARCHAR}
+    </update>
+
+    <delete id="deleteByJobName" parameterType="java.lang.String">
+        delete from job_meta
+        where job_name = #{jobName,jdbcType=VARCHAR}
+    </delete>
 
 </mapper>

@@ -1,8 +1,10 @@
 package com.zsbatech.baasKettleManager.controller;
 
 import com.zsbatech.baasKettleManager.service.FileSyncJobService;
+import com.zsbatech.baasKettleManager.service.JobManageService;
 import com.zsbatech.baasKettleManager.service.SaveJobMetaService;
 import com.zsbatech.baasKettleManager.vo.FTPSyncSetp;
+import com.zsbatech.baasKettleManager.vo.JobInfo;
 import com.zsbatech.base.common.ResponseData;
 import com.zsbatech.base.constants.RequestField;
 import com.zsbatech.base.constants.Response;
@@ -12,6 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -25,6 +30,9 @@ import org.springframework.web.bind.annotation.*;
 public class FileSyncJobController {
 
     private static Logger logger = LoggerFactory.getLogger(FileSyncJobController.class);
+
+    @Autowired
+    private JobManageService jobManageService;
 
     @Autowired
     private SaveJobMetaService saveJobMetaService;
@@ -100,6 +108,28 @@ public class FileSyncJobController {
             }
         } else {
             responseData.setError("创建ftp文件同步job失败");
+        }
+        return responseData;
+    }
+
+    @ApiOperation(value = "查询文件同步job", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiResponses({@ApiResponse(code = Response.OK, message = "查询文件同步job成功"),})
+    @ApiImplicitParams(
+            value = {
+                    @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
+            }
+    )
+    @RequestMapping(value = "/queryJobInfoByPage", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseBody
+    public ResponseData<List<JobInfo>> queryJobInfoByPage(int page , @RequestParam int count) {
+        ResponseData<List<JobInfo>> responseData = new ResponseData<>();
+        List<JobInfo> jobInfoList = jobManageService.queryJobInfoByPage(page,count);
+        if(jobInfoList != null && jobInfoList.size() != 0){
+                responseData.setOK(200, "查询文件同步job", jobInfoList);
+            }else if(jobInfoList == null || jobInfoList.size() == 0){
+                responseData.setOK(200,"job文件不存在",null);
+        } else {
+            responseData.setError("查询文件同步job失败");
         }
         return responseData;
     }

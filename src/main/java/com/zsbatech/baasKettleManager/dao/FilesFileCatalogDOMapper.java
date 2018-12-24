@@ -15,7 +15,9 @@ public interface FilesFileCatalogDOMapper {
 
     int insertBatch(List<FilesFileCatalogDO> filesFileCatalogDOList);
 
-     int insert(FilesFileCatalogDO filesFileCatalogDO);
+    int insert(FilesFileCatalogDO filesFileCatalogDO);
 
-     List<FilesFileCatalogDO> queryByFileId(Integer fileId);
+    List<FilesFileCatalogDO> queryByFileId(Integer fileId);
+
+    List<FilesFileCatalogDO> queryByCatalogId(Integer fileCatalogId);
 }

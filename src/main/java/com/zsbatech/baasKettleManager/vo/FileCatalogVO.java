@@ -10,6 +10,8 @@ public class FileCatalogVO {
 
     private int fileCount;
 
+    private int id;
+
     private List<FileCatalogVO> fileCatalogVOList;
 
     public String getSourceCatalog() {
@@ -44,5 +46,13 @@ public class FileCatalogVO {
 
     public void setFileCatalogVOList(List<FileCatalogVO> fileCatalogVOList) {
         this.fileCatalogVOList = fileCatalogVOList;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

@@ -89,4 +89,5 @@ public class JobMetaDO {
     public void setJobType(String jobType) {
         this.jobType = jobType;
     }
+
 }

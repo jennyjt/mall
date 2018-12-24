@@ -209,4 +209,5 @@ public class FTPDownLoadStepDO {
     public void setFtpSourceId(int ftpSourceId) {
         this.ftpSourceId = ftpSourceId;
     }
+
 }

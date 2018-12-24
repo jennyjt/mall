@@ -17,4 +17,6 @@ public interface JobStartStepDOMapper {
     JobStartStepDO selectJobStartStepVO(Integer jobMetaId);
 
     JobStartStepDO selectByName(String name);
+
+    int updateByJobId(JobStartStepDO jobStartStepDO);
 }

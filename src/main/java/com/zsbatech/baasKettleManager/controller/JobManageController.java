@@ -3,6 +3,7 @@ package com.zsbatech.baasKettleManager.controller;
 import com.zsbatech.baasKettleManager.service.FileSyncJobService;
 import com.zsbatech.baasKettleManager.service.JobManageService;
 import com.zsbatech.baasKettleManager.vo.FTPSyncSetp;
+import com.zsbatech.baasKettleManager.vo.JobInfo;
 import com.zsbatech.base.common.ResponseData;
 import com.zsbatech.base.constants.RequestField;
 import com.zsbatech.base.constants.Response;
@@ -10,9 +11,6 @@ import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-
-import java.sql.ResultSet;
-import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -95,24 +93,24 @@ public class JobManageController {
         return responseData;
     }
 
-//    @ApiOperation(value = "停止job", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-//    @ApiResponses({@ApiResponse(code = Response.OK, message = "停止job成功"),})
-//    @ApiImplicitParams(
-//            value = {
-//                    @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
-//            }
-//    )
-//    @RequestMapping(value = "/stopJobs", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-//    @ResponseBody
-//    public ResponseData<List> stopJobs(@RequestBody List<String> jobNames) {
-//        ResponseData<List> responseData = new ResponseData<>();
-//        if(jobManageService.stopJobs(jobNames)){
-//            responseData.setOK(200,"job已经停止",jobNames);
-//        }else {
-//            responseData.setError("job停止失败");
-//        }
-//        return responseData;
-//    }
+    @ApiOperation(value = "删除job", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiResponses({@ApiResponse(code = Response.OK, message = "删除job成功"),})
+    @ApiImplicitParams(
+            value = {
+                    @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
+            }
+    )
+    @RequestMapping(value = "/removeJob", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseBody
+    public ResponseData<String> stopJobs(@RequestParam String jobName) {
+        ResponseData<String> responseData = new ResponseData<>();
+        if(jobManageService.removeJob(jobName)){
+            responseData.setOK(200,"job删除成功","SUCCESS");
+        }else {
+            responseData.setError("job停止失败");
+        }
+        return responseData;
+    }
 
     @ApiOperation(value = "查询文件job", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiResponses({@ApiResponse(code = Response.OK, message = "查询job成功"),})
@@ -123,12 +121,15 @@ public class JobManageController {
     )
     @RequestMapping(value = "/queryJob", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public ResponseData<ResultSet> queryJob(@RequestParam String jobName) {
-        ResponseData<ResultSet> responseData = new ResponseData<>();
-//          ResultSet resultSet = jobManageService.queryJob(jobType);
-//          if()
-//
-//        }
+    public ResponseData<JobInfo> queryJob(@RequestParam String jobName) {
+        ResponseData<JobInfo> responseData = new ResponseData<>();
+        JobInfo jobInfo = jobManageService.queryJobInfo(jobName);
+          if(jobInfo != null){
+              responseData.setOK(200,"查询成功",jobInfo);
+
+        }else {
+              responseData.setOK(200,"job不存在",null);
+          }
         return responseData;
     }
 

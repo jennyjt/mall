@@ -3,6 +3,8 @@ package com.zsbatech.baasKettleManager.service;
 import com.zsbatech.baasKettleManager.vo.FTPSyncSetp;
 import com.zsbatech.baasKettleManager.vo.JobInfo;
 
+import java.util.List;
+
 
 /**
  * Created with IntelliJ IDEA.
@@ -16,10 +18,13 @@ public interface JobManageService {
 
     boolean stop(String jobName);
 
-//    boolean stopJobs(List<String> jobNames);
 
     boolean modifyJob(FTPSyncSetp ftpSyncSetp);
 
-    JobInfo queryJob(String jobName);
+    JobInfo queryJobInfo(String jobName);
+
+    boolean removeJob(String jobName);
+
+    List<JobInfo> queryJobInfoByPage(int page,int count);
 
 }

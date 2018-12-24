@@ -3,6 +3,8 @@ package com.zsbatech.baasKettleManager.service.impl;
 import com.zsbatech.baasKettleManager.dao.*;
 import com.zsbatech.baasKettleManager.model.*;
 import com.zsbatech.baasKettleManager.service.*;
+import com.zsbatech.baasKettleManager.util.ConfigUtil;
+import com.zsbatech.baasKettleManager.util.JdbcUtil;
 import com.zsbatech.baasKettleManager.vo.FTPSyncSetp;
 import com.zsbatech.baasKettleManager.vo.JobInfo;
 import org.pentaho.di.core.KettleEnvironment;
@@ -14,9 +16,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
-import java.sql.ResultSet;
 import java.util.*;
 
 /**
@@ -31,6 +33,11 @@ public class JobManageServiceImpl implements JobManageService {
     private static Logger logger = LoggerFactory.getLogger(JobManageServiceImpl.class);
 
     private static Map<String, Job> jobMap = new HashMap<>();
+
+    private String ftpJobUrl = ConfigUtil.getPropertyValue("file.ftpJobUrl");
+
+    @Autowired
+    private CatalogManageService catalogManageService;
 
     @Autowired
     private JobLogService jobLogService;
@@ -56,6 +63,13 @@ public class JobManageServiceImpl implements JobManageService {
     @Autowired
     private ExceptionLogDOMapper exceptionLogDOMapper;
 
+
+    /**
+     * 启动job
+     *
+     * @param jobFile
+     * @return
+     */
     public int executeJob(String jobFile) {
         if (!new File(jobFile).exists()) {
             saveJobMetaService.saveIncrJobByDB("job2");
@@ -86,6 +100,12 @@ public class JobManageServiceImpl implements JobManageService {
         return job.getErrors();
     }
 
+    /**
+     * 停止job
+     *
+     * @param jobName
+     * @return
+     */
     public boolean stop(String jobName) {
         JobMetaDO jobMetaDO = new JobMetaDO();
         jobMetaDO.setJobName(jobName);
@@ -106,53 +126,97 @@ public class JobManageServiceImpl implements JobManageService {
         return isStopped;
     }
 
-
-//    public boolean stopJobs(List<String> jobNames) {
-//        int jobMapStartSize = jobMap.size();
-//        boolean isStopped = false;
-//        for (String jobName : jobNames) {
-//            Job job = jobMap.get(jobName);
-//            job.stopAll();
-//            jobMap.remove(jobName);
-//        }
-//        int jobMapEndSize = jobMap.size();
-//        if (jobMapStartSize == jobMapEndSize + jobNames.size()) {
-//            isStopped = true;
-//
-//        }
-//        return isStopped;
-//    }
-
+    /**
+     * 修改job
+     *
+     * @param ftpSyncSetp
+     * @return
+     */
+    @Transactional
     public boolean modifyJob(FTPSyncSetp ftpSyncSetp) {
         boolean isSuccess = false;
         JobMetaDO jobMetaDO = jobMetaDOMapper.selectByJobName(ftpSyncSetp.getJobName());
+        int jobMetaId = 0;
+        int executeStatus = 0;
         if (jobMetaDO != null) {
+            jobMetaId = jobMetaDO.getTransMetaId();
+            executeStatus = jobMetaDO.getExecuteStatus();
         }
-        if (jobMetaDO.getTransMetaId() == 0) {
+        if (jobMetaId != 0 && executeStatus == 0) {
             if (ftpSyncSetp.getFtpDownLoadStepDO() != null && ftpSyncSetp.getFtpPutStepDO() != null) {
                 String fileName = fileSyncJobService.fileSyncFtpToFtpJobMeta(ftpSyncSetp.getJobStartStepDO(), ftpSyncSetp.getFtpPutStepDO(), ftpSyncSetp.getSrcNickName(), ftpSyncSetp.getFtpDownLoadStepDO(), ftpSyncSetp.getDstNickName(), ftpSyncSetp.getJobName());
-                if (fileName != null) {
+                if (fileName == null) return false;
+                if (ftpDownLoadStepDOMapper.updateByJobId(ftpSyncSetp.getFtpDownLoadStepDO()) > 0 &&
+                        ftpPutStepDOMapper.updateByJobId(ftpSyncSetp.getFtpPutStepDO()) > 0 &&
+                        jobStartStepDOMapper.updateByJobId(ftpSyncSetp.getJobStartStepDO()) > 0) {
                     isSuccess = true;
+
                 }
             } else if (ftpSyncSetp.getFtpDownLoadStepDO() != null) {
                 String fileName = fileSyncJobService.createDownloadJobMeta(ftpSyncSetp.getJobStartStepDO(), ftpSyncSetp.getFtpDownLoadStepDO(), ftpSyncSetp.getJobName(), ftpSyncSetp.getSrcNickName());
-                if (fileName != null) {
+                if (fileName == null) return false;
+                if (ftpDownLoadStepDOMapper.updateByJobId(ftpSyncSetp.getFtpDownLoadStepDO()) > 0 &&
+                        jobStartStepDOMapper.updateByJobId(ftpSyncSetp.getJobStartStepDO()) > 0) {
                     isSuccess = true;
                 }
             } else {
                 String fileName = fileSyncJobService.createPutJobMeta(ftpSyncSetp.getJobStartStepDO(), ftpSyncSetp.getFtpPutStepDO(), ftpSyncSetp.getJobName(), ftpSyncSetp.getDstNickName());
-                if (fileName != null) {
+                if (fileName == null) return false;
+                if (ftpPutStepDOMapper.updateByJobId(ftpSyncSetp.getFtpPutStepDO()) > 0 &&
+                        jobStartStepDOMapper.updateByJobId(ftpSyncSetp.getJobStartStepDO()) > 0) {
+
                     isSuccess = true;
+
                 }
             }
         }
         return isSuccess;
     }
 
-    public JobInfo queryJob(String jobName){
-        String sql = "select a.job_name,a.createtime,a.updatetime,a.execute_status,a.job_type,b.db_connection_name ,b.exc_sql,c.src_table,c.src_column " +
-                "from job_meta a,tableinput_step b,src_db_connection c where a.trans_meta_id = b.trans_meta_id and b.id= c.step_id and a.job_name = "+"\""+jobName+"\"";
+    public JobInfo queryJobInfo(String jobName) {
+        String sql = "select a.job_name,a.updatetime,a.file_name,a.execute_status,a.job_type,fd.ftp_directory ,fd.ftp_file_name," +
+                "fd.target_directory,fp.ftp_directory ,fp.put_file_name,fp.put_file_name,js.is_repeat,js.timing_type,js.timing_time," +
+                "fd.ftp_source_id , fp.ftp_source_id " +
+                "from job_meta a left join job_start_step js on a.id = js.job_meta_id left join ftp_put_step fp on a.id= fp.job_meta_id " +
+                " left join ftp_download_step fd on a.id = fd.job_meta_id " +
+                "where a.job_name = " + "\'" + jobName + "\'";
+        return JdbcUtil.getJobInfo(sql);
+    }
 
-        return null;
+
+    /**
+     * 删除job
+     *
+     * @param jobName
+     * @return
+     */
+    public boolean removeJob(String jobName) {
+        List<String> fileurlList = new ArrayList<>();
+        JobMetaDO jobMetaDO = null;
+        String jobFileUrl = null;
+        jobMetaDO = jobMetaDOMapper.selectByJobName(jobName);
+        if (jobMetaDO != null) {
+            jobFileUrl = jobMetaDO.getFileName();
+            if (jobMetaDO.getExecuteStatus() == 1) {
+                return false;
+            }
+        }
+        fileurlList.add(jobFileUrl);
+        if (catalogManageService.deleteFiles(fileurlList) != null) {
+            if (jobMetaDOMapper.deleteByJobName(jobName) > 0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public List<JobInfo> queryJobInfoByPage(int page, int count) {
+        String sql = "select a.job_name,a.updatetime,a.file_name,a.execute_status,a.job_type,fd.ftp_directory ,fd.ftp_file_name," +
+                "fd.target_directory,fp.ftp_directory ,fp.put_file_name,fp.put_file_name,js.is_repeat,js.timing_type,js.timing_time," +
+                "fd.ftp_source_id , fp.ftp_source_id " +
+                "from job_meta a left join job_start_step js on a.id = js.job_meta_id left join ftp_put_step fp on a.id= fp.job_meta_id " +
+                " left join ftp_download_step fd on a.id = fd.job_meta_id " +
+                " limit " + page + "," + count;
+        return JdbcUtil.getJobInfoByPage(sql);
     }
 }

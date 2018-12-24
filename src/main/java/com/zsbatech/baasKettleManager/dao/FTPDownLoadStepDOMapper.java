@@ -19,4 +19,6 @@ public interface FTPDownLoadStepDOMapper {
     FTPDownLoadStepDO selectFTPDownLoadStepVOById(Integer jobMetaId);
 
     List<FTPDownLoadStepDO> selectBySourceId(int ftpSourceId);
+
+    int updateByJobId(FTPDownLoadStepDO ftpDownLoadStepDO);
 }

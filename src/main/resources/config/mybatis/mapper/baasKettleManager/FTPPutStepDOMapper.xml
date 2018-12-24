@@ -41,26 +41,48 @@
             #{updateTime,jdbcType=VARCHAR},#{stepName,jdbcType=VARCHAR})
     </insert>
 
-    <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from ftp_put_step
         where step_name = #{stepName,jdbcType=INTEGER}
         limit 1
     </select>
 
-    <select id="selectFTPPutStepVOById" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    <select id="selectFTPPutStepVOById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from ftp_put_step
         where job_meta_id = #{jobMetaId,jdbcType=INTEGER}
         limit 1
     </select>
 
-    <select id="selectBySourceId" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    <select id="selectBySourceId" resultMap="BaseResultMap" parameterType="java.lang.Integer">
         select
-        <include refid="Base_Column_List" />
+        <include refid="Base_Column_List"/>
         from ftp_put_step
         where ftp_source_id = #{ftpSourceId,jdbcType=INTEGER}
     </select>
+
+    <update id="updateByJobId" parameterType="com.zsbatech.baasKettleManager.model.FTPPutStepDO">
+        update ftp_put_step
+        <set>
+            <if test="ftp_source_id != null">
+                ftp_source_id = #{ftpSourceId,jdbcType=INTEGER},
+            </if>
+            <if test="ftp_directory != null">
+                ftp_directory = #{ftpDirectory,jdbcType=VARCHAR},
+            </if>
+            <if test="put_file_name != null">
+                put_file_name = #{putFileName,jdbcType=VARCHAR},
+            </if>
+            <if test="target_directory != null">
+                target_directory = #{targetDirectory,jdbcType=VARCHAR},
+            </if>
+            <if test="updatetime != null">
+                updatetime = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where job_meta_id = #{jobMetaId,jdbcType=INTEGER}
+    </update>
 </mapper>

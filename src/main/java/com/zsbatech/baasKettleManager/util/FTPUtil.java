@@ -3,6 +3,7 @@ package com.zsbatech.baasKettleManager.util;
 import com.zsbatech.baasKettleManager.model.FileCatalogDO;
 import com.zsbatech.baasKettleManager.vo.CatalogFileCountVO;
 import com.zsbatech.baasKettleManager.vo.FileCatalogNode;
+import com.zsbatech.baasKettleManager.vo.FileCatalogVO;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -176,5 +177,40 @@ public class FTPUtil {
             }
         }
         return nodeList;
+    }
+
+    /**
+     * 递归获取目录节点子目录
+     *
+     * @param fileCatalogVO
+     * @return
+     */
+    public static void getFileCatalogVOByRecur(FileCatalogVO fileCatalogVO, List<FileCatalogDO> fileCatalogDOList) {
+        for (FileCatalogVO fileCatalogVO2 : fileCatalogVO.getFileCatalogVOList()) {
+            for (FileCatalogDO fileCatalogDO1 : fileCatalogDOList) {
+                if (fileCatalogDO1.getParentId() == fileCatalogVO2.getId()) {
+                    FileCatalogVO fileCatalog = new FileCatalogVO();
+                    fileCatalog.setSourceCatalog(fileCatalogDO1.getSourceCatalog());
+                    fileCatalog.setId(fileCatalogDO1.getId());
+                    fileCatalog.setLayer(fileCatalogDO1.getLayer());
+                    if (fileCatalogVO2.getFileCatalogVOList() != null) {
+                        for(FileCatalogVO fileCatalogV:fileCatalogVO2.getFileCatalogVOList()){
+                            if(fileCatalogV.getSourceCatalog().equals(fileCatalog.getSourceCatalog())){
+                                break;
+                            }
+                        }
+                        fileCatalogVO2.getFileCatalogVOList().add(fileCatalog);
+                    } else {
+                        List<FileCatalogVO> fileCatalogVOList1 = new ArrayList<>();
+                        fileCatalogVOList1.add(fileCatalog);
+                        fileCatalogVO2.setFileCatalogVOList(fileCatalogVOList1);
+                    }
+                } else {
+                    if(fileCatalogVO2.getFileCatalogVOList() != null && fileCatalogVO2.getFileCatalogVOList().size() != 0) {
+                        getFileCatalogVOByRecur(fileCatalogVO2, fileCatalogDOList);
+                    }
+                }
+            }
+        }
     }
 }

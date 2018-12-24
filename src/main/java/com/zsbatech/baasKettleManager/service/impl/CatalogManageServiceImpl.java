@@ -19,7 +19,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.Inet4Address;
 import java.util.*;
 
 /**
@@ -116,6 +115,7 @@ public class CatalogManageServiceImpl implements CatalogManageService {
                             throw new IOException();
                         } catch (Exception e) {
                             e.printStackTrace();
+                            return null;
                         }
                     }
                 }
@@ -284,6 +284,13 @@ public class CatalogManageServiceImpl implements CatalogManageService {
         return fileCatalogVOList;
     }
 
+    /**
+     * 递归获取目录树形结构
+     *
+     * @param fileCatalogVOList
+     * @param fileCatalogNode
+     * @return
+     */
     public List<FileCatalogVO> getFileCatalogVOByRecur(List<FileCatalogVO> fileCatalogVOList, FileCatalogNode fileCatalogNode) {
         FileCatalogVO fileCatalogVO1 = null;
         for (FileCatalogVO fileCatalogVO : fileCatalogVOList) {
@@ -335,35 +342,44 @@ public class CatalogManageServiceImpl implements CatalogManageService {
         return 1;
     }
 
+    /**
+     * 通过id获取陌路信息并生成目录树
+     * @param id
+     * @return
+     */
     public FileCatalogVO queryNodeCatalog(Integer id) {
         List<FileCatalogDO> fileCatalogDOList = fileCatalogDOMapper.getAllChildCatalogById(id);
         FileCatalogVO fileCatalogVO = new FileCatalogVO();
         for (FileCatalogDO fileCatalogDO : fileCatalogDOList) {
             if (fileCatalogVO.getFileCatalogVOList() != null && fileCatalogVO.getFileCatalogVOList().size() != 0) {
-                for (FileCatalogVO fileCatalogVO1 : fileCatalogVO.getFileCatalogVOList()) {
-                    for (FileCatalogDO fileCatalogDO1 : fileCatalogDOList) {
-                        if (fileCatalogDO.getId() == fileCatalogDO1.getParentId()) {
-                            FileCatalogVO fileCatalog = new FileCatalogVO();
-                            fileCatalog.setSourceCatalog(fileCatalogDO1.getSourceCatalog());
-                            fileCatalog.setLayer(fileCatalogDO1.getLayer());
-                            if (fileCatalogVO.getFileCatalogVOList() != null) {
-                                fileCatalogVO.getFileCatalogVOList().add(fileCatalogVO1);
-                            } else {
-                                List<FileCatalogVO> fileCatalogVOList = new ArrayList<>();
-                                fileCatalogVOList.add(fileCatalogVO1);
-                                fileCatalogVO.setFileCatalogVOList(fileCatalogVOList);
-                            }
-                        }
-                    }
-                }
+                FTPUtil.getFileCatalogVOByRecur(fileCatalogVO,fileCatalogDOList);
+//                for (FileCatalogVO fileCatalogVO2 : fileCatalogVO.getFileCatalogVOList()) {
+//                    for (FileCatalogDO fileCatalogDO1 : fileCatalogDOList) {
+//                        if (fileCatalogDO1.getParentId() == fileCatalogVO2.getId()) {
+//                            FileCatalogVO fileCatalog = new FileCatalogVO();
+//                            fileCatalog.setSourceCatalog(fileCatalogDO1.getSourceCatalog());
+//                            fileCatalog.setId(fileCatalogDO1.getId());
+//                            fileCatalog.setLayer(fileCatalogDO1.getLayer());
+//                            if (fileCatalogVO2.getFileCatalogVOList() != null) {
+//                                fileCatalogVO2.getFileCatalogVOList().add(fileCatalog);
+//                            } else {
+//                                List<FileCatalogVO> fileCatalogVOList1 = new ArrayList<>();
+//                                fileCatalogVOList1.add(fileCatalog);
+//                                fileCatalogVO2.setFileCatalogVOList(fileCatalogVOList1);
+//                            }
+//                        }
+//                    }
+//                }
             } else {
                 fileCatalogVO.setLayer(fileCatalogDO.getLayer());
                 fileCatalogVO.setSourceCatalog(fileCatalogDO.getSourceCatalog());
+                fileCatalogVO.setId(fileCatalogDO.getId());
                 fileCatalogVO.setFileCount(fileCatalogDO.getFileCount());
                 for (FileCatalogDO fileCatalogDO1 : fileCatalogDOList) {
                     if (fileCatalogDO.getId() == fileCatalogDO1.getParentId()) {
                         FileCatalogVO fileCatalogVO1 = new FileCatalogVO();
                         fileCatalogVO1.setLayer(fileCatalogDO1.getLayer());
+                        fileCatalogVO1.setId(fileCatalogDO1.getId());
                         fileCatalogVO1.setSourceCatalog(fileCatalogDO1.getSourceCatalog());
                         if (fileCatalogVO.getFileCatalogVOList() != null) {
                             fileCatalogVO.getFileCatalogVOList().add(fileCatalogVO1);
