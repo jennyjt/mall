@@ -214,7 +214,7 @@ public class DBMigrationServiceImpl implements DBMigrationService {
                 select_sql = "SELECT * FROM " + dataMig.getSrcTable();
 
             }else{
-                select_sql = "SELECT * FROM " + dataMig.getSrcTable()+ " where "+ dataMig.getTimeStamp() + " > " +"\""+dataMig.getUpdatetime()+"\"";
+                select_sql = "SELECT * FROM " + dataMig.getSrcTable()+ " where "+ dataMig.getTimeStamp() + " > " +"\"0\"";
             }
 
             if(dataMig.getSqlString() != null){
@@ -279,7 +279,7 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             transMeta.addTransHop(new TransHopMeta(tableInputMetaStep,tableOutputMetaStep));
 
             if (saveTransMetaService.save(transMeta,DbMigTransUrl + dataMig.getJobName()+ ".ktr",true) &&
-                    saveTransMetaService.saveTransData(DbMigTransUrl + dataMig.getJobName()+ ".ktr",dataMig.getSrcDbconnId(),dataMig.getDstDbconnId())){
+                    saveTransMetaService.saveTransData(DbMigTransUrl + dataMig.getJobName()+ ".ktr",dataMig.getSrcDbconnId(),13)){
               return DbMigTransUrl + dataMig.getJobName()+ ".ktr";
 
             } else {
