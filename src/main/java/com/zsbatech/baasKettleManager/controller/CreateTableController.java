@@ -22,7 +22,7 @@ public class CreateTableController {
     @Autowired
     private CreateTableService createTableService;
 
-    @ApiOperation(value = "建标", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiOperation(value = "建表", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ApiResponses({@ApiResponse(code = Response.OK, message = "建表成功"),})
 
     @ApiImplicitParams(
