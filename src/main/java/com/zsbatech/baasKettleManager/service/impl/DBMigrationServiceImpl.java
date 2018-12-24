@@ -214,7 +214,7 @@ public class DBMigrationServiceImpl implements DBMigrationService {
                 select_sql = "SELECT * FROM " + dataMig.getSrcTable();
 
             }else{
-                select_sql = "SELECT * FROM " + dataMig.getSrcTable()+ " where "+ dataMig.getTimeStamp() + " > " +"\""+dataMig.getUpdatetime()+"\"";
+                select_sql = "SELECT * FROM " + dataMig.getSrcTable()+ " where "+ dataMig.getTimeStamp() + " > " +"\"0\"";
             }
 
             if(dataMig.getSqlString() != null){
