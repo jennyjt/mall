@@ -14,6 +14,7 @@ import com.zsbatech.baasKettleManager.util.Singleton;
 import com.zsbatech.baasKettleManager.util.StringUtil;
 import com.zsbatech.baasKettleManager.vo.*;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.http.client.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -344,6 +345,7 @@ public class CatalogManageServiceImpl implements CatalogManageService {
 
     /**
      * 通过id获取陌路信息并生成目录树
+     *
      * @param id
      * @return
      */
@@ -352,7 +354,7 @@ public class CatalogManageServiceImpl implements CatalogManageService {
         FileCatalogVO fileCatalogVO = new FileCatalogVO();
         for (FileCatalogDO fileCatalogDO : fileCatalogDOList) {
             if (fileCatalogVO.getFileCatalogVOList() != null && fileCatalogVO.getFileCatalogVOList().size() != 0) {
-                FTPUtil.getFileCatalogVOByRecur(fileCatalogVO,fileCatalogDOList);
+                FTPUtil.getFileCatalogVOByRecur(fileCatalogVO, fileCatalogDOList);
 //                for (FileCatalogVO fileCatalogVO2 : fileCatalogVO.getFileCatalogVOList()) {
 //                    for (FileCatalogDO fileCatalogDO1 : fileCatalogDOList) {
 //                        if (fileCatalogDO1.getParentId() == fileCatalogVO2.getId()) {
@@ -395,4 +397,17 @@ public class CatalogManageServiceImpl implements CatalogManageService {
         return fileCatalogVO;
     }
 
+
+    public List<FileVO> queryNodeFiles(int id) {
+        List<FileVO> fileVOList = new ArrayList<>();
+        List<FilesDO> filesDOList = filesDOMapper.selectFilesVOByCatalogId(id);
+        for (FilesDO filesDO : filesDOList) {
+            FileVO fileVO = new FileVO();
+            fileVO.setFileName(filesDO.getFileName());
+            fileVO.setCreateTime(DateUtils.formatDate(filesDO.getCreateTime()));
+            fileVO.setFileSource(filesDO.getFileSource());
+            fileVOList.add(fileVO);
+        }
+        return fileVOList;
+    }
 }

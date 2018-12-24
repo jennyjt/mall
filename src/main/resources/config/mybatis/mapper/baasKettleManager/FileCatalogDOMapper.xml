@@ -12,12 +12,26 @@
         <result column="alias_name" property="aliasName" jdbcType="VARCHAR"/>
         <result column="file_count" property="fileCount" jdbcType="INTEGER"/>
     </resultMap>
+
+    <resultMap id="UnionResultMap" type="com.zsbatech.baasKettleManager.model.FileCatalogDO">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="source_catalog" property="sourceCatalog" jdbcType="VARCHAR"/>
+        <result column="create_time" property="createTime" jdbcType="VARCHAR"/>
+        <result column="update_time" property="updateTime" jdbcType="VARCHAR"/>
+        <result column="create_user" property="createUser" jdbcType="VARCHAR"/>
+        <result column="parent_id" property="parentId" jdbcType="INTEGER"/>
+        <result column="layer" property="layer" jdbcType="TINYINT"/>
+        <result column="alias_name" property="aliasName" jdbcType="VARCHAR"/>
+        <result column="file_count" property="fileCount" jdbcType="INTEGER"/>
+        <collection property="filesDOList" ofType="FilesDO" select="getFilesVOList" column="id">
+        </collection>
+    </resultMap>
     <sql id="Base_Column_List">
-    id, source_catalog, createtime, updatetime,create_user,parent_id,layer,alias_name,file_count
+    id, source_catalog, create_time, update_time,create_user,parent_id,layer,alias_name,file_count
   </sql>
 
     <insert id="insert" parameterType="com.zsbatech.baasKettleManager.model.FileCatalogDO">
-    insert into file_catalog (id, source_catalog, createtime, updatetime,create_user,parent_id,layer,alias_name,file_count)
+    insert into file_catalog (id, source_catalog, create_time, update_time,create_user,parent_id,layer,alias_name,file_count)
     values (#{id,jdbcType=INTEGER}, #{sourceCatalog,jdbcType=VARCHAR},#{createTime,jdbcType=VARCHAR},
     #{updateTime,jdbcType=VARCHAR},#{createUser,jdbcType=VARCHAR},#{parentId,jdbcType=INTEGER},#{layer,jdbcType=TINYINT},
     #{aliasName,jdbcType=VARCHAR},#{fileCount,jdbcType=INTEGER})
@@ -62,10 +76,12 @@
 
     <!--  根据目录id获取子目录-->
     <select id="getAllChildCatalogById" resultMap="BaseResultMap" parameterType="java.lang.Integer">
-    select id, source_catalog,create_user,parent_id,layer,alias_name,file_count
-    from file_catalog
-    where find_in_set(id, getChildLst(#{id}))
-    order by layer
-  </select>
-
+        select id, source_catalog,create_user,parent_id,layer,alias_name,file_count
+        from file_catalog
+        <if test="id != null">
+            where
+            find_in_set(id, getChildLst(#{id}))
+        </if>
+        order by layer
+    </select>
 </mapper>

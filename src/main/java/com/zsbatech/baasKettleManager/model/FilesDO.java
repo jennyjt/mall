@@ -19,6 +19,8 @@ public class FilesDO {
 
     private String fileSource;
 
+    private FileCatalogDO fileCatalogDO;
+
     public Integer getId() {
         return id;
     }
@@ -81,6 +83,14 @@ public class FilesDO {
 
     public void setFileSource(String fileSource) {
         this.fileSource = fileSource;
+    }
+
+    public FileCatalogDO getFileCatalogDO() {
+        return fileCatalogDO;
+    }
+
+    public void setFileCatalogDO(FileCatalogDO fileCatalogDO) {
+        this.fileCatalogDO = fileCatalogDO;
     }
 
     public String toString(){

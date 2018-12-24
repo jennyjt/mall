@@ -28,4 +28,6 @@ public interface FilesDOMapper {
     List<FilesDO> getFilesByFileIds(@Param("ids") List<Integer> fileIds);
 
     List<FilesDO> selectFilesVOByName(List<String> FileName);
+
+    List<FilesDO> selectFilesVOByCatalogId(int id);
 }

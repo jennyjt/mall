@@ -37,6 +37,8 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
 
     private String ftpJobUrl = ConfigUtil.getPropertyValue("file.ftpJobUrl");
 
+    private String ftpSrcSourceId = ConfigUtil.getPropertyValue("file.ftpSourceId");
+
     @Autowired
     private FtpSourceManageDOMapper ftpSourceManageDOMapper;
 
@@ -228,7 +230,7 @@ public class FileSyncJobServiceImpl implements FileSyncJobService {
      * @return
      */
     public String fileSyncFtpToFtpJobMeta(JobStartStepDO jobStartStepDO, FTPPutStepDO ftpPutStepDO, int srcId, FTPDownLoadStepDO ftpDownLoadStepDO, int dstId, String jobName) {
-        FtpSourceManageDO srcFtpSourceMangeDO = ftpSourceManageDOMapper.selectById(srcId);
+        FtpSourceManageDO srcFtpSourceMangeDO = ftpSourceManageDOMapper.selectById(Integer.valueOf(ftpSrcSourceId));
         FtpSourceManageDO dstFtpSourceMangeDO = ftpSourceManageDOMapper.selectById(dstId);
         try {
             KettleEnvironment.init();

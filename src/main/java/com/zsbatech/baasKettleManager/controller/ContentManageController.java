@@ -5,6 +5,7 @@ import com.zsbatech.baasKettleManager.model.FilesDO;
 import com.zsbatech.baasKettleManager.service.CatalogManageService;
 import com.zsbatech.baasKettleManager.vo.FileCatalogVO;
 import com.zsbatech.baasKettleManager.vo.FileQueryVO;
+import com.zsbatech.baasKettleManager.vo.FileVO;
 import com.zsbatech.base.common.ResponseData;
 import com.zsbatech.base.constants.RequestField;
 import com.zsbatech.base.constants.Response;
@@ -170,13 +171,35 @@ public class ContentManageController {
     )
     @RequestMapping(value = "/queryNodeCatalog", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseBody
-    public ResponseData<FileCatalogVO> queryNodeCatalog(@RequestParam(name = "id") Integer id) {
+    public ResponseData<FileCatalogVO> queryNodeCatalog(Integer id) {
         FileCatalogVO fileCatalogVO = catalogManageService.queryNodeCatalog(id);
         ResponseData<FileCatalogVO> responseData = new ResponseData<>();
         if (fileCatalogVO != null ) {
             responseData.setOK(200, "查询成功", fileCatalogVO);
         }else if(fileCatalogVO == null) {
             responseData.setOK(200,"没有目录存在",null);
+        }else {
+            responseData.setError("查询错误");
+        }
+        return responseData;
+    }
+
+    @ApiOperation(value = "获取目录节点的文件", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiResponses({@ApiResponse(code = Response.OK, message = "获取目录节点的文件成功"),})
+    @ApiImplicitParams(
+            value = {
+                    @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
+            }
+    )
+    @RequestMapping(value = "/queryNodeFiles", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseBody
+    public ResponseData<List<FileVO>> queryNodeFiles(@RequestParam Integer id) {
+        List<FileVO> filesVOList = catalogManageService.queryNodeFiles(id);
+        ResponseData<List<FileVO>> responseData = new ResponseData<>();
+        if (filesVOList != null && filesVOList.size() != 0) {
+            responseData.setOK(200, "查询成功", filesVOList);
+        }else if(filesVOList == null) {
+            responseData.setOK(200,"目录下无文件",null);
         }else {
             responseData.setError("查询错误");
         }

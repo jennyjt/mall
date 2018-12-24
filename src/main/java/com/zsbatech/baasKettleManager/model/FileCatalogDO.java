@@ -1,6 +1,7 @@
 package com.zsbatech.baasKettleManager.model;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
@@ -28,6 +29,7 @@ public class FileCatalogDO {
 
     private int fileCount;
 
+    private List<FilesDO> filesDOList;
     public int getId() {
         return id;
     }
@@ -64,6 +66,10 @@ public class FileCatalogDO {
         return fileCount;
     }
 
+    public List<FilesDO> getFilesDOList() {
+        return filesDOList;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -98,5 +104,9 @@ public class FileCatalogDO {
 
     public void setFileCount(int fileCount) {
         this.fileCount = fileCount;
+    }
+
+    public void setFilesDOList(List<FilesDO> filesDOList) {
+        this.filesDOList = filesDOList;
     }
 }

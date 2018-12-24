@@ -11,6 +11,28 @@
         <result column="create_user" property="createUser" jdbcType="VARCHAR"/>
         <result column="file_source" jdbcType="VARCHAR" property="fileSource" />
     </resultMap>
+
+    <resultMap id="UnionResultMap" type="com.zsbatech.baasKettleManager.model.FilesDO">
+        <id column="id" property="id" jdbcType="INTEGER"/>
+        <result column="file_name" property="fileName" jdbcType="VARCHAR"/>
+        <result column="file_catalog" property="fileCatalog" jdbcType="VARCHAR"/>
+        <result column="origin_name" property="originName" jdbcType="VARCHAR"/>
+        <result column="createtime" property="createTime" jdbcType="VARCHAR"/>
+        <result column="updatetime" property="updateTime" jdbcType="VARCHAR"/>
+        <result column="create_user" property="createUser" jdbcType="VARCHAR"/>
+        <result column="file_source" jdbcType="VARCHAR" property="fileSource" />
+        <association property="fileCatalogDO" javaType="com.zsbatech.baasKettleManager.model.FileCatalogDO" select="getFileCatalogDO" column="id">
+            <!--<id column="id" property="id" jdbcType="INTEGER"/>-->
+            <!--<result column="source_catalog" property="sourceCatalog" jdbcType="VARCHAR"/>-->
+            <!--<result column="createtime" property="createTime" jdbcType="VARCHAR"/>-->
+            <!--<result column="updatetime" property="updateTime" jdbcType="VARCHAR"/>-->
+            <!--<result column="create_user" property="createUser" jdbcType="VARCHAR"/>-->
+            <!--<result column="parent_id" property="parentId" jdbcType="INTEGER"/>-->
+            <!--<result column="layer" property="layer" jdbcType="TINYINT"/>-->
+            <!--<result column="alias_name" property="aliasName" jdbcType="VARCHAR"/>-->
+            <!--<result column="file_count" property="fileCount" jdbcType="INTEGER"/>-->
+        </association>
+    </resultMap>
     <sql id="Base_Column_List">
     id, file_name, file_catalog,origin_name,createtime, updatetime, create_user, file_source
   </sql>
@@ -86,4 +108,12 @@
             </foreach>
         </where>
     </select>
+
+    <select id="selectFilesVOByCatalogId" resultMap="UnionResultMap" parameterType="java.lang.Integer">
+        select file_name ,file_source,createtime
+        from  files_file_catalog ffc left join file_catalog fc on ffc.file_catalog_id = fc.id
+        left join files f on f.id = ffc.file_id
+        where ffc.file_catalog_id = #{id,jdbcType=INTEGER}
+    </select>
+
 </mapper>
