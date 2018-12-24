@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 public interface DBMigrationService {
     ResponseData<String> cycleMigration(DataMig dataMig);
     Pagination<DbJobInfo> getJobList(Integer currPage, Integer pageSize);
+    Pagination<DbResponse> getDbList(Integer currPage, Integer pageSize);
     String generateKtr(DataMig dataMig);
     DbJobInfo getJobDetail(String jobName);
     boolean checkUniqueJobName(String jobName);

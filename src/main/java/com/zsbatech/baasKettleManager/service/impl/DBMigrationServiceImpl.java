@@ -4,10 +4,7 @@ package com.zsbatech.baasKettleManager.service.impl;
 import com.github.pagehelper.page.PageMethod;
 import com.zsbatech.baasKettleManager.dao.DbManagementMapper;
 import com.zsbatech.baasKettleManager.dao.JobMetaMapper;
-import com.zsbatech.baasKettleManager.model.DataMig;
-import com.zsbatech.baasKettleManager.model.DbJobInfo;
-import com.zsbatech.baasKettleManager.model.DbManagement;
-import com.zsbatech.baasKettleManager.model.JobMetaExample;
+import com.zsbatech.baasKettleManager.model.*;
 import com.zsbatech.baasKettleManager.service.DBMigrationService;
 import com.zsbatech.baasKettleManager.service.JobLogService;
 import com.zsbatech.baasKettleManager.service.SaveJobMetaService;
@@ -360,6 +357,71 @@ public class DBMigrationServiceImpl implements DBMigrationService {
     }
 
     @Override
+    public Pagination<DbResponse> getDbList(Integer currPage, Integer pageSize) {
+        PageMethod.startPage(currPage, pageSize);
+        List<DbResponse> dbResponses = new ArrayList<DbResponse>();
+        DbResponse dbResponse = null;
+
+        Connection conn;
+        String driver = "com.mysql.jdbc.Driver";
+        String url = "jdbc:mysql://106.75.73.34:8306/kettle_manager?allowMultiQueries=true&serverTimezone=UTC&useSSL=false&useUnicode=true&characterEncoding=UTF-8";
+        String username = "root";
+        String password = "Zsba@mysql2018*";
+
+        try {
+            Class.forName(driver);
+            conn = DriverManager.getConnection(url,username,password);
+            Statement stmt = conn.createStatement();
+
+            String sql_count = "select target_table,max(update_time) as updatetime ,count(*) from insert_update_step group by target_table;";
+
+            ResultSet rs = stmt.executeQuery(sql_count);
+
+            while(rs.next()){
+                dbResponse = new DbResponse();
+
+                dbResponse.setLinkName(rs.getString("target_table"));
+                dbResponse.setUpdateTime(rs.getString("updatetime"));
+                dbResponse.setJobNum(rs.getLong(3));
+
+
+                dbResponses.add(dbResponse);
+            }
+
+            for (int i=0;i<dbResponses.size();i++){
+
+
+                String sql = "select count(*) from "+dbResponses.get(i).getLinkName();
+                Statement statement = conn.prepareStatement(sql);
+                ResultSet rs2 = statement.executeQuery(sql);
+                int rowCount=0;
+                if (rs2.next()){
+                    rowCount = rs2.getInt(1);
+                }
+                dbResponses.get(i).setLinesSuccessed((long)rowCount);
+                statement.close();
+                rs2.close();
+            }
+
+
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+        Pagination<DbResponse> dbResponsePagination = new Pagination<DbResponse>(dbResponses);
+        return dbResponsePagination;
+
+    }
+
+
+
+    @Override
     public Pagination<DbJobInfo> getJobList(Integer currPage, Integer pageSize) {
         PageMethod.startPage(currPage, pageSize);
         List<DbJobInfo> dbJobInfoList = new ArrayList<DbJobInfo>();
@@ -385,10 +447,10 @@ public class DBMigrationServiceImpl implements DBMigrationService {
 
             while(rs.next()){
                 dbJobInfo = new DbJobInfo();
-                 rs.getString("job_name");
+                rs.getString("job_name");
                 dbJobInfo.setJobName(rs.getString("job_name"));
                 dbJobInfo.setLinkName(rs.getString("db_connection_name"));
-                dbJobInfo.setPathStr("job");
+
                 if ("0".equals(rs.getString("job_type").trim())){
 
                     dbJobInfo.setJobType("单次任务");
@@ -402,14 +464,9 @@ public class DBMigrationServiceImpl implements DBMigrationService {
                     dbJobInfo.setExecuteStatus("未执行");
                 }
 
-                dbJobInfo.setCreatetime(rs.getDate("createtime"));
+
                 dbJobInfo.setUpdatetime(rs.getDate("updatetime"));
                 dbJobInfo.setTableName(rs.getString("target_table"));
-                dbJobInfo.setUpdateType("增量更新");
-                dbJobInfo.setExecuteSql(rs.getString("exc_sql"));
-                if (rs.getString("update_lookup")!=null && rs.getString("update_lookup")!=""){
-                    dbJobInfo.setLookup(rs.getString("update_lookup"));
-                }
 
                 dbJobInfoList.add(dbJobInfo);
             }

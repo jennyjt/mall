@@ -2,6 +2,7 @@ package com.zsbatech.baasKettleManager.controller;
 
 import com.zsbatech.baasKettleManager.model.DataMig;
 import com.zsbatech.baasKettleManager.model.DbJobInfo;
+import com.zsbatech.baasKettleManager.model.DbResponse;
 import com.zsbatech.baasKettleManager.service.DBMigrationService;
 import com.zsbatech.baasKettleManager.service.JobTransService;
 import com.zsbatech.base.common.Pagination;
@@ -113,6 +114,37 @@ public class DBMigrationController {
       }else{
           responseData.setError("Fail!");
       }
+        return responseData;
+
+    }
+
+
+
+
+
+    @ApiOperation(value = "获取数据库目录列表", notes = "", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ApiResponses({@ApiResponse(code = Response.OK, message = "查询成功"),})
+
+    @ApiImplicitParams(
+            value = {
+                    @ApiImplicitParam(paramType = "header", name = RequestField.TOKEN, dataType = "String", required = true, value = "token"),
+            }
+    )
+
+    @RequestMapping(value = "/dblist", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseBody
+    public ResponseData<Pagination<DbResponse>> getDbList(HttpServletRequest request,
+                                                          @RequestParam(name = "curr_page", defaultValue = "1") Integer currPage,
+                                                          @RequestParam(name = "page_size", defaultValue = "10") Integer pageSize)
+    {
+        ResponseData<Pagination<DbResponse>> responseData = new ResponseData<>();
+
+        Pagination<DbResponse> result  = dbMigrationService.getDbList(currPage, pageSize);
+        if (result != null) {
+            responseData.setOK(200, "success", result);
+        }else{
+            responseData.setError("Fail!");
+        }
         return responseData;
 
     }
