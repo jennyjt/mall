@@ -194,12 +194,16 @@ public class FTPUtil {
                     fileCatalog.setId(fileCatalogDO1.getId());
                     fileCatalog.setLayer(fileCatalogDO1.getLayer());
                     if (fileCatalogVO2.getFileCatalogVOList() != null) {
+                        boolean exist = false;
                         for(FileCatalogVO fileCatalogV:fileCatalogVO2.getFileCatalogVOList()){
                             if(fileCatalogV.getSourceCatalog().equals(fileCatalog.getSourceCatalog())){
+                                exist = true;
                                 break;
                             }
                         }
-                        fileCatalogVO2.getFileCatalogVOList().add(fileCatalog);
+                        if(exist == false) {
+                            fileCatalogVO2.getFileCatalogVOList().add(fileCatalog);
+                        }
                     } else {
                         List<FileCatalogVO> fileCatalogVOList1 = new ArrayList<>();
                         fileCatalogVOList1.add(fileCatalog);
