@@ -67,19 +67,19 @@
     <update id="updateByJobId" parameterType="com.zsbatech.baasKettleManager.model.FTPDownLoadStepDO" >
         update ftp_download_step
         <set >
-            <if test="ftp_source_id != null">
+            <if test="ftpSourceId != null">
                 ftp_source_id = #{ftpSourceId,jdbcType=INTEGER},
             </if>
-            <if test="ftp_directory != null" >
+            <if test="ftpDirectory != null" >
                 ftp_directory = #{ftpDirectory,jdbcType=VARCHAR},
             </if>
-            <if test="ftp_file_name != null" >
+            <if test="ftpFileName != null" >
                 ftp_file_name = #{ftpFileName,jdbcType=VARCHAR},
             </if>
-            <if test="target_directory != null" >
+            <if test="targetDirectory != null" >
                 target_directory = #{targetDirectory,jdbcType=VARCHAR},
             </if>
-            <if test="updatetime != null" >
+            <if test="updateTime != null" >
                 updatetime = #{updateTime,jdbcType=TIMESTAMP},
             </if>
         </set>

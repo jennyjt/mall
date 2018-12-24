@@ -40,14 +40,13 @@
   <update id="updateByJobId" parameterType="com.zsbatech.baasKettleManager.model.JobStartStepDO">
     update job_start_step
     <set>
-
-      <if test="timing_type != null ">
+      <if test="timingType != null ">
         timing_type = #{timingType,jdbcType=TINYINT},
       </if>
-      <if test="timing_time != null">
+      <if test="timingTime != null">
         timing_time = #{timingTime,jdbcType=TINYINT},
       </if>
-      <if test="is_repeat != null">
+      <if test="isRepeat != null">
         is_repeat = #{isRepeat,jdbcType=TINYINT},
       </if>
     </set>
