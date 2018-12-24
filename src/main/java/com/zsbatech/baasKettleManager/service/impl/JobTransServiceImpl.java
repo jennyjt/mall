@@ -53,6 +53,8 @@ public class JobTransServiceImpl implements JobTransService {
     private com.zsbatech.baasKettleManager.dao.InsertUpdateStepMapper insertUpdateStepMapper;
     @Autowired
     private JobMetaMapper jobMetaMapper;
+    @Autowired
+    private JobStartStepDOMapper jobStartStepDOMapper;
 
     private String DbMigTransUrl = ConfigUtil.getPropertyValue("dbmig.transMetaUrl");
     private String DbMigJobUrl = ConfigUtil.getPropertyValue("file.jobMetaUrl");
@@ -132,6 +134,18 @@ public class JobTransServiceImpl implements JobTransService {
             jobMetaList.get(0).setUpdatetime(new Date());
             jobMetaList.get(0).setJobType(dataMig.getSchedulerType().toString());
             jobMetaMapper.updateByExample(jobMetaList.get(0),jobMetaExample);
+
+            JobStartStepDO jobStartStepDO = new JobStartStepDO();
+            jobStartStepDO.setTimingTime(Short.valueOf(dataMig.getCycleTime()));
+            jobStartStepDO.setTimingType(dataMig.getSchedulerType().shortValue());
+            if(dataMig.getSchedulerType()==0){
+                jobStartStepDO.setIsRepeat((short)0);
+            }else {
+                jobStartStepDO.setIsRepeat((short)1);
+                 }
+            jobStartStepDO.setJobMetaId(jobMetaList.get(0).getId());
+
+            jobStartStepDOMapper.updateByJobId(jobStartStepDO);
 
             if (savektr) {
                 responseData.set(200, "success", DbMigJobUrl + dataMig.getJobName() + ".kjb");

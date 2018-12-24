@@ -18,7 +18,15 @@ public class DbJobInfo {
     private String updateType;
     private String lookup;
     private String createUser;
+    private String cycleTime;
 
+    public String getCycleTime() {
+        return cycleTime;
+    }
+
+    public void setCycleTime(String cycleTime) {
+        this.cycleTime = cycleTime;
+    }
 
     public String getPathStr() {
         return pathStr;

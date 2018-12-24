@@ -66,9 +66,6 @@ public class JobStartStepDO {
         this.stepName = stepName;
     }
 
-    public void setTimingType(short timingType) {
-        this.timingType = timingType;
-    }
 
     public void setIsRepeat(short isRepeat) {
         this.isRepeat = isRepeat;
@@ -90,4 +87,7 @@ public class JobStartStepDO {
         this.updateTime = updateTime;
     }
 
+    public void setTimingType(short timingType) {
+        this.timingType = timingType;
+    }
 }

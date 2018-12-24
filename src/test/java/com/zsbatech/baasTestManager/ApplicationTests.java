@@ -1,5 +1,6 @@
 package com.zsbatech.baasTestManager;
 
+import com.zsbatech.baasKettleManager.dao.JobStartStepDOMapper;
 import com.zsbatech.baasKettleManager.model.FTPDownLoadStepDO;
 import com.zsbatech.baasKettleManager.model.JobStartStepDO;
 import com.zsbatech.baasKettleManager.service.*;
@@ -32,6 +33,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class ApplicationTests {
+
+    @Autowired
+    private JobStartStepDOMapper jobStartStepDOMapper;
 
     @Autowired
     private FtpSourceManageServiceImpl ftpSourceManageService;
@@ -220,7 +224,14 @@ public class ApplicationTests {
 
     @Test
     public void testFileCatalog(){
-        fileSyncJobService.saveFileInfo(4,"00000000",null,null);
-        JWTUtils.validateToken(RequestField.TOKEN).getUsername();
+//       fileSyncJobService.saveFileInfo(4,"00000000",null,null);
+//       JWTUtils.validateToken(RequestField.TOKEN).getUsername();
+        JobStartStepDO jobStartStepDO = new JobStartStepDO();
+        jobStartStepDO.setIsRepeat((short)1);
+        jobStartStepDO.setTimingType((short)1);
+        jobStartStepDO.setTimingTime((short) 10);
+        jobStartStepDO.setJobMetaId(99);
+        jobStartStepDOMapper.updateByJobId(jobStartStepDO);
     }
+
 }

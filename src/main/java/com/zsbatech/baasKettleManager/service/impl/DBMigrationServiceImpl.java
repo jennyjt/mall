@@ -127,6 +127,8 @@ public class DBMigrationServiceImpl implements DBMigrationService {
 
            boolean savektr = saveJobMetaService.save(jobMeta,DbMigJobUrl+dataMig.getJobName()+".kjb",true);
            boolean savejob = saveJobMetaService.saveTransJobData(DbMigJobUrl+dataMig.getJobName()+".kjb");
+
+
            if (savektr&&savejob){
                responseData.set(200,"success",DbMigJobUrl+dataMig.getJobName()+".kjb");
            }
@@ -439,9 +441,9 @@ public class DBMigrationServiceImpl implements DBMigrationService {
             Statement stmt = conn.createStatement();
 
 
-            String sql = "select a.job_name,a.updatetime,a.createtime,a.execute_status,a.job_type,b.exc_sql ,b.db_connection_name," +
-                    "c.target_table,c.update_lookup from job_meta a,tableinput_step b,insert_update_step c where " +
-                    "a.trans_meta_id = b.trans_meta_id and b.trans_meta_id= c.trans_meta_id and a.trans_meta_id>0";
+            String sql = "select a.job_name,a.updatetime,a.createtime,a.execute_status,b.exc_sql ,b.db_connection_name,\n" +
+                    "c.target_table,c.update_lookup, d.timing_type,d.timing_time from job_meta a,tableinput_step b,insert_update_step c,job_start_step d where \n" +
+                    "a.trans_meta_id = b.trans_meta_id and b.trans_meta_id= c.trans_meta_id and d.job_meta_id = a.id and a.trans_meta_id>0;";
 
             ResultSet rs = stmt.executeQuery(sql);
 
@@ -451,11 +453,12 @@ public class DBMigrationServiceImpl implements DBMigrationService {
                 dbJobInfo.setJobName(rs.getString("job_name"));
                 dbJobInfo.setLinkName(rs.getString("db_connection_name"));
 
-                if ("0".equals(rs.getString("job_type").trim())){
+                if ("0".equals(rs.getString("timing_type").trim())){
 
                     dbJobInfo.setJobType("单次任务");
                 }else{
                     dbJobInfo.setJobType("周期任务");
+                    dbJobInfo.setCycleTime(rs.getString("timing_time"));
                 }
 
                 if(rs.getInt("execute_status")==1){
