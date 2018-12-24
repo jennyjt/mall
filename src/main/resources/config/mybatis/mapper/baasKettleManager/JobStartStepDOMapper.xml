@@ -37,7 +37,7 @@
     limit 1
   </select>
 
-  <update id="updateByJobId" parameterType="com.zsbatech.baasKettleManager.model.FTPPutStepDO">
+  <update id="updateByJobId" parameterType="com.zsbatech.baasKettleManager.model.JobStartStepDO">
     update job_start_step
     <set>
 
