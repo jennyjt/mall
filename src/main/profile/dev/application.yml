@@ -37,9 +37,9 @@ spring:
       charset: UTF-8
  # 数据库访问配置
   datasource:
-    url: jdbc:mysql://106.75.73.34:8306/kettle_manager?allowMultiQueries=true&serverTimezone=UTC&useSSL=false&useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://localhost:3306/test?allowMultiQueries=true&serverTimezone=UTC&useSSL=false&useUnicode=true&characterEncoding=UTF-8
     username: root
-    password: Zsba@mysql2018*
+    password: root
     driver-class-name: com.mysql.jdbc.Driver
 #    platform: mysql
  # 使用druid
@@ -70,7 +70,7 @@ server:
     max-threads:  800
     # tomcat的URI编码
     uri-encoding: UTF-8
-  port: 8495
+  port: 8001
   ssl:
     key-store: classpath:config/keystore/keystore.p12
     key-store-password: uniapp

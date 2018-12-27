@@ -1,10 +1,6 @@
 package com.zsbatech.baasKettleManager;
 
 
-import com.zsbatech.baasKettleManager.model.DbManagement;
-import com.zsbatech.baasKettleManager.model.FtpSourceManager;
-import com.zsbatech.baasKettleManager.service.FtpSouceManageService;
-import com.zsbatech.baasKettleManager.util.TableUtil;
 import com.zsbatech.base.common.Pagination;
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -38,8 +38,8 @@ public class CustomizationConfiguration implements WebServerFactoryCustomizer<Co
         Connector connector = new Connector("org.apache.coyote.http11.Http11NioProtocol");
         connector.setScheme("http");
         connector.setSecure(false);
-        connector.setPort(8093);
-        connector.setRedirectPort(8495);
+        connector.setPort(8000);
+        connector.setRedirectPort(8001);
         return connector;
     }
 }

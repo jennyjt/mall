@@ -1,7 +1,5 @@
 package com.zsbatech.baasKettleManager;
 
-import com.zsbatech.baasKettleManager.model.DbManagement;
-import com.zsbatech.baasKettleManager.service.DataSouceManageService;
 import com.zsbatech.base.common.Pagination;
 import com.zsbatech.base.utils.DateUtils;
 import org.junit.Test;

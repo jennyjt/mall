@@ -1,0 +1,430 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zsbatech.baasKettleManager.dao.MyProductMapper" >
+  <resultMap id="BaseResultMap" type="com.zsbatech.baasKettleManager.model.MyProduct" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="pname" property="pname" jdbcType="VARCHAR" />
+    <result column="price" property="price" jdbcType="REAL" />
+    <result column="type" property="type" jdbcType="VARCHAR" />
+    <result column="postfee" property="postfee" jdbcType="REAL" />
+    <result column="parameters" property="parameters" jdbcType="VARCHAR" />
+    <result column="video_path" property="videoPath" jdbcType="VARCHAR" />
+    <result column="list_picture_path" property="listPicturePath" jdbcType="VARCHAR" />
+    <result column="month_sales" property="monthSales" jdbcType="INTEGER" />
+    <result column="creat_time" property="creatTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="datail_picture_path" property="datailPicturePath" jdbcType="VARCHAR" />
+    <result column="spec" property="spec" jdbcType="VARCHAR" />
+    <result column="discount_price" property="discountPrice" jdbcType="REAL" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.zsbatech.baasKettleManager.model.MyProduct" extends="BaseResultMap" >
+    <result column="details" property="details" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, pname, price, type, postfee, parameters, video_path, list_picture_path, month_sales, 
+    creat_time, update_time, datail_picture_path, spec, discount_price
+  </sql>
+  <sql id="Blob_Column_List" >
+    details
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.zsbatech.baasKettleManager.model.MyProductExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from my_product
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.zsbatech.baasKettleManager.model.MyProductExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from my_product
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from my_product
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from my_product
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.zsbatech.baasKettleManager.model.MyProductExample" >
+    delete from my_product
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.zsbatech.baasKettleManager.model.MyProduct" >
+    insert into my_product (id, pname, price, 
+      type, postfee, parameters, 
+      video_path, list_picture_path, month_sales, 
+      creat_time, update_time, datail_picture_path, 
+      spec, discount_price, details
+      )
+    values (#{id,jdbcType=INTEGER}, #{pname,jdbcType=VARCHAR}, #{price,jdbcType=REAL}, 
+      #{type,jdbcType=VARCHAR}, #{postfee,jdbcType=REAL}, #{parameters,jdbcType=VARCHAR}, 
+      #{videoPath,jdbcType=VARCHAR}, #{listPicturePath,jdbcType=VARCHAR}, #{monthSales,jdbcType=INTEGER}, 
+      #{creatTime,jdbcType=TIMESTAMP}, #{updateTime,jdbcType=TIMESTAMP}, #{datailPicturePath,jdbcType=VARCHAR}, 
+      #{spec,jdbcType=VARCHAR}, #{discountPrice,jdbcType=REAL}, #{details,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.zsbatech.baasKettleManager.model.MyProduct" >
+    insert into my_product
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        id,
+      </if>
+      <if test="pname != null" >
+        pname,
+      </if>
+      <if test="price != null" >
+        price,
+      </if>
+      <if test="type != null" >
+        type,
+      </if>
+      <if test="postfee != null" >
+        postfee,
+      </if>
+      <if test="parameters != null" >
+        parameters,
+      </if>
+      <if test="videoPath != null" >
+        video_path,
+      </if>
+      <if test="listPicturePath != null" >
+        list_picture_path,
+      </if>
+      <if test="monthSales != null" >
+        month_sales,
+      </if>
+      <if test="creatTime != null" >
+        creat_time,
+      </if>
+      <if test="updateTime != null" >
+        update_time,
+      </if>
+      <if test="datailPicturePath != null" >
+        datail_picture_path,
+      </if>
+      <if test="spec != null" >
+        spec,
+      </if>
+      <if test="discountPrice != null" >
+        discount_price,
+      </if>
+      <if test="details != null" >
+        details,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="pname != null" >
+        #{pname,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        #{price,jdbcType=REAL},
+      </if>
+      <if test="type != null" >
+        #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="postfee != null" >
+        #{postfee,jdbcType=REAL},
+      </if>
+      <if test="parameters != null" >
+        #{parameters,jdbcType=VARCHAR},
+      </if>
+      <if test="videoPath != null" >
+        #{videoPath,jdbcType=VARCHAR},
+      </if>
+      <if test="listPicturePath != null" >
+        #{listPicturePath,jdbcType=VARCHAR},
+      </if>
+      <if test="monthSales != null" >
+        #{monthSales,jdbcType=INTEGER},
+      </if>
+      <if test="creatTime != null" >
+        #{creatTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="datailPicturePath != null" >
+        #{datailPicturePath,jdbcType=VARCHAR},
+      </if>
+      <if test="spec != null" >
+        #{spec,jdbcType=VARCHAR},
+      </if>
+      <if test="discountPrice != null" >
+        #{discountPrice,jdbcType=REAL},
+      </if>
+      <if test="details != null" >
+        #{details,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.zsbatech.baasKettleManager.model.MyProductExample" resultType="java.lang.Integer" >
+    select count(*) from my_product
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update my_product
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.pname != null" >
+        pname = #{record.pname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.price != null" >
+        price = #{record.price,jdbcType=REAL},
+      </if>
+      <if test="record.type != null" >
+        type = #{record.type,jdbcType=VARCHAR},
+      </if>
+      <if test="record.postfee != null" >
+        postfee = #{record.postfee,jdbcType=REAL},
+      </if>
+      <if test="record.parameters != null" >
+        parameters = #{record.parameters,jdbcType=VARCHAR},
+      </if>
+      <if test="record.videoPath != null" >
+        video_path = #{record.videoPath,jdbcType=VARCHAR},
+      </if>
+      <if test="record.listPicturePath != null" >
+        list_picture_path = #{record.listPicturePath,jdbcType=VARCHAR},
+      </if>
+      <if test="record.monthSales != null" >
+        month_sales = #{record.monthSales,jdbcType=INTEGER},
+      </if>
+      <if test="record.creatTime != null" >
+        creat_time = #{record.creatTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updateTime != null" >
+        update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.datailPicturePath != null" >
+        datail_picture_path = #{record.datailPicturePath,jdbcType=VARCHAR},
+      </if>
+      <if test="record.spec != null" >
+        spec = #{record.spec,jdbcType=VARCHAR},
+      </if>
+      <if test="record.discountPrice != null" >
+        discount_price = #{record.discountPrice,jdbcType=REAL},
+      </if>
+      <if test="record.details != null" >
+        details = #{record.details,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update my_product
+    set id = #{record.id,jdbcType=INTEGER},
+      pname = #{record.pname,jdbcType=VARCHAR},
+      price = #{record.price,jdbcType=REAL},
+      type = #{record.type,jdbcType=VARCHAR},
+      postfee = #{record.postfee,jdbcType=REAL},
+      parameters = #{record.parameters,jdbcType=VARCHAR},
+      video_path = #{record.videoPath,jdbcType=VARCHAR},
+      list_picture_path = #{record.listPicturePath,jdbcType=VARCHAR},
+      month_sales = #{record.monthSales,jdbcType=INTEGER},
+      creat_time = #{record.creatTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      datail_picture_path = #{record.datailPicturePath,jdbcType=VARCHAR},
+      spec = #{record.spec,jdbcType=VARCHAR},
+      discount_price = #{record.discountPrice,jdbcType=REAL},
+      details = #{record.details,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update my_product
+    set id = #{record.id,jdbcType=INTEGER},
+      pname = #{record.pname,jdbcType=VARCHAR},
+      price = #{record.price,jdbcType=REAL},
+      type = #{record.type,jdbcType=VARCHAR},
+      postfee = #{record.postfee,jdbcType=REAL},
+      parameters = #{record.parameters,jdbcType=VARCHAR},
+      video_path = #{record.videoPath,jdbcType=VARCHAR},
+      list_picture_path = #{record.listPicturePath,jdbcType=VARCHAR},
+      month_sales = #{record.monthSales,jdbcType=INTEGER},
+      creat_time = #{record.creatTime,jdbcType=TIMESTAMP},
+      update_time = #{record.updateTime,jdbcType=TIMESTAMP},
+      datail_picture_path = #{record.datailPicturePath,jdbcType=VARCHAR},
+      spec = #{record.spec,jdbcType=VARCHAR},
+      discount_price = #{record.discountPrice,jdbcType=REAL}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.zsbatech.baasKettleManager.model.MyProduct" >
+    update my_product
+    <set >
+      <if test="pname != null" >
+        pname = #{pname,jdbcType=VARCHAR},
+      </if>
+      <if test="price != null" >
+        price = #{price,jdbcType=REAL},
+      </if>
+      <if test="type != null" >
+        type = #{type,jdbcType=VARCHAR},
+      </if>
+      <if test="postfee != null" >
+        postfee = #{postfee,jdbcType=REAL},
+      </if>
+      <if test="parameters != null" >
+        parameters = #{parameters,jdbcType=VARCHAR},
+      </if>
+      <if test="videoPath != null" >
+        video_path = #{videoPath,jdbcType=VARCHAR},
+      </if>
+      <if test="listPicturePath != null" >
+        list_picture_path = #{listPicturePath,jdbcType=VARCHAR},
+      </if>
+      <if test="monthSales != null" >
+        month_sales = #{monthSales,jdbcType=INTEGER},
+      </if>
+      <if test="creatTime != null" >
+        creat_time = #{creatTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updateTime != null" >
+        update_time = #{updateTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="datailPicturePath != null" >
+        datail_picture_path = #{datailPicturePath,jdbcType=VARCHAR},
+      </if>
+      <if test="spec != null" >
+        spec = #{spec,jdbcType=VARCHAR},
+      </if>
+      <if test="discountPrice != null" >
+        discount_price = #{discountPrice,jdbcType=REAL},
+      </if>
+      <if test="details != null" >
+        details = #{details,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.zsbatech.baasKettleManager.model.MyProduct" >
+    update my_product
+    set pname = #{pname,jdbcType=VARCHAR},
+      price = #{price,jdbcType=REAL},
+      type = #{type,jdbcType=VARCHAR},
+      postfee = #{postfee,jdbcType=REAL},
+      parameters = #{parameters,jdbcType=VARCHAR},
+      video_path = #{videoPath,jdbcType=VARCHAR},
+      list_picture_path = #{listPicturePath,jdbcType=VARCHAR},
+      month_sales = #{monthSales,jdbcType=INTEGER},
+      creat_time = #{creatTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      datail_picture_path = #{datailPicturePath,jdbcType=VARCHAR},
+      spec = #{spec,jdbcType=VARCHAR},
+      discount_price = #{discountPrice,jdbcType=REAL},
+      details = #{details,jdbcType=LONGVARCHAR}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.zsbatech.baasKettleManager.model.MyProduct" >
+    update my_product
+    set pname = #{pname,jdbcType=VARCHAR},
+      price = #{price,jdbcType=REAL},
+      type = #{type,jdbcType=VARCHAR},
+      postfee = #{postfee,jdbcType=REAL},
+      parameters = #{parameters,jdbcType=VARCHAR},
+      video_path = #{videoPath,jdbcType=VARCHAR},
+      list_picture_path = #{listPicturePath,jdbcType=VARCHAR},
+      month_sales = #{monthSales,jdbcType=INTEGER},
+      creat_time = #{creatTime,jdbcType=TIMESTAMP},
+      update_time = #{updateTime,jdbcType=TIMESTAMP},
+      datail_picture_path = #{datailPicturePath,jdbcType=VARCHAR},
+      spec = #{spec,jdbcType=VARCHAR},
+      discount_price = #{discountPrice,jdbcType=REAL}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

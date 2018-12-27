@@ -1,15 +1,8 @@
 package com.zsbatech.baasTestManager;
 
-import com.zsbatech.baasKettleManager.dao.JobStartStepDOMapper;
-import com.zsbatech.baasKettleManager.model.FTPDownLoadStepDO;
-import com.zsbatech.baasKettleManager.model.JobStartStepDO;
-import com.zsbatech.baasKettleManager.service.*;
-import com.zsbatech.baasKettleManager.service.impl.FtpSourceManageServiceImpl;
-import com.zsbatech.baasKettleManager.service.impl.SaveTransMetaServiceImpl;
-import com.zsbatech.base.constants.RequestField;
-import com.zsbatech.base.utils.JWTUtils;
+import com.zsbatech.baasKettleManager.model.MyProduct;
+import com.zsbatech.base.common.Pagination;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.pentaho.di.core.KettleEnvironment;
 import org.pentaho.di.core.database.DatabaseMeta;
 import org.pentaho.di.core.plugins.PluginRegistry;
@@ -28,99 +21,16 @@ import org.pentaho.di.trans.steps.insertupdate.InsertUpdateMeta;
 import org.pentaho.di.trans.steps.tableinput.TableInputMeta;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
-@RunWith(SpringRunner.class)
+import java.lang.reflect.Field;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+//@RunWith(SpringRunner.class)
 @SpringBootTest
 public class ApplicationTests {
 
-    @Autowired
-    private JobStartStepDOMapper jobStartStepDOMapper;
-
-    @Autowired
-    private FtpSourceManageServiceImpl ftpSourceManageService;
-
-    @Autowired
-    private CatalogManageService catalogManageService;
-
-    @Autowired
-    private JobManageService jobExcuteService;
-
-    @Autowired
-    private SaveJobMetaService saveJobMetaService;
-    @Autowired
-    private CatalogManageService contentManageService;
-
-    @Autowired
-    private FileSyncJobService fileSyncJobService;
-
-    @Autowired
-    private SaveTransMetaService saveTransMetaService;
-
-    @Test
-    public void save() throws Exception {
-        KettleEnvironment.init();
-        TransMeta transMeta = new TransMeta();
-        //设置转换的名称
-        transMeta.setName("aaa");
-        //添加转换的数据库连接
-        DatabaseMeta databaseMeta = new DatabaseMeta();
-        databaseMeta.setDatabaseType("MySQL");
-        databaseMeta.setDBName("kettle");
-        databaseMeta.setHostname("localhost");
-        databaseMeta.setDBPort("3306");
-        databaseMeta.setUsername("root");
-        databaseMeta.setPassword("root");
-        databaseMeta.setName("sample");
-        transMeta.addDatabase(databaseMeta);
-        //registry是给每个步骤生成一个标识Id用
-        PluginRegistry registry = PluginRegistry.getInstance();
-        //第一个表输入步骤(TableInputMeta)
-        TableInputMeta tableInput = new TableInputMeta();
-        String tableInputPluginId = registry.getPluginId(StepPluginType.class, tableInput);
-        //给表输入添加一个DatabaseMeta连接数据库
-        DatabaseMeta database_bjdt = transMeta.findDatabase(databaseMeta.getName());
-        tableInput.setDatabaseMeta(database_bjdt);
-        String select_sql = "SELECT * FROM " + "users";
-        tableInput.setSQL(select_sql);
-        //添加TableInputMeta到转换中
-        StepMeta tableInputMetaStep = new StepMeta(tableInputPluginId, "步骤名", tableInput);
-        //给步骤添加在spoon工具中的显示位置
-        tableInputMetaStep.setDraw(true);
-        tableInputMetaStep.setLocation(100, 100);
-        transMeta.addStep(tableInputMetaStep);
-        //第二个步骤插入与更新
-        InsertUpdateMeta insertUpdateMeta = new InsertUpdateMeta();
-        String insertUpdateMetaPluginId = registry.getPluginId(StepPluginType.class, insertUpdateMeta);
-        //添加数据库连接
-        DatabaseMeta database_kettle = transMeta.findDatabase(databaseMeta.getName());
-        insertUpdateMeta.setDatabaseMeta(database_kettle);
-        //设置操作的表
-        insertUpdateMeta.setTableName("countuse");
-        //设置用来查询的关键字
-        insertUpdateMeta.setKeyLookup(new String[]{"ID"});
-        insertUpdateMeta.setKeyStream(new String[]{"ID"});
-        insertUpdateMeta.setKeyStream2(new String[]{""});//一定要加上
-        insertUpdateMeta.setKeyCondition(new String[]{"="});
-        //设置要更新的字段
-        String[] updatelookup = {"ID", "user"};
-        String[] updateStream = {"id", "user"};
-        Boolean[] updateOrNot = {false, true};
-        insertUpdateMeta.setUpdateLookup(updatelookup);
-        insertUpdateMeta.setUpdateStream(updateStream);
-        insertUpdateMeta.setUpdate(updateOrNot);
-        String[] lookup = insertUpdateMeta.getUpdateLookup();
-        //添加步骤到转换中
-        StepMeta insertUpdateStep = new StepMeta(insertUpdateMetaPluginId, "insert_update", insertUpdateMeta);
-        insertUpdateStep.setDraw(true);
-        insertUpdateStep.setLocation(250, 100);
-        transMeta.addStep(insertUpdateStep);
-        //添加hop把两个步骤关联起来
-        transMeta.addTransHop(new TransHopMeta(tableInputMetaStep, insertUpdateStep));
-
-        new SaveTransMetaServiceImpl().save(transMeta, "C:\\Users\\zhang\\Desktop\\aaa.ktr", true);
-        saveTransMetaService.saveTransData("C:\\Users\\zhang\\Desktop\\aaa.ktr",8,8);
-    }
 
     @Test
     public void test() throws Exception {
@@ -137,34 +47,6 @@ public class ApplicationTests {
     }
 
     @Test
-    public void deTest() throws Exception {
-        KettleEnvironment.init();
-        JobMeta jobMeta = new JobMeta();
-        jobMeta.setName("job");
-        JobEntrySpecial jobEntrySpecial = new JobEntrySpecial();
-        jobEntrySpecial.setName("start");
-        jobEntrySpecial.setRepeat(true);
-        jobEntrySpecial.setSchedulerType(1);
-        jobEntrySpecial.setIntervalMinutes(1);
-        jobEntrySpecial.setStart(true);
-        JobEntryCopy specialCopy = new JobEntryCopy(jobEntrySpecial);
-        specialCopy.setLocation(30, 20);
-        specialCopy.setDrawn(true);
-        jobMeta.addJobEntry(specialCopy);
-        JobEntryTrans jobEntryTrans = new JobEntryTrans("job");
-        jobEntryTrans.setFileName("/Users/yinshanzhang/Desktop/transjob.ktr");
-        JobEntryCopy transJob = new JobEntryCopy(jobEntryTrans);
-        transJob.setLocation(200, 20);
-        transJob.setDrawn(true);
-        jobMeta.addJobEntry(transJob);
-        JobHopMeta jobHopMeta = new JobHopMeta(specialCopy, transJob);
-        jobHopMeta.setUnconditional(true);
-        jobMeta.addJobHop(jobHopMeta);
-        saveJobMetaService.save(jobMeta, "/Users/yinshanzhang/Desktop/cads.kjb", true);
-        saveJobMetaService.saveTransJobData("/Users/yinshanzhang/Desktop/cads.kjb");
-    }
-
-    @Test
     public void testJob() throws Exception {
         KettleEnvironment.init();
         JobMeta jobMeta = new JobMeta("/Users/yinshanzhang/Desktop/cads.kjb", null);
@@ -177,34 +59,6 @@ public class ApplicationTests {
         }
     }
 
-    @Test
-    public void testmaet() {
-//        saveTransMetaService.saveTransData("C:\\Users\\zhang\\Desktop\\jdbc.ktr",8,8);
-        saveJobMetaService.saveTransJobData("/Users/yinshanzhang/Desktop/cads.kjb");
-    }
-
-    @Test
-    public void testSaveByDB() {
-        saveTransMetaService.saveByDB("aaa", new String[]{"id", "name"});
-//        saveJobMetaService.saveTransJobData("C:\\Users\\zhang\\Desktop\\cads.kjb");
-    }
-
-    @Test
-    public void testCreateDownloadJobMeta() {
-        JobStartStepDO jobStartStepVO = new JobStartStepDO();
-        jobStartStepVO.setTimingType((short) 0);
-        jobStartStepVO.setIsRepeat((short) 0);
-        FTPDownLoadStepDO ftpDownLoadStepVO = new FTPDownLoadStepDO();
-        ftpDownLoadStepVO.setServerName("106.75.17.46");
-        ftpDownLoadStepVO.setPort("21");
-        ftpDownLoadStepVO.setUserName("kettletest");
-        ftpDownLoadStepVO.setPassword("test123456");
-        ftpDownLoadStepVO.setBinaryMode((short) 1);
-        ftpDownLoadStepVO.setControlEncoding("UTF-8");
-        ftpDownLoadStepVO.setFtpDirectory("");
-        ftpDownLoadStepVO.setTargetDirectory("C:\\Users\\zhang\\Desktop\\新建文件夹");
-//        fileSyncJobService.createDownloadJobMeta(jobStartStepVO, ftpDownLoadStepVO, "aaa");
-    }
 
     @Test
     public void TestFile() throws Exception {
@@ -212,26 +66,96 @@ public class ApplicationTests {
 //        ftpClient.makeDirectory("files/pento/dataSour");
     }
 
+
     @Test
-    public void testStop() throws Exception{
-//        new StopJobUtil().stopJob("C:\\Users\\zhang\\Desktop\\aaa.kjb","C:\\Users\\zhang\\Desktop\\aaa.kjb");
-//        List<FtpcatalogNode> stringLIst =catalogManageService.getFtpCatalog("test");
-//        for(FtpcatalogNode s:stringLIst){
-//            System.out.println(s.getParentName());
-//        }
-        jobExcuteService.stop("job");
+    public  void  ss(){
+        System.out.println("jjjjjj");
+//        JSON.toJSON()
     }
 
     @Test
-    public void testFileCatalog(){
-//       fileSyncJobService.saveFileInfo(4,"00000000",null,null);
-//       JWTUtils.validateToken(RequestField.TOKEN).getUsername();
-        JobStartStepDO jobStartStepDO = new JobStartStepDO();
-        jobStartStepDO.setIsRepeat((short)1);
-        jobStartStepDO.setTimingType((short)1);
-        jobStartStepDO.setTimingTime((short) 10);
-        jobStartStepDO.setJobMetaId(99);
-        jobStartStepDOMapper.updateByJobId(jobStartStepDO);
+    public void getProductList() {
+        List<MyProduct> productList = new ArrayList<MyProduct>();
+
+
+        Connection conn;
+        String driver = "com.mysql.jdbc.Driver";
+        String url = "jdbc:mysql://localhost:3306/test?allowMultiQueries=true&serverTimezone=UTC&useSSL=false&useUnicode=true&characterEncoding=UTF-8";
+        String username = "root";
+        String password = "root";
+
+        try {
+            Class.forName(driver);
+            conn = DriverManager.getConnection(url,username,password);
+            Statement stmt = conn.createStatement();
+
+
+            String sql = "select list_picture_path,pname,price from my_product;";
+
+            ResultSet rs = stmt.executeQuery(sql);
+            ResultSetMetaData rsmd = rs.getMetaData();
+//            System.out.println(rsmd);
+            int colnum=rsmd.getColumnCount();
+
+            while(rs.next()){
+                MyProduct product = new MyProduct();
+               /*
+                product.setPname(rs.getString("pname"));
+                product.setPrice(rs.getBigDecimal("price"));
+                product.setListPicturePath("list_picture_path" );
+
+*/
+               for (int i=1;i<=colnum;i++){
+                   Object obj=rs.getObject(i);
+                   System.out.println(obj.toString());
+
+               }
+
+
+
+                productList.add(product);
+            }
+            rs.close();
+            stmt.close();
+            conn.close();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        Pagination<MyProduct> pagination=new Pagination<>(productList);
+//        System.out.println(pagination.toString());
+
+
+
+
     }
+    @Test
+    public void sssss(){
+        MyProduct product=new MyProduct();
+
+        Field [] field=product.getClass().getDeclaredFields();
+      for(int i=0; i<field.length;i++){
+//          System.out.println(field[i]);
+      }
+        try {
+            System.out.println(field[0]);
+            field[1].set(product,"aa");
+            System.out.println(product.getPname());
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+    @Test
+    public void ssss(){
+        int a=1;
+        String s= ""+a;
+        System.out.println(s);
+    }
+
+
+
 
 }
