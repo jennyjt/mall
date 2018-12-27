@@ -2,7 +2,7 @@ package com.zsbatech.baasKettleManager.model;
 
 public class WriteCart {
     private Integer userId;
-    private Integer product;
+    private Integer productId;
     private Integer num;
 
     public Integer getUserId() {
@@ -13,12 +13,12 @@ public class WriteCart {
         this.userId = userId;
     }
 
-    public Integer getProduct() {
-        return product;
+    public Integer getProductId() {
+        return productId;
     }
 
-    public void setProduct(Integer product) {
-        this.product = product;
+    public void setProduct(Integer productId) {
+        this.productId = productId;
     }
 
     public Integer getNum() {

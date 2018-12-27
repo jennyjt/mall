@@ -9,6 +9,7 @@ import com.zsbatech.baasKettleManager.service.MyUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -21,6 +22,8 @@ public class MyUserServiceImpl implements MyUserService {
 	@Override
 	public boolean add(MyUser user) {
 		// TODO Auto-generated method stub
+		user.setCreatTime(new Date());
+		user.setUpdataTime(new Date());
 		int a = userMapper.insert(user);
 
 		if (a>0) {
