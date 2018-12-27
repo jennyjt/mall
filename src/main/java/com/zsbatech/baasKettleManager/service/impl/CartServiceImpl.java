@@ -35,6 +35,7 @@ public class CartServiceImpl implements CartService {
         float postFee=productMapper.selectByPrimaryKey(cart.getProductId()).getPostfee();
         op.setUnitPrice(unitPrice);
         op.setTotallPrice(unitPrice*cart.getNum()-discount-postFee);
+        System.out.println(op);
         return op;
     }
 }
