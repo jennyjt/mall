@@ -37,9 +37,7 @@ spring:
       charset: UTF-8
  # 数据库访问配置
   datasource:
-    url: jdbc:mysql://106.75.73.34:8306/kettle_manager?allowMultiQueries=true&serverTimezone=UTC&useSSL=false&useUnicode=true&characterEncoding=UTF-8
-    username: root
-    password: Zsba@mysql2018*
+    url: jdbc:
     driver-class-name: com.mysql.jdbc.Driver
 #    platform: mysql
  # 使用druid
