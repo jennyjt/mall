@@ -51,6 +51,7 @@ public class ContentManageController {
         } else {
             responseData.setError(500, new HashMap<String, String>().put("删除失败", "删除文件目录失败"));
         }
+        System.out.println("a");
         return responseData;
     }
 
